@@ -1,9 +1,7 @@
-# pkg.install
+{% from postgres/map.jinja import postgres with context %}
+
 postgresql:
-  pkg.installed:
-    {% if grains['os_family'] == 'RedHat' %}
-    - name: postgresql
-    {% elif grains['os_family'] == 'Debian' %}
-    - name: postgresql-9.1
-    {% endif %}
+  pkg:
+    - installed
+    - name: {{ postgres.pkg }}
 

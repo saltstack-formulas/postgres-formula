@@ -1,0 +1,8 @@
+{% set postgres = salt['grains.filter_by']({
+    'Debian': {
+        'pkg': 'postgresql-9.1',
+    },
+    'RedHat': {
+        'pkg': 'postgresql',
+    },
+}, merge=salt['pillar.get']('postgres:lookup')) %}

@@ -10,7 +10,7 @@ postgres
 Available states
 ================
 
-.. contesnt::
+.. contents::
     :local:
 
 ``postgres``

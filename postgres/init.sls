@@ -4,4 +4,10 @@ postgresql:
   pkg:
     - installed
     - name: {{ postgres.pkg }}
+  service:
+    - running
+    - enable: true
+    - name: {{ postgres.service }}
+    - require:
+      - pkg: {{ postgres.pkg }}
 

@@ -1,0 +1,8 @@
+#
+# Sample pillar entry to make sure that 
+# PG 9.3 is installed instead of the default
+# 9.1 referenced in this formula
+#
+postgres:
+  lookup:
+    pkg: postgresql-9.3

@@ -8,6 +8,8 @@ postgresql:
     - running
     - enable: true
     - name: {{ postgres.service }}
+    - watch:
+      - file: {{ postgres.pg_hba }}
     - require:
       - pkg: {{ postgres.pkg }}
 

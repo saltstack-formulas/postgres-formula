@@ -6,3 +6,6 @@
 postgres:
   lookup:
     pkg: postgresql-9.3
+  db:
+    name: mydb
+    user: mydb

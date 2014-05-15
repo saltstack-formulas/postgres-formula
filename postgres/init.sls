@@ -17,6 +17,7 @@ pg_hba.conf:
   file.managed:
     - name: {{ postgres.pg_hba }}
     - source: salt://postgres/pg_hba.conf
+    - template: jinja
     - user: postgres
     - group: postgres
     - mode: 644

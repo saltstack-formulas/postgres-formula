@@ -9,3 +9,4 @@ postgres:
   db:
     name: mydb
     user: mydb
+  pg_hba.conf: salt://postgres/pg_hba.conf

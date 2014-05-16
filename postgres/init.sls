@@ -13,16 +13,18 @@ postgresql:
     - require:
       - pkg: {{ postgres.pkg }}
 
+{% if 'pg_hba.conf' in pillar['postgres'] %}
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.pg_hba }}
-    - source: salt://postgres/pg_hba.conf
+    - source: {{ pillar['postgres']['pg_hba.conf'] }}
     - template: jinja
     - user: postgres
     - group: postgres
     - mode: 644
     - require:
       - pkg: {{ postgres.pkg }}
+{% endif %}
 
 postgres-app-user:
   postgres_user.present:

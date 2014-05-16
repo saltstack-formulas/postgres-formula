@@ -26,6 +26,7 @@ pg_hba.conf:
       - pkg: {{ postgres.pkg }}
 {% endif %}
 
+{% if 'db' in pillar['postgres'] %}
 postgres-app-user:
   postgres_user.present:
     - name: {{ pillar['postgres']['db']['user'] }}
@@ -46,3 +47,4 @@ postgres-app-db:
     - runas: postgres
     - require:
         - postgres_user: postgres-app-user
+{% endif %}

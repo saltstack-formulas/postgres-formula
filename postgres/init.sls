@@ -8,8 +8,6 @@ postgresql:
     - running
     - enable: true
     - name: {{ postgres.service }}
-    - watch:
-      - file: {{ postgres.pg_hba }}
     - require:
       - pkg: {{ postgres.pkg }}
 
@@ -24,6 +22,8 @@ pg_hba.conf:
     - mode: 644
     - require:
       - pkg: {{ postgres.pkg }}
+    - watch_in:
+      - service: postgresql
 {% endif %}
 
 {% if 'db' in pillar['postgres'] %}

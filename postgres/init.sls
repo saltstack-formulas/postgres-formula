@@ -11,7 +11,7 @@ postgresql:
     - require:
       - pkg: {{ postgres.pkg }}
 
-{% if 'pg_hba.conf' in pillar['postgres'] %}
+{% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.pg_hba }}
@@ -26,7 +26,7 @@ pg_hba.conf:
       - service: postgresql
 {% endif %}
 
-{% if 'db' in pillar['postgres'] %}
+{% if 'db' in pillar.get('postgres', {}) %}
 postgres-app-user:
   postgres_user.present:
     - name: {{ pillar['postgres']['db']['user'] }}

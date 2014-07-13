@@ -15,7 +15,7 @@ postgresql:
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.pg_hba }}
-    - source: {{ pillar['postgres']['pg_hba.conf'] }}
+    - source: {{ salt['pillar.get']('postgres:pg_hba.conf', 'salt://postgres/pg_hba.conf') }}
     - template: jinja
     - user: postgres
     - group: postgres
@@ -29,21 +29,21 @@ pg_hba.conf:
 {% if 'db' in pillar.get('postgres', {}) %}
 postgres-app-user:
   postgres_user.present:
-    - name: {{ pillar['postgres']['db']['user'] }}
-    - createdb: {{ pillar['postgres']['db']['createdb'] }}
-    - password: {{ pillar['postgres']['db']['password'] }}
+    - name: {{ salt['pillar.get']('postgres:db:user', 'myuser') }}
+    - createdb: {{ salt['pillar.get']('postgres:db:createdb', False) }}
+    - password: {{ salt['pillar.get']('postgres:db:password', 'mypass') }}
     - runas: postgres
     - require:
       - service: {{ postgres.service }}
 
 postgres-app-db:
   postgres_database.present:
-    - name: {{ pillar['postgres']['db']['name'] }}
+    - name: {{ salt['pillar.get']('postgres:db:name', 'mydb') }}
     - encoding: UTF8
     - lc_ctype: en_US.UTF8
     - lc_collate: en_US.UTF8
     - template: template0
-    - owner: {{ pillar['postgres']['db']['user'] }}
+    - owner: {{ salt['pillar.get']('postgres:db:user', 'myuser') }}
     - runas: postgres
     - require:
         - postgres_user: postgres-app-user

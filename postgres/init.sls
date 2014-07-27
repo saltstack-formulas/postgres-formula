@@ -10,6 +10,9 @@ postgresql:
     - name: {{ postgres.service }}
     - require:
       - pkg: {{ postgres.pkg }}
+      
+postgresql-server-dev-9.3:
+  pkg.installed
 
 {% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
 pg_hba.conf:

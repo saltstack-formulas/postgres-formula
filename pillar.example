@@ -1,13 +1,36 @@
-#
-# Sample pillar entry to make sure that 
-# PG 9.3 is installed instead of the default
-# 9.1 referenced in this formula
-#
 postgres:
-  lookup:
-    pkg: postgresql-9.3
-    pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'
-  db:
-    name: mydb
-    user: mydb
   pg_hba.conf: salt://postgres/pg_hba.conf
+
+  lookup:
+    pkg: 'postgresql-9.3'
+    pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'
+
+  users:
+    localUser:
+      password: '98ruj923h4rf'
+      createdb: False
+
+    remoteUser:
+      password: '98ruj923h4rf'
+      createdb: False
+
+  # This section cover this ACL management of the pg_hba.conf file.
+  # <type>, <database>, <user>, [host], <method>
+  acls:
+    - ['local', 'db1', 'localUser']
+    - ['host', 'db2', '123.123.0.0/24', 'remoteUser']
+
+  databases:
+    db1:
+      owner: 'localUser'
+      user: 'localUser'
+      template: 'template0'
+      lc_ctype: 'C.UTF-8'
+      lc_collate: 'C.UTF-8'
+
+    db2:
+      owner: 'localUser'
+      user: 'remoteUser'
+      template: 'template0'
+      lc_ctype: 'C.UTF-8'
+      lc_collate: 'C.UTF-8'

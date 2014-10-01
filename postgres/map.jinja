@@ -1,18 +1,32 @@
 {% set postgres = salt['grains.filter_by']({
     'Debian': {
         'pkg': 'postgresql-9.1',
+        'pkg_dev': 'postgresql-server-dev-9.1',
         'python': 'python-pygresql',
         'service': 'postgresql',
-        'pg_hba': '/etc/postgresql/9.1/main/pg_hba.conf',
+        'conf_dir': '/etc/postgresql/9.1/main',
+        'create_cluster': False,
     },
     'RedHat': {
         'pkg': 'postgresql',
+        'pkg_dev': 'postgresql-server-dev-9.1',
         'python': 'postgresql-python',
         'service': 'postgresql',
+        'create_cluster': False,
     },
     'Arch': {
         'pkg': 'postgresql',
+        'pkg_dev': 'postgresql-server-dev-9.1',
         'python': 'python-psycopg2',
         'service': 'postgresql',
+        'create_cluster': False,
     },
-}, merge=salt['pillar.get']('postgres:lookup')) %}
+}, merge=salt['grains.filter_by']({
+    '14.04': {
+        'pkg': 'postgresql',
+        'pkg_dev': 'postgresql-server-dev-9.3',
+        'conf_dir': '/etc/postgresql/9.3/main',
+        'service': 'postgresql',
+        'create_cluster': True,
+    },
+}, grain='lsb_distrib_release', merge=salt['pillar.get']('postgres:lookup'))) %}

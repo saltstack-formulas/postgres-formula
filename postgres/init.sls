@@ -1,26 +1,45 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
-postgresql:
-
-  pkg:
-    - installed
+install-postgresql:
+  pkg.installed:
     - name: {{ postgres.pkg }}
 
-  service:
-    - running
+{% if postgres.create_cluster != False %}
+create-postgresql-cluster:
+  cmd.run:
+    - cwd: /
+    - user: root
+    - name: pg_createcluster {{ postgres.version }} main --start
+    - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
+    - env:
+      LC_ALL: C.UTF-8
+{% endif %}
+
+{% if postgres.init_db != False %}
+postgresql-initdb:
+  cmd.run:
+    - cwd: /
+    - user: root
+    - name: service postgresql initdb
+    - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
+    - env:
+      LC_ALL: C.UTF-8
+{% endif %}
+
+run-postgresql:
+  service.running:
     - enable: true
     - name: {{ postgres.service }}
     - require:
       - pkg: {{ postgres.pkg }}
 
-      
-postgresql-server-dev-9.3:
-  pkg.installed
-  
-libpq-dev:
-  pkg.installed
+{% if postgres.pkg_dev != False %}
+install-postgres-dev-package:
+  pkg.installed:
+    - name: {{ postgres.pkg_dev }}
+{% endif %}
 
-python-dev:
+{{ postgres.pkg_libpq_dev }}:
   pkg.installed
 
 {% if 'postgresconf' in pillar.get('postgres', {}) %}
@@ -39,7 +58,7 @@ postgresql-conf:
 {% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
 pg_hba.conf:
   file.managed:
-    - name: {{ postgres.pg_hba }}
+    - name: {{ postgres.conf_dir }}/pg_hba.conf
     - source: {{ salt['pillar.get']('postgres:pg_hba.conf', 'salt://postgres/pg_hba.conf') }}
     - template: jinja
     - user: postgres
@@ -50,7 +69,6 @@ pg_hba.conf:
     - watch_in:
       - service: postgresql
 {% endif %}
-
 
 {% if 'users' in pillar.get('postgres', {}) %}
 {% for name, user in salt['pillar.get']('postgres:users').items()  %}
@@ -84,4 +102,3 @@ postgres-db-{{ name }}:
     {% endif %}
 {% endfor%}
 {% endif %}
-

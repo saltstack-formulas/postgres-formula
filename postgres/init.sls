@@ -1,6 +1,5 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
-
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}
@@ -42,6 +41,19 @@ install-postgres-dev-package:
 
 {{ postgres.pkg_libpq_dev }}:
   pkg.installed
+
+{% if 'postgresconf' in pillar.get('postgres', {}) %}
+postgresql-conf:
+  file.blockreplace:
+    - name: {{ postgres.conf_dir }}/postgresql.conf
+    - marker_start: "# Managed by SaltStack: listen_addresses: please do not edit"
+    - marker_end: "# Managed by SaltStack: end of salt managed zone --"
+    - content: {{ salt['pillar.get']('postgres:postgresconf') }}
+    - show_changes: True
+    - append_if_not_found: True
+    - watch_in:
+       - service: postgresql
+{% endif %}
 
 {% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
 pg_hba.conf:

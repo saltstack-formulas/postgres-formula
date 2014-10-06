@@ -34,3 +34,8 @@ postgres:
       template: 'template0'
       lc_ctype: 'C.UTF-8'
       lc_collate: 'C.UTF-8'
+
+  # This section will append your configuration to postgresql.conf.
+  postgresconf: |
+    listen_addresses = 'localhost,*'
+

@@ -29,6 +29,9 @@
         'python': 'python-psycopg2',
         'service': 'postgresql',
         'conf_dir': '/var/lib/pgsql/data',
+        'create_cluster': False,
+        'init_db': True,
+        'version': '9.1',
     },
 }, merge=salt['grains.filter_by']({
     '14.04': {

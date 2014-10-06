@@ -16,6 +16,17 @@ create-postgresql-cluster:
       LC_ALL: C.UTF-8
 {% endif %}
 
+{% if postgres.init_db != False %}
+postgresql-initdb:
+  cmd.run:
+    - cwd: /
+    - user: root
+    - name: service postgresql initdb
+    - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
+    - env:
+      LC_ALL: C.UTF-8
+{% endif %}
+
 run-postgresql:
   service.running:
     - enable: true
@@ -23,14 +34,13 @@ run-postgresql:
     - require:
       - pkg: {{ postgres.pkg }}
 
+{% if postgres.pkg_dev != False %}
 install-postgres-dev-package:
   pkg.installed:
     - name: {{ postgres.pkg_dev }}
+{% endif %}
 
-libpq-dev:
-  pkg.installed
-
-python-dev:
+{{ postgres.pkg_libpq_dev }}:
   pkg.installed
 
 {% if 'pg_hba.conf' in pillar.get('postgres', {}) %}

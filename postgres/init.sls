@@ -10,7 +10,7 @@ create-postgresql-cluster:
   cmd.run:
     - cwd: /
     - user: root
-    - name: pg_createcluster 9.3 main --start
+    - name: pg_createcluster {{ postgres.version }} main --start
     - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
     - env:
       LC_ALL: C.UTF-8

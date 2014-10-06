@@ -8,6 +8,7 @@
         'conf_dir': '/etc/postgresql/9.1/main',
         'create_cluster': False,
         'init_db': False,
+        'version': '9.1',
     },
     'RedHat': {
         'pkg': 'postgresql-server',
@@ -18,6 +19,7 @@
         'conf_dir': '/var/lib/pgsql/data',
         'create_cluster': False,
         'init_db': True,
+        'version': '9.1',
     },
     'Arch': {
         'pkg': 'postgresql',
@@ -28,6 +30,7 @@
         'conf_dir': '/var/lib/pgsql/data/',
         'create_cluster': False,
         'init_db': False,
+        'version': '9.1',
     },
 }, merge=salt['grains.filter_by']({
     '14.04': {
@@ -36,5 +39,6 @@
         'conf_dir': '/etc/postgresql/9.3/main',
         'service': 'postgresql',
         'create_cluster': True,
+        'version': '9.3',
     },
 }, grain='lsb_distrib_release', merge=salt['pillar.get']('postgres:lookup'))) %}

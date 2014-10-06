@@ -4,15 +4,24 @@
         'python': 'python-pygresql',
         'service': 'postgresql',
         'pg_hba': '/etc/postgresql/9.1/main/pg_hba.conf',
+        'conf_dir': '/etc/postgresql/9.1/main',
     },
     'RedHat': {
         'pkg': 'postgresql',
         'python': 'postgresql-python',
         'service': 'postgresql',
+        'conf_dir': '/var/lib/pgsql/data',
     },
     'Arch': {
         'pkg': 'postgresql',
         'python': 'python-psycopg2',
         'service': 'postgresql',
+        'conf_dir': '/var/lib/pgsql/data',
     },
-}, merge=salt['pillar.get']('postgres:lookup')) %}
+}, merge=salt['grains.filter_by']({
+   '14.04': {
+       'pkg': 'postgresql',
+       'pkg_dev': 'postgresql-server-dev-9.3',
+       'conf_dir': '/etc/postgresql/9.3/main',
+   },
+}, grain='lsb_distrib_release', merge=salt['pillar.get']('postgres:lookup'))) %}

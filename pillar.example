@@ -18,7 +18,7 @@ postgres:
   # <type>, <database>, <user>, [host], <method>
   acls:
     - ['local', 'db1', 'localUser']
-    - ['host', 'db2', '123.123.0.0/24', 'remoteUser']
+    - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
 
   databases:
     db1:

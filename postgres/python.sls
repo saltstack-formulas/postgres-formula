@@ -1,6 +1,5 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
 postgresql-python:
-  pkg:
-    - installed
+  pkg.installed:
     - name: {{ postgres.python}}

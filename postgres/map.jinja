@@ -39,7 +39,7 @@
         'pkg_dev': 'postgresql-server-dev-9.3',
         'conf_dir': '/etc/postgresql/9.3/main',
         'service': 'postgresql',
-        'create_cluster': True,
+        'create_cluster': False,
         'version': '9.3',
     },
     '14.10': {
@@ -47,7 +47,7 @@
         'pkg_dev': 'postgresql-server-dev-9.4',
         'conf_dir': '/etc/postgresql/9.4/main',
         'service': 'postgresql',
-        'create_cluster': True,
+        'create_cluster': False,
         'version': '9.4',
     },
 }, grain='lsb_distrib_release', merge=salt['pillar.get']('postgres:lookup'))) %}

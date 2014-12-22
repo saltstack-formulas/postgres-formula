@@ -1,16 +1,4 @@
 {% set postgres = salt['grains.filter_by']({
-    'Debian': {
-        'pkg': 'postgresql-9.1',
-        'pkg_dev': 'postgresql-server-dev-9.1',
-        'pkg_libpq_dev': 'libpq-dev',
-        'python': 'python-pygresql',
-        'service': 'postgresql',
-        'pg_hba': '/etc/postgresql/9.1/main/pg_hba.conf',
-        'conf_dir': '/etc/postgresql/9.1/main',
-        'create_cluster': False,
-        'init_db': False,
-        'version': '9.1',
-    },
     'RedHat': {
         'pkg': 'postgresql-server',
         'pkg_dev': 'postgresql-devel',
@@ -50,4 +38,29 @@
         'create_cluster': False,
         'version': '9.4',
     },
-}, grain='lsb_distrib_release', merge=salt['pillar.get']('postgres:lookup'))) %}
+}, grain='lsb_distrib_release', merge=salt['grains.filter_by']({
+    'jessie': {
+        'pkg': 'postgresql-9.4',
+        'pkg_dev': 'postgresql-server-dev-9.4',
+        'pkg_libpq_dev': 'libpq-dev',
+        'python': 'python-pygresql',
+        'service': 'postgresql',
+        'pg_hba': '/etc/postgresql/9.4/main/pg_hba.conf',
+        'conf_dir': '/etc/postgresql/9.4/main',
+        'create_cluster': False,
+        'init_db': False,
+        'version': '9.4',
+    },
+        'wheezy': {
+        'pkg': 'postgresql-9.1',
+        'pkg_dev': 'postgresql-server-dev-9.1',
+        'pkg_libpq_dev': 'libpq-dev',
+        'python': 'python-pygresql',
+        'service': 'postgresql',
+        'pg_hba': '/etc/postgresql/9.1/main/pg_hba.conf',
+        'conf_dir': '/etc/postgresql/9.1/main',
+        'create_cluster': False,
+        'init_db': False,
+        'version': '9.1',
+    },
+}, grain='lsb_distrib_codename', merge=salt['pillar.get']('postgres:lookup')))) %}

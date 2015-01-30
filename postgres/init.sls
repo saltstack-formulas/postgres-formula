@@ -40,9 +40,9 @@ install-postgres-dev-package:
 {% endif %}
 
 {% if postgres.pkg_libpq_dev != False %}
-install-postgres-libpq-dev
-  pkg.installed
-    - name: {{ postgres.pkg_libpq_dev }}:
+install-postgres-libpq-dev:
+  pkg.installed:
+    - name: {{ postgres.pkg_libpq_dev }}
 {% endif %}
 
 {% if 'postgresconf' in pillar.get('postgres', {}) %}

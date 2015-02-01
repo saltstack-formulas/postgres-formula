@@ -34,9 +34,11 @@
         'version'        : pg_version.id,
     },
     'Debian': {
-        'pkg'            : 'postgresql',
+        'pkg'            : 'postgresql-' + pg_version.id,
         'pkg_dev'        : 'postgresql-server-dev-' + pg_version.id,
         'pkg_libpq_dev'  : 'libpq-dev',
+        'pkg_repo'       : 'deb http://apt.postgresql.org/pub/repos/apt/ ' + grains['lsb_distrib_codename'] + '-pgdg main',
+        'pkg_repo_file'  : '/etc/apt/sources.list.d/pgdg.list',
         'python'         : 'python-pygresql',
         'service'        : 'postgresql',
         'pg_hba'         : '/etc/postgresql/' + pg_version.id + '/main/pg_hba.conf',

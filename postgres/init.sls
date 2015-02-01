@@ -1,8 +1,21 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
+{% if 'use_upstream_repo' in pillar.get('postgres') %}
+install-postgresql-repo:
+  pkgrepo.managed:
+    - humanname: PostgreSQL Official Repository
+    - name: {{ postgres.pkg_repo }}
+    - keyid: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+    - keyserver: keyserver.ubuntu.com
+    - file: {{ postgres.pkg_repo_file }}
+    - require_in:
+        - install-postgresql
+{% endif %}
+
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}
+    - refresh: {{ 'use_upstream_repo' in pillar.get('postgres') }}
 
 {% if postgres.create_cluster != False %}
 create-postgresql-cluster:

@@ -1,6 +1,8 @@
 postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
 
+  use_upstream_repo: True
+
   lookup:
     pkg: 'postgresql-9.3'
     pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'

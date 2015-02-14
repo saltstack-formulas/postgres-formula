@@ -58,6 +58,12 @@ install-postgres-libpq-dev:
     - name: {{ postgres.pkg_libpq_dev }}
 {% endif %}
 
+{% if postgres.pkg_contrib != False %}
+install-postgres-contrib:
+  pkg.installed:
+    - name: {{ postgres.pkg_contrib }}
+{% endif %}
+
 {% if 'postgresconf' in pillar.get('postgres', {}) %}
 postgresql-conf:
   file.blockreplace:

@@ -1,5 +1,5 @@
 postgres:
-  pg_hba.conf: salt://postgres/pg_hba.conf
+  pg_hba.conf: salt://postgres/templates/pg_hba.conf.jinja
 
   use_upstream_repo: True
 

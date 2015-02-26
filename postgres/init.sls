@@ -1,6 +1,6 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
-{% if 'use_upstream_repo' in pillar.get('postgres') %}
+{% if salt['pillar.get']('postgres:use_upstream_repo') %}
 install-postgresql-repo:
   pkgrepo.managed:
     - humanname: PostgreSQL Official Repository
@@ -15,7 +15,7 @@ install-postgresql-repo:
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}
-    - refresh: {{ 'use_upstream_repo' in pillar.get('postgres') }}
+    - refresh: {{ salt['pillar.get']('postgres:use_upstream_repo', False) }}
 
 {% if postgres.create_cluster != False %}
 create-postgresql-cluster:

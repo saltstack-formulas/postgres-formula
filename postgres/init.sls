@@ -81,7 +81,7 @@ postgresql-conf:
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.conf_dir }}/pg_hba.conf
-    - source: {{ salt['pillar.get']('postgres:pg_hba.conf', 'salt://postgres/pg_hba.conf') }}
+    - source: {{ salt['pillar.get']('postgres:pg_hba.conf', 'salt://postgres/templates/pg_hba.conf') }}
     - template: jinja
     - user: postgres
     - group: postgres
@@ -120,7 +120,7 @@ postgres-db-{{ name }}:
     - runas: {{ salt['pillar.get']('postgres:databases:'+ name +':runas', 'postgres') }}
     {% if salt['pillar.get']('postgres:databases:'+ name +':user') %}
     - require:
-        - postgres_user: postgres-user-{{ salt['pillar.get']('postgres:databases:'+ name +':user') }}
+      - postgres_user: postgres-user-{{ salt['pillar.get']('postgres:databases:'+ name +':user') }}
     {% endif %}
 {% endfor%}
 {% endif %}

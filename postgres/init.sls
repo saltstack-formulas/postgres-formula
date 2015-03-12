@@ -70,7 +70,8 @@ postgresql-conf:
     - name: {{ postgres.conf_dir }}/postgresql.conf
     - marker_start: "# Managed by SaltStack: listen_addresses: please do not edit"
     - marker_end: "# Managed by SaltStack: end of salt managed zone --"
-    - content: {{ salt['pillar.get']('postgres:postgresconf') }}
+    - content: |
+        {{ salt['pillar.get']('postgres:postgresconf') | indent(8) }}
     - show_changes: True
     - append_if_not_found: True
     - watch_in:

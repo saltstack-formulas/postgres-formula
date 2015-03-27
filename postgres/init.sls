@@ -78,7 +78,7 @@ postgresql-conf:
        - service: postgresql
 {% endif %}
 
-{% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
+{% if 'acls' in pillar.get('postgres', {}) %}
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.conf_dir }}/pg_hba.conf

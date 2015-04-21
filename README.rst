@@ -23,6 +23,11 @@ Installs the postgresql package.
 
 Installs the postgresql python module
 
+``postgres.client``
+-------------------
+
+Installs the postgresql client
+
 Testing
 =======
 

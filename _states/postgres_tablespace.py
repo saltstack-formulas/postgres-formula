@@ -79,7 +79,11 @@ def present(name,
         ret['result'] = False
         return ret # This isn't changeable, they need to remove/remake
 
-    if (not owner and not tblspaces[name]['Owner'] == owner):
+    if (owner and not tblspaces[name]['Owner'] == owner):
+        if __opts__['test']:
+            ret['result'] = None
+            ret['comment'] = 'Tablespace {0} owner to be altered'.format(name)
+            return ret
         if __salt__['postgres_ext.tablespace_alter'](name, new_owner=owner):
             ret['comment'] = 'Tablespace {0} owner changed'.format(name)
             ret['result'] = True

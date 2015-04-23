@@ -112,3 +112,22 @@ postgres-db-{{ name }}:
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 {% endfor%}
+
+{% for name, directory in postgres.tablespaces.items()  %}
+postgres-tablespace-dir-perms-{{ directory}}:
+  file.directory:
+    - name: {{ directory }}
+    - user: postgres
+    - group: postgres
+    - makedirs: True
+    - recurse:
+      - user
+      - group
+
+postgres-tablespace-{{ name }}:
+  postgres_tablespace.present:
+    - name: {{ name }}
+    - directory: {{ directory }}
+    - require:
+      - service: {{ postgres.service }}
+{% endfor%}

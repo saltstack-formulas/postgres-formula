@@ -31,7 +31,7 @@ Installs the postgresql client
 Testing
 =======
 
-Testing is done wit kitchen-salt
+Testing is done with kitchen-salt
 
 ``kitchen converge``
 --------------------

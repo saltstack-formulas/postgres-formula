@@ -14,5 +14,6 @@ postgres:
   users: {}
   acls: []
   databases: {}
+  tablespaces: {}
   postgresconf: ""
   pg_hba.conf: salt://postgres/pg_hba.conf

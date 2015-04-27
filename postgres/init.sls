@@ -113,6 +113,7 @@ postgres-db-{{ name }}:
     {% endif %}
 {% endfor%}
 
+{% if postgres.get('tablespaces') %}
 {% for name, directory in postgres.tablespaces.items()  %}
 postgres-tablespace-dir-perms-{{ directory}}:
   file.directory:
@@ -131,3 +132,4 @@ postgres-tablespace-{{ name }}:
     - require:
       - service: {{ postgres.service }}
 {% endfor%}
+{% endif %}

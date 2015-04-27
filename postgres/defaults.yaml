@@ -1,0 +1,19 @@
+postgres:
+  pkg: postgresql
+  pkg_dev: postgresql-devel
+  pkg_libpq_dev: postgresql-libs
+  pkg_client: postgresql-client
+  pkg_contrib: postgresql-contrib
+  python: python-psycopg2
+  service: postgresql
+  conf_dir: /var/lib/pgsql/data
+  create_cluster: False
+  init_db: False
+  version: 9.1
+  use_upstream_repo: False
+  users: {}
+  acls: []
+  databases: {}
+  tablespaces: {}
+  postgresconf: ""
+  pg_hba.conf: salt://postgres/pg_hba.conf

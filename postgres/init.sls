@@ -1,8 +1,14 @@
 {% from "postgres/map.jinja" import postgres with context %}
 
+{% if postgres.use_upstream_repo %}
+include:
+  - postgres.upstream
+{% endif %}
+
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}
+    - refresh: {{ postgres.use_upstream_repo }}
 
 {% if postgres.create_cluster != False %}
 create-postgresql-cluster:
@@ -39,27 +45,36 @@ install-postgres-dev-package:
     - name: {{ postgres.pkg_dev }}
 {% endif %}
 
-{{ postgres.pkg_libpq_dev }}:
-  pkg.installed
+{% if postgres.pkg_libpq_dev != False %}
+install-postgres-libpq-dev:
+  pkg.installed:
+    - name: {{ postgres.pkg_libpq_dev }}
+{% endif %}
 
-{% if 'postgresconf' in pillar.get('postgres', {}) %}
+{% if postgres.pkg_contrib != False %}
+install-postgres-contrib:
+  pkg.installed:
+    - name: {{ postgres.pkg_contrib }}
+{% endif %}
+
+{% if postgres.postgresconf %}
 postgresql-conf:
   file.blockreplace:
     - name: {{ postgres.conf_dir }}/postgresql.conf
     - marker_start: "# Managed by SaltStack: listen_addresses: please do not edit"
     - marker_end: "# Managed by SaltStack: end of salt managed zone --"
-    - content: {{ salt['pillar.get']('postgres:postgresconf') }}
+    - content: |
+        {{ postgres.postgresconf|indent(8) }}
     - show_changes: True
     - append_if_not_found: True
     - watch_in:
        - service: postgresql
 {% endif %}
 
-{% if 'pg_hba.conf' in pillar.get('postgres', {}) %}
 pg_hba.conf:
   file.managed:
     - name: {{ postgres.conf_dir }}/pg_hba.conf
-    - source: {{ salt['pillar.get']('postgres:pg_hba.conf', 'salt://postgres/pg_hba.conf') }}
+    - source: {{ postgres['pg_hba.conf'] }}
     - template: jinja
     - user: postgres
     - group: postgres
@@ -68,37 +83,51 @@ pg_hba.conf:
       - pkg: {{ postgres.pkg }}
     - watch_in:
       - service: postgresql
-{% endif %}
 
-{% if 'users' in pillar.get('postgres', {}) %}
-{% for name, user in salt['pillar.get']('postgres:users').items()  %}
+{% for name, user in postgres.users.items()  %}
 postgres-user-{{ name }}:
   postgres_user.present:
     - name: {{ name }}
-    - createdb: {{ salt['pillar.get']('postgres:users:' + name + ':createdb', False) }}
-    - password: {{ salt['pillar.get']('postgres:users:' + name + ':password', 'changethis') }}
-    - runas: postgres
+    - createdb: {{ user.get('createdb', False) }}
+    - password: {{ user.get('password', 'changethis') }}
+    - user: {{ user.get('runas', 'postgres') }}
     - require:
       - service: {{ postgres.service }}
 {% endfor%}
-{% endif %}
 
-{% if 'databases' in pillar.get('postgres', {}) %}
-{% for name, db in salt['pillar.get']('postgres:databases').items()  %}
+{% for name, db in postgres.databases.items()  %}
 postgres-db-{{ name }}:
   postgres_database.present:
     - name: {{ name }}
-    - encoding: {{ salt['pillar.get']('postgres:databases:'+ name +':encoding', 'UTF8') }}
-    - lc_ctype: {{ salt['pillar.get']('postgres:databases:'+ name +':lc_ctype', 'en_US.UTF8') }}
-    - lc_collate: {{ salt['pillar.get']('postgres:databases:'+ name +':lc_collate', 'en_US.UTF8') }}
-    - template: {{ salt['pillar.get']('postgres:databases:'+ name +':template', 'template0') }}
-    {% if salt['pillar.get']('postgres:databases:'+ name +':owner') %}
-    - owner: {{ salt['pillar.get']('postgres:databases:'+ name +':owner') }}
+    - encoding: {{ db.get('encoding', 'UTF8') }}
+    - lc_ctype: {{ db.get('lc_ctype', 'en_US.UTF8') }}
+    - lc_collate: {{ db.get('lc_collate', 'en_US.UTF8') }}
+    - template: {{ db.get('template', 'template0') }}
+    {% if db.get('owner') %}
+    - owner: {{ db.get('owner') }}
     {% endif %}
-    - runas: {{ salt['pillar.get']('postgres:databases:'+ name +':runas', 'postgres') }}
-    {% if salt['pillar.get']('postgres:databases:'+ name +':user') %}
+    - user: {{ db.get('runas', 'postgres') }}
+    {% if db.get('user') %}
     - require:
-        - postgres_user: postgres-user-{{ salt['pillar.get']('postgres:databases:'+ name +':user') }}
+        - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 {% endfor%}
-{% endif %}
+
+{% for name, directory in postgres.tablespaces.items()  %}
+postgres-tablespace-dir-perms-{{ directory}}:
+  file.directory:
+    - name: {{ directory }}
+    - user: postgres
+    - group: postgres
+    - makedirs: True
+    - recurse:
+      - user
+      - group
+
+postgres-tablespace-{{ name }}:
+  postgres_tablespace.present:
+    - name: {{ name }}
+    - directory: {{ directory }}
+    - require:
+      - service: {{ postgres.service }}
+{% endfor%}

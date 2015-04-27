@@ -1,0 +1,26 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ["private_network", { ip: "192.168.33.33" }]
+
+provisioner:
+  name: salt_solo
+  formula: postgres
+  pillars-from-files:
+    postgres.sls: pillar.example
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - postgres
+  state_top:
+    base:
+      "*":
+        - postgres
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default

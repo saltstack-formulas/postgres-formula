@@ -1,48 +1,22 @@
-{% set pg_version = salt['grains.filter_by']({
-    'RedHat' : { 'id': '9.1' },
-    'Arch'   : { 'id': '9.1' },
-    'Debian' : { 'id': '9.3' },
-}, merge=salt['grains.filter_by']({
-    '14.04'  : { 'id': '9.3' },
-    '14.10'  : { 'id': '9.4' },
-}, grain='lsb_distrib_release', merge=salt['grains.filter_by']({
-    'jessie' : { 'id': '9.4' },
-    'wheezy' : { 'id': '9.1' },
-}, grain='lsb_distrib_codename', merge=salt['pillar.get']('postgres:lookup')))) %}
+{% import_yaml "postgres/defaults.yaml" as defaults %}
+{% import_yaml "postgres/osmap.yaml" as osmap %}
+{% import_yaml "postgres/codenamemap.yaml" as codemap %}
 
-{% set postgres = salt['grains.filter_by']({
-    'RedHat': {
-        'pkg'            : 'postgresql-server',
-        'pkg_dev'        : 'postgresql-devel',
-        'pkg_libpq_dev'  : 'postgresql-libs',
-        'python'         : 'python-psycopg2',
-        'service'        : 'postgresql',
-        'conf_dir'       : '/var/lib/pgsql/data',
-        'create_cluster' : False,
-        'init_db'        : True,
-        'version'        : pg_version.id,
-    },
-    'Arch': {
-        'pkg'            : 'postgresql',
-        'pkg_dev'        : 'postgresql-devel',
-        'pkg_libpq_dev'  : 'postgresql-libs',
-        'python'         : 'python-psycopg2',
-        'service'        : 'postgresql',
-        'conf_dir'       : '/var/lib/pgsql/data',
-        'create_cluster' : False,
-        'init_db'        : True,
-        'version'        : pg_version.id,
-    },
-    'Debian': {
-        'pkg'            : 'postgresql',
-        'pkg_dev'        : 'postgresql-server-dev-' + pg_version.id,
-        'pkg_libpq_dev'  : 'libpq-dev',
-        'python'         : 'python-pygresql',
-        'service'        : 'postgresql',
-        'pg_hba'         : '/etc/postgresql/' + pg_version.id + '/main/pg_hba.conf',
-        'conf_dir'       : '/etc/postgresql/' + pg_version.id + '/main',
-        'create_cluster' : False,
-        'init_db'        : False,
-        'version'        : pg_version.id,
-    },
-}, merge=salt['pillar.get']('postgres:lookup')) %}
+{# get the settings for the os_family grain #}
+{% set osfam = salt['grains.filter_by'](osmap) or {} %}
+{# get the settings for the oscodename grain, os_family data will override
+    oscodename data #}
+{% set oscode = salt['grains.filter_by'](codemap,
+                                         grain='oscodename',
+                                         merge=osfam) or {} %}
+
+{# merge the os family/codename specific data over the defaults #}
+{% do defaults.postgres.update(oscode) %}
+
+{# merge the pillar:lookup dict into the defaults/os specific dict #}
+{% set lookup = salt['pillar.get']('postgres:lookup',
+                                   default=defaults.postgres,
+                                   merge=True) %}
+
+{# merge the actual postgres pillar into the above combined dict #}
+{% set postgres = salt['pillar.get']('postgres', default=lookup, merge=True) %}

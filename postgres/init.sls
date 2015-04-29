@@ -5,6 +5,10 @@ include:
   - postgres.upstream
 {% endif %}
 
+{{ postgres.conf_dir }}:
+  file.directory:
+    - makedirs: True
+
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}

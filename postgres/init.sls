@@ -95,6 +95,7 @@ postgres-user-{{ name }}:
     - createdb: {{ user.get('createdb', False) }}
     - password: {{ user.get('password', 'changethis') }}
     - user: {{ user.get('runas', 'postgres') }}
+    - superuser: {{ user.get('superuser', False) }}
     - require:
       - service: {{ postgres.service }}
 {% endfor%}

@@ -89,6 +89,10 @@ postgres-user-{{ name }}:
   postgres_user.present:
     - name: {{ name }}
     - createdb: {{ user.get('createdb', False) }}
+    - createroles: {{ user.get('createroles', False) }}
+    - createuser: {{ user.get('createuser', False) }}
+    - inherit: {{ user.get('inherit', True) }}
+    - replication: {{ user.get('replication', False) }}
     - password: {{ user.get('password', 'changethis') }}
     - user: {{ user.get('runas', 'postgres') }}
     - require:

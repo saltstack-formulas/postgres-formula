@@ -39,18 +39,6 @@ run-postgresql:
     - require:
       - pkg: {{ postgres.pkg }}
 
-{% if postgres.pkg_dev != False %}
-install-postgres-dev-package:
-  pkg.installed:
-    - name: {{ postgres.pkg_dev }}
-{% endif %}
-
-{% if postgres.pkg_libpq_dev != False %}
-install-postgres-libpq-dev:
-  pkg.installed:
-    - name: {{ postgres.pkg_libpq_dev }}
-{% endif %}
-
 {% if postgres.pkg_contrib != False %}
 install-postgres-contrib:
   pkg.installed:

@@ -16,7 +16,7 @@ def __virtual__():
     '''
     Only load this module if the postgres module is already loaded
     '''
-    if 'postgres.psql_query' in __salt__:
+    if all((salt.utils.which('psql'), HAS_ALL_IMPORTS)):
         return True
     return False
 

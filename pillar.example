@@ -12,10 +12,18 @@ postgres:
     localUser:
       password: '98ruj923h4rf'
       createdb: False
+      createroles: False
+      createuser: False
+      inherit: True
+      replication: False
 
     remoteUser:
       password: '98ruj923h4rf'
       createdb: False
+      createroles: False
+      createuser: False
+      inherit: True
+      replication: False
 
   # This section cover this ACL management of the pg_hba.conf file.
   # <type>, <database>, <user>, [host], <method>

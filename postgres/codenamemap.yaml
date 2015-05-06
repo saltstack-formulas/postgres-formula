@@ -5,5 +5,7 @@ jessie:
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
 trusty:
   version: 9.3
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main
 utopic:
   version: 9.4
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main

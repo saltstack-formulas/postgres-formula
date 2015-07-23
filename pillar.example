@@ -38,14 +38,18 @@ postgres:
       template: 'template0'
       lc_ctype: 'C.UTF-8'
       lc_collate: 'C.UTF-8'
-
+      # optional extensions to enable on database
+      extensions:
+        - uuid-ossp
     db2:
       owner: 'localUser'
       user: 'remoteUser'
       template: 'template0'
       lc_ctype: 'C.UTF-8'
       lc_collate: 'C.UTF-8'
-
+      # optional extensions to enable on database
+      extensions:
+        - postgis
   # This section will append your configuration to postgresql.conf.
   postgresconf: |
     listen_addresses = 'localhost,*'

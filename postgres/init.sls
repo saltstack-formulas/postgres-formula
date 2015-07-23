@@ -103,6 +103,16 @@ postgres-db-{{ name }}:
     - require:
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
+
+{% if db.extensions is defined %}
+{% for ext in db.extensions %}
+postgres-ext-{{ ext }}-for-db-{{ name }}:
+  postgres_extension.present:
+    - name: {{ ext }}
+    - user: {{ db.get('runas', 'postgres') }}
+    - maintenance_db: {{ name }}
+{% endfor %}
+{% endif %}
 {% endfor%}
 
 {% for name, directory in postgres.tablespaces.items()  %}

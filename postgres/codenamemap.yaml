@@ -13,3 +13,6 @@ trusty:
 utopic:
   version: 9.4
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main
+vivid:
+  version: 9.4
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main

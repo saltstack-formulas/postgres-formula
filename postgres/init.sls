@@ -5,6 +5,10 @@ include:
   - postgres.upstream
 {% endif %}
 
+{{ postgres.conf_dir }}:
+  file.directory:
+    - makedirs: True
+
 install-postgresql:
   pkg.installed:
     - name: {{ postgres.pkg }}
@@ -83,6 +87,7 @@ postgres-user-{{ name }}:
     - replication: {{ user.get('replication', False) }}
     - password: {{ user.get('password', 'changethis') }}
     - user: {{ user.get('runas', 'postgres') }}
+    - superuser: {{ user.get('superuser', False) }}
     - require:
       - service: {{ postgres.service }}
 {% endfor%}

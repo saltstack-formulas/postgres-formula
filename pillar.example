@@ -10,6 +10,7 @@ postgres:
 
   users:
     localUser:
+      ensure: present
       password: '98ruj923h4rf'
       createdb: False
       createroles: False
@@ -18,6 +19,16 @@ postgres:
       replication: False
 
     remoteUser:
+      ensure: present
+      password: '98ruj923h4rf'
+      createdb: False
+      createroles: False
+      createuser: False
+      inherit: True
+      replication: False
+
+    absentUser:
+      ensure: absent
       password: '98ruj923h4rf'
       createdb: False
       createroles: False

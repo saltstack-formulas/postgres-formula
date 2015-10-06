@@ -78,6 +78,7 @@ pg_hba.conf:
 
 {% for name, user in postgres.users.items()  %}
 postgres-user-{{ name }}:
+{% if user.get('ensure', 'present') == 'present' %}
   postgres_user.present:
     - name: {{ name }}
     - createdb: {{ user.get('createdb', False) }}
@@ -90,6 +91,13 @@ postgres-user-{{ name }}:
     - superuser: {{ user.get('superuser', False) }}
     - require:
       - service: {{ postgres.service }}
+{% else %}
+  postgres_user.absent:
+    - name: {{ name }}
+    - user: {{ user.get('runas', 'postgres') }}
+    - require:
+      - service: {{ postgres.service }}
+{% endif %}
 {% endfor%}
 
 {% for name, db in postgres.databases.items()  %}

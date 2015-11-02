@@ -52,6 +52,9 @@ postgres:
       lc_ctype: 'C.UTF-8'
       lc_collate: 'C.UTF-8'
       # optional extensions to enable on database
+      schemas:
+        uuid_ossp:
+          owner: localUser
       extensions:
         - uuid-ossp
     db2:

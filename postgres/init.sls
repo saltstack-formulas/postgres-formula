@@ -118,6 +118,20 @@ postgres-db-{{ name }}:
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 
+{% if db.schemas is defined %}
+{% for schema, schema_args in db.schemas.items() %}
+postgres-schema-{{ schema }}-for-db-{{ name }}:
+  postgres_schema.present:
+    - name: {{ schema }}
+    - dbname: {{ name }}
+{% if schema_args is not none %}
+{% for arg, value in schema_args.items() %}
+    - {{ arg }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 {% if db.extensions is defined %}
 {% for ext in db.extensions %}
 postgres-ext-{{ ext }}-for-db-{{ name }}:

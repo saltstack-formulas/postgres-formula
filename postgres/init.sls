@@ -133,12 +133,17 @@ postgres-schema-{{ schema }}-for-db-{{ name }}:
 {% endif %}
 
 {% if db.extensions is defined %}
-{% for ext in db.extensions %}
+{% for ext, ext_args in db.extensions.items() %}
 postgres-ext-{{ ext }}-for-db-{{ name }}:
   postgres_extension.present:
     - name: {{ ext }}
     - user: {{ db.get('runas', 'postgres') }}
     - maintenance_db: {{ name }}
+{% if ext_args is not none %}
+{% for arg, value in ext_args.items() %}
+    - {{ arg }}: {{ value }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endfor%}

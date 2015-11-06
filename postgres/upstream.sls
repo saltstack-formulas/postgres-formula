@@ -9,6 +9,6 @@ install-postgresql-repo:
     - keyserver: keyserver.ubuntu.com
     - file: {{ postgres.pkg_repo_file }}
     - require_in:
-      - pkg: {{ postgres.pkg }}
+      - pkg: install-postgresql
 {% endif %}
 

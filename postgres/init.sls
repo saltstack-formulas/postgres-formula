@@ -30,7 +30,7 @@ postgresql-initdb:
   cmd.run:
     - cwd: /
     - user: root
-    - name: service postgresql initdb
+    - name: {{ postgres.commands.initdb }}
     - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
     - env:
       LC_ALL: C.UTF-8
@@ -41,7 +41,7 @@ run-postgresql:
     - enable: true
     - name: {{ postgres.service }}
     - require:
-      - pkg: {{ postgres.pkg }}
+      - pkg: install-postgresql
 
 {% if postgres.pkg_contrib != False %}
 install-postgres-contrib:
@@ -60,7 +60,7 @@ postgresql-conf:
     - show_changes: True
     - append_if_not_found: True
     - watch_in:
-       - service: postgresql
+       - service: run-postgresql
 {% endif %}
 
 pg_hba.conf:
@@ -72,9 +72,9 @@ pg_hba.conf:
     - group: postgres
     - mode: 644
     - require:
-      - pkg: {{ postgres.pkg }}
+      - pkg: install-postgresql
     - watch_in:
-      - service: postgresql
+      - service: run-postgresql
 
 {% for name, user in postgres.users.items()  %}
 postgres-user-{{ name }}:
@@ -90,13 +90,13 @@ postgres-user-{{ name }}:
     - user: {{ user.get('runas', 'postgres') }}
     - superuser: {{ user.get('superuser', False) }}
     - require:
-      - service: {{ postgres.service }}
+      - service: run-postgresql
 {% else %}
   postgres_user.absent:
     - name: {{ name }}
     - user: {{ user.get('runas', 'postgres') }}
     - require:
-      - service: {{ postgres.service }}
+      - service: run-postgresql
 {% endif %}
 {% endfor%}
 
@@ -112,8 +112,9 @@ postgres-db-{{ name }}:
     - owner: {{ db.get('owner') }}
     {% endif %}
     - user: {{ db.get('runas', 'postgres') }}
-    {% if db.get('user') %}
     - require:
+        - service: run-postgresql
+    {% if db.get('user') %}
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 
@@ -144,5 +145,5 @@ postgres-tablespace-{{ name }}:
     - name: {{ name }}
     - directory: {{ directory }}
     - require:
-      - service: {{ postgres.service }}
+      - service: run-postgresql
 {% endfor%}

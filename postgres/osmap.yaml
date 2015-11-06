@@ -5,3 +5,5 @@ Arch: {}
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_libpq_dev: libpq-dev
+  commands:
+    initdb: service postgresql initdb

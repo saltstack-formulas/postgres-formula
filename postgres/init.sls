@@ -30,7 +30,7 @@ postgresql-initdb:
   cmd.run:
     - cwd: /
     - user: root
-    - name: service postgresql initdb
+    - name: {{ postgres.commands.initdb }}
     - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
     - env:
       LC_ALL: C.UTF-8

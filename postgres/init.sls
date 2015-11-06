@@ -112,8 +112,9 @@ postgres-db-{{ name }}:
     - owner: {{ db.get('owner') }}
     {% endif %}
     - user: {{ db.get('runas', 'postgres') }}
-    {% if db.get('user') %}
     - require:
+        - service: run-postgresql
+    {% if db.get('user') %}
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 

@@ -17,3 +17,5 @@ postgres:
   tablespaces: {}
   postgresconf: ""
   pg_hba.conf: salt://postgres/pg_hba.conf
+  commands:
+    initdb: service postgresql initdb

@@ -1,5 +1,7 @@
 postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
+  commands:
+    initdb: service postgresql initdb
 
   use_upstream_repo: False
 

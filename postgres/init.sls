@@ -118,13 +118,32 @@ postgres-db-{{ name }}:
         - postgres_user: postgres-user-{{ db.get('user') }}
     {% endif %}
 
+{% if db.schemas is defined %}
+{% for schema, schema_args in db.schemas.items() %}
+postgres-schema-{{ schema }}-for-db-{{ name }}:
+  postgres_schema.present:
+    - name: {{ schema }}
+    - dbname: {{ name }}
+{% if schema_args is not none %}
+{% for arg, value in schema_args.items() %}
+    - {{ arg }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
 {% if db.extensions is defined %}
-{% for ext in db.extensions %}
+{% for ext, ext_args in db.extensions.items() %}
 postgres-ext-{{ ext }}-for-db-{{ name }}:
   postgres_extension.present:
     - name: {{ ext }}
     - user: {{ db.get('runas', 'postgres') }}
     - maintenance_db: {{ name }}
+{% if ext_args is not none %}
+{% for arg, value in ext_args.items() %}
+    - {{ arg }}: {{ value }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endfor%}

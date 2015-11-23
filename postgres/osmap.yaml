@@ -5,3 +5,8 @@ Arch: {}
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_libpq_dev: libpq-dev
+Suse:
+  commands:
+    initdb: sudo -u postgres initdb /var/lib/pgsql/data
+  pkg: postgresql-server
+  pkg_client: postgresql

@@ -11,7 +11,6 @@ include:
     - user: postgres
     - group: postgres
     - dir_mode: 700
-    - clean: True
     - unless: test -f {{ postgres.conf_dir }}/PG_VERSION
 
 install-postgresql:

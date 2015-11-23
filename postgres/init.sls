@@ -43,10 +43,10 @@ run-postgresql:
     - require:
       - pkg: install-postgresql
 
-{% if postgres.pkg_contrib != False %}
-install-postgres-contrib:
+{% if postgres.pkgs_extra %}
+install-postgres-extra:
   pkg.installed:
-    - name: {{ postgres.pkg_contrib }}
+    - pkgs: {{ postgres.pkgs_extra }}
 {% endif %}
 
 {% if postgres.postgresconf %}

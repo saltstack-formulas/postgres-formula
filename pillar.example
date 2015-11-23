@@ -8,6 +8,9 @@ postgres:
   lookup:
     pkg: 'postgresql-9.3'
     pkg_client: 'postgresql-client-9.3'
+    pkgs_extra:
+      - postgresql-contrib
+      - postgresql-plpython
     pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'
 
   users:

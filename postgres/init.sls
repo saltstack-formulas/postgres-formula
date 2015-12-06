@@ -5,6 +5,12 @@ include:
   - postgres.upstream
 {% endif %}
 
+postgres:
+  user.present:
+    - system: True
+    - shell: /bin/bash
+    - home: /var/lib/postgres
+
 {{ postgres.conf_dir }}:
   file.directory:
     - makedirs: True

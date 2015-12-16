@@ -80,6 +80,19 @@ pg_hba.conf:
     - watch_in:
       - service: run-postgresql
 
+pg_ident.conf:
+  file.managed:
+    - name: {{ postgres.conf_dir }}/pg_ident.conf
+    - source: {{ postgres['pg_ident.conf'] }}
+    - template: jinja
+    - user: postgres
+    - group: postgres
+    - mode: 644
+    - require:
+      - pkg: install-postgresql
+    - watch_in:
+      - service: run-postgresql
+
 {% for name, user in postgres.users.items()  %}
 postgres-user-{{ name }}:
 {% if user.get('ensure', 'present') == 'present' %}

@@ -47,6 +47,12 @@ postgres:
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
 
+  # This section covers postgres ident maps management in pg_ident.conf file.
+  # MAPNAME  SYSTEM-USERNAME  PG-USERNAME
+  identmaps:
+    - ['mapname', 'systemuser', 'pguser']
+    - ['mapname', 'otheruser',  'pguser']
+
   databases:
     db1:
       owner: 'localUser'

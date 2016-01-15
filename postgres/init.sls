@@ -8,10 +8,6 @@ include:
 {{ postgres.conf_dir }}:
   file.directory:
     - makedirs: True
-    - user: postgres
-    - group: postgres
-    - dir_mode: 700
-    - unless: test -f {{ postgres.conf_dir }}/PG_VERSION
 
 install-postgresql:
   pkg.installed:

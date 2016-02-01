@@ -1,3 +1,8 @@
+precise:
+  version: 9.4
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main
+  conf_dir: /etc/postgresql/9.4/main
+  pkg_dev: postgresql-server-dev-9.4
 wheezy:
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
   conf_dir: /etc/postgresql/9.1/main

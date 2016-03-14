@@ -15,6 +15,7 @@ postgres:
   acls: []
   databases: {}
   tablespaces: {}
+  postgresconf_backup: True
   postgresconf: ""
   pg_hba.conf: salt://postgres/pg_hba.conf
   commands:

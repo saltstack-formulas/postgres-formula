@@ -59,6 +59,9 @@ postgresql-conf:
         {{ postgres.postgresconf|indent(8) }}
     - show_changes: True
     - append_if_not_found: True
+    {% if not postgres.postgresconf_backup|default(True) -%}
+    - backup: False
+    {% endif -%}
     - watch_in:
        - service: run-postgresql
 {% endif %}

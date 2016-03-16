@@ -29,7 +29,7 @@ create-postgresql-cluster:
 postgresql-initdb:
   cmd.run:
     - cwd: /
-    - user: root
+    - user: postgres
     - name: {{ postgres.commands.initdb }}
     - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
     - env:

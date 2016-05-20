@@ -20,3 +20,5 @@ postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
   commands:
     initdb: service postgresql initdb
+  postgres_user: postgres
+  postgres_group: postgres

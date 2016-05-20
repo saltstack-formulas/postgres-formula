@@ -7,6 +7,8 @@ include:
 
 {{ postgres.conf_dir }}:
   file.directory:
+    - user: {{ postgres.postgres_user }}
+    - group: {{ postgres.postgres_group }}
     - makedirs: True
 
 install-postgresql:
@@ -71,11 +73,12 @@ pg_hba.conf:
     - name: {{ postgres.conf_dir }}/pg_hba.conf
     - source: {{ postgres['pg_hba.conf'] }}
     - template: jinja
-    - user: postgres
-    - group: postgres
+    - user: {{ postgres.postgres_user }}
+    - group: {{ postgres.postgres_group }}
     - mode: 644
     - require:
       - pkg: install-postgresql
+    - onlyif: test -f {{ postgres.conf_dir }}/postgresql.conf
     - watch_in:
       - service: run-postgresql
 
@@ -90,14 +93,14 @@ postgres-user-{{ name }}:
     - inherit: {{ user.get('inherit', True) }}
     - replication: {{ user.get('replication', False) }}
     - password: {{ user.get('password', 'changethis') }}
-    - user: {{ user.get('runas', 'postgres') }}
+    - user: {{ user.get('runas', postgres.postgres_user) }}
     - superuser: {{ user.get('superuser', False) }}
     - require:
       - service: run-postgresql
 {% else %}
   postgres_user.absent:
     - name: {{ name }}
-    - user: {{ user.get('runas', 'postgres') }}
+    - user: {{ user.get('runas', postgres.postgres_user) }}
     - require:
       - service: run-postgresql
 {% endif %}
@@ -114,7 +117,7 @@ postgres-db-{{ name }}:
     {% if db.get('owner') %}
     - owner: {{ db.get('owner') }}
     {% endif %}
-    - user: {{ db.get('runas', 'postgres') }}
+    - user: {{ db.get('runas', postgres.postgres_user) }}
     - require:
         - service: run-postgresql
     {% if db.get('user') %}
@@ -140,7 +143,7 @@ postgres-schema-{{ schema }}-for-db-{{ name }}:
 postgres-ext-{{ ext }}-for-db-{{ name }}:
   postgres_extension.present:
     - name: {{ ext }}
-    - user: {{ db.get('runas', 'postgres') }}
+    - user: {{ db.get('runas', postgres.postgres_user) }}
     - maintenance_db: {{ name }}
 {% if ext_args is not none %}
 {% for arg, value in ext_args.items() %}

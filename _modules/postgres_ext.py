@@ -33,13 +33,6 @@ def _run_psql(cmd, runas=None, password=None, host=None, port=None, user=None):
     if runas is None:
         if not host:
             host = __salt__['config.option']('postgres.host')
-        if not host or host.startswith('/'):
-            if 'FreeBSD' in __grains__['os_family']:
-                runas = 'pgsql'
-            if 'OpenBSD' in __grains__['os_family']:
-                runas = '_postgresql'
-            else:
-                runas = 'postgres'
 
     if user is None:
         user = runas

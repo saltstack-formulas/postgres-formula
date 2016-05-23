@@ -1,7 +1,7 @@
 RedHat:
   init_db: True
   commands:
-    initdb: sudo -u postgres initdb /var/lib/pgsql/data
+    initdb: initdb /var/lib/pgsql/data
   pkg: postgresql-server
   pkg_client: postgresql
   pkg_repo: pgdg94
@@ -12,6 +12,10 @@ Debian:
   pkg_libpq_dev: libpq-dev
 Suse:
   commands:
-    initdb: sudo -u postgres initdb /var/lib/pgsql/data
+    initdb: initdb /var/lib/pgsql/data
   pkg: postgresql-server
   pkg_client: postgresql
+FreeBSD:
+  user: pgsql
+OpenBSD:
+  user: _postgresql

@@ -3,7 +3,7 @@
 {% import_yaml "postgres/codenamemap.yaml" as codemap %}
 
 {# get the settings for the os_family grain #}
-{% set osfam = salt['grains.filter_by'](osmap) or {} %}
+{% set osfam = salt['grains.filter_by'](osmap, grain='os_family') or {} %}
 {# get the settings for the oscodename grain, os_family data will override
     oscodename data #}
 {% set oscode = salt['grains.filter_by'](codemap,

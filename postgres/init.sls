@@ -32,8 +32,8 @@ postgresql-initdb:
   cmd.run:
     - cwd: /
     - user: {{ postgres.initdb_user }}
-    - name: {{ postgres.commands.initdb }} {{ postgres.initdb_args }} -D {{ postgres.runtime_dir }}
-    - unless: test -f {{ postgres.runtime_dir }}/PG_VERSION
+    - name: {{ postgres.commands.initdb }} {{ postgres.initdb_args }} -D {{ postgres.data_dir }}
+    - unless: test -f {{ postgres.data_dir }}/PG_VERSION
     - env:
       LC_ALL: C.UTF-8
 {% endif %}

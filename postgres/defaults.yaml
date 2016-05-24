@@ -7,7 +7,7 @@ postgres:
   python: python-psycopg2
   service: postgresql
   conf_dir: /var/lib/pgsql/data
-  runtime_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   create_cluster: False
   init_db: False
   version: 9.1

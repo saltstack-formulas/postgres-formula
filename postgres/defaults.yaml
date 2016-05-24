@@ -7,6 +7,7 @@ postgres:
   python: python-psycopg2
   service: postgresql
   conf_dir: /var/lib/pgsql/data
+  runtime_dir: /var/lib/pgsql/data
   create_cluster: False
   init_db: False
   version: 9.1
@@ -21,5 +22,6 @@ postgres:
   commands:
     initdb: service postgresql initdb
   initdb_user: root
+  initdb_args: --data-checksum
   user: postgres
   group: postgres

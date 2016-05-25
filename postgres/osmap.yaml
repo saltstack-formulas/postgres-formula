@@ -7,7 +7,13 @@ RedHat:
   pkg_client: postgresql
   pkg_repo: pgdg94
   repo_baseurl: http://yum.postgresql.org/9.4/redhat/rhel-$releasever-$basearch
-Arch: {}
+Arch:
+  conf_dir: /var/lib/postgres/data
+  data_dir: /var/lib/postgres/data
+  init_db: True
+  initdb_user: postgres
+  commands:
+    initdb: initdb --locale en_US.UTF8 -E UTF8 -D "/var/lib/postgres/data"
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_libpq_dev: libpq-dev

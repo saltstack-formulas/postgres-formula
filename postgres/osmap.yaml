@@ -14,6 +14,8 @@ Arch:
   initdb_user: postgres
   commands:
     initdb: initdb --locale en_US.UTF8 -E UTF8 -D "/var/lib/postgres/data"
+  pkg_client: postgresql
+  pkg_dev: postgresql
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_libpq_dev: libpq-dev

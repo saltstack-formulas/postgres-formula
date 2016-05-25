@@ -40,7 +40,8 @@ postgresql-initdb:
 
 run-postgresql:
   service.running:
-    - enable: true
+    - enable: True
+    - reload: True
     - name: {{ postgres.service }}
     - require:
       - pkg: install-postgresql

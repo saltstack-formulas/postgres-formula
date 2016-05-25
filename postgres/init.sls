@@ -10,6 +10,8 @@ include:
     - user: {{ postgres.postgres_user }}
     - group: {{ postgres.postgres_group }}
     - makedirs: True
+    - user: postgres
+    - group: postgres
 
 install-postgresql:
   pkg.installed:
@@ -31,7 +33,7 @@ create-postgresql-cluster:
 postgresql-initdb:
   cmd.run:
     - cwd: /
-    - user: root
+    - user: postgres
     - name: {{ postgres.commands.initdb }}
     - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
     - env:

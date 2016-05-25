@@ -7,6 +7,7 @@ postgres:
   python: python-psycopg2
   service: postgresql
   conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   create_cluster: False
   init_db: False
   version: 9.1
@@ -20,5 +21,7 @@ postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
   commands:
     initdb: service postgresql initdb
-  postgres_user: postgres
-  postgres_group: postgres
+  initdb_user: root
+  initdb_args: --data-checksum
+  user: postgres
+  group: postgres

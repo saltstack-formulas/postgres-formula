@@ -5,48 +5,53 @@ include:
   - postgres.upstream
 {% endif %}
 
-{{ postgres.conf_dir }}:
+postgresql-config-dir:
   file.directory:
+    - name: {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - makedirs: True
+{% if postgres.conf_dir == postgres.data_dir %}
+    - require:
+      - cmd: postgresql-cluster-prepared
+{% endif %}
 
-install-postgresql:
+postgresql-installed:
   pkg.installed:
     - name: {{ postgres.pkg }}
     - refresh: {{ postgres.use_upstream_repo }}
 
+# make sure the data directory and contents have been initialized
+postgresql-cluster-prepared:
+  cmd.run:
+    - cwd: /
 {% if postgres.create_cluster != False %}
-create-postgresql-cluster:
-  cmd.run:
-    - cwd: /
     - user: root
-    - name: pg_createcluster {{ postgres.version }} main --start
-    - unless: test -f {{ postgres.conf_dir }}/postgresql.conf
-    - env:
-      LC_ALL: C.UTF-8
+    - name: pg_createcluster {{ postgres.version }} main
+    - unless:
+      - test -f {{ postgres.conf_dir }}/environment
 {% endif %}
-
 {% if postgres.init_db != False %}
-postgresql-initdb:
-  cmd.run:
-    - cwd: /
     - user: {{ postgres.initdb_user }}
     - name: {{ postgres.commands.initdb }} {{ postgres.initdb_args }} -D {{ postgres.data_dir }}
-    - unless: test -f {{ postgres.data_dir }}/PG_VERSION
+    - unless:
+      - test -f {{ postgres.data_dir }}/PG_VERSION
+{% endif %}
+    - require:
+      - pkg: postgresql-installed
     - env:
       LC_ALL: C.UTF-8
-{% endif %}
 
-run-postgresql:
+postgresql-running:
   service.running:
     - enable: true
     - name: {{ postgres.service }}
+    - reload: true
     - require:
-      - pkg: install-postgresql
+      - cmd: postgresql-cluster-prepared
 
 {% if postgres.pkgs_extra %}
-install-postgres-extra:
+postgresql-extra-pkgs-installed:
   pkg.installed:
     - pkgs: {{ postgres.pkgs_extra }}
 {% endif %}
@@ -65,10 +70,12 @@ postgresql-conf:
     - backup: False
     {% endif -%}
     - watch_in:
-       - service: run-postgresql
+       - service: postgresql-running
+    - require:
+      - file: postgresql-config-dir
 {% endif %}
 
-pg_hba.conf:
+postgresql-pg_hba:
   file.managed:
     - name: {{ postgres.conf_dir }}/pg_hba.conf
     - source: {{ postgres['pg_hba.conf'] }}
@@ -77,14 +84,17 @@ pg_hba.conf:
     - group: {{ postgres.group }}
     - mode: 644
     - require:
-      - pkg: install-postgresql
-    - onlyif: test -f {{ postgres.conf_dir }}/postgresql.conf
+      - file: postgresql-config-dir
     - watch_in:
-      - service: run-postgresql
+      - service: postgresql-running
 
 {% for name, user in postgres.users.items()  %}
-postgres-user-{{ name }}:
-{% if user.get('ensure', 'present') == 'present' %}
+postgresql-user-{{ name }}:
+{% if user.get('ensure', 'present') == 'absent' %}
+  postgres_user.absent:
+    - name: {{ name }}
+    - user: {{ user.get('runas', postgres.user) }}
+{% else %}
   postgres_user.present:
     - name: {{ name }}
     - createdb: {{ user.get('createdb', False) }}
@@ -95,19 +105,19 @@ postgres-user-{{ name }}:
     - password: {{ user.get('password', 'changethis') }}
     - user: {{ user.get('runas', postgres.user) }}
     - superuser: {{ user.get('superuser', False) }}
-    - require:
-      - service: run-postgresql
-{% else %}
-  postgres_user.absent:
-    - name: {{ name }}
-    - user: {{ user.get('runas', postgres.user) }}
-    - require:
-      - service: run-postgresql
 {% endif %}
-{% endfor%}
+    - require:
+      - service: postgresql-running
+{% endfor %}
 
 {% for name, db in postgres.databases.items()  %}
-postgres-db-{{ name }}:
+postgresql-db-{{ name }}:
+{% if db.get('ensure', 'present') == 'absent' %}
+  postgres_database.absent:
+    - name: {{ name }}
+    - require:
+      - service: postgresql-running
+{% else %}
   postgres_database.present:
     - name: {{ name }}
     - encoding: {{ db.get('encoding', 'UTF8') }}
@@ -119,14 +129,14 @@ postgres-db-{{ name }}:
     {% endif %}
     - user: {{ db.get('runas', postgres.user) }}
     - require:
-        - service: run-postgresql
+      - service: postgresql-running
     {% if db.get('user') %}
-        - postgres_user: postgres-user-{{ db.get('user') }}
+      - postgres_user: postgresql-user-{{ db.get('user') }}
     {% endif %}
 
 {% if db.schemas is defined %}
 {% for schema, schema_args in db.schemas.items() %}
-postgres-schema-{{ schema }}-for-db-{{ name }}:
+postgresql-schema-{{ schema }}-for-db-{{ name }}:
   postgres_schema.present:
     - name: {{ schema }}
     - dbname: {{ name }}
@@ -134,13 +144,15 @@ postgres-schema-{{ schema }}-for-db-{{ name }}:
 {% for arg, value in schema_args.items() %}
     - {{ arg }}: {{ value }}
 {% endfor %}
+    - require:
+      - service: postgresql-running
 {% endif %}
 {% endfor %}
 {% endif %}
 
 {% if db.extensions is defined %}
 {% for ext, ext_args in db.extensions.items() %}
-postgres-ext-{{ ext }}-for-db-{{ name }}:
+postgresql-ext-{{ ext }}-for-db-{{ name }}:
   postgres_extension.present:
     - name: {{ ext }}
     - user: {{ db.get('runas', postgres.user) }}
@@ -149,13 +161,17 @@ postgres-ext-{{ ext }}-for-db-{{ name }}:
 {% for arg, value in ext_args.items() %}
     - {{ arg }}: {{ value }}
 {% endfor %}
+    - require:
+      - service: postgresql-running
 {% endif %}
 {% endfor %}
 {% endif %}
-{% endfor%}
+{% endif %}
+{% endfor %}
+
 
 {% for name, directory in postgres.tablespaces.items()  %}
-postgres-tablespace-dir-perms-{{ directory}}:
+postgresql-tablespace-dir-perms-{{ directory}}:
   file.directory:
     - name: {{ directory }}
     - user: postgres
@@ -165,10 +181,12 @@ postgres-tablespace-dir-perms-{{ directory}}:
       - user
       - group
 
-postgres-tablespace-{{ name }}:
+postgresql-tablespace-{{ name }}:
   postgres_tablespace.present:
     - name: {{ name }}
     - directory: {{ directory }}
     - require:
-      - service: run-postgresql
-{% endfor%}
+      - service: postgresql-running
+      - file: postgresql-tablespace-dir-perms-{{ directory}}
+{% endfor %}
+

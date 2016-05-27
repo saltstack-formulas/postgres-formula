@@ -106,6 +106,25 @@ postgres-user-{{ name }}:
 {% endif %}
 {% endfor%}
 
+{% for name, directory in postgres.tablespaces.items()  %}
+postgres-tablespace-dir-perms-{{ directory}}:
+  file.directory:
+    - name: {{ directory }}
+    - user: postgres
+    - group: postgres
+    - makedirs: True
+    - recurse:
+      - user
+      - group
+
+postgres-tablespace-{{ name }}:
+  postgres_tablespace.present:
+    - name: {{ name }}
+    - directory: {{ directory }}
+    - require:
+      - service: run-postgresql
+{% endfor%}
+
 {% for name, db in postgres.databases.items()  %}
 postgres-db-{{ name }}:
   postgres_database.present:
@@ -114,6 +133,7 @@ postgres-db-{{ name }}:
     - lc_ctype: {{ db.get('lc_ctype', 'en_US.UTF8') }}
     - lc_collate: {{ db.get('lc_collate', 'en_US.UTF8') }}
     - template: {{ db.get('template', 'template0') }}
+    - tablespace: {{ db.get('tablespace', 'pg_default') }}
     {% if db.get('owner') %}
     - owner: {{ db.get('owner') }}
     {% endif %}
@@ -152,23 +172,4 @@ postgres-ext-{{ ext }}-for-db-{{ name }}:
 {% endif %}
 {% endfor %}
 {% endif %}
-{% endfor%}
-
-{% for name, directory in postgres.tablespaces.items()  %}
-postgres-tablespace-dir-perms-{{ directory}}:
-  file.directory:
-    - name: {{ directory }}
-    - user: postgres
-    - group: postgres
-    - makedirs: True
-    - recurse:
-      - user
-      - group
-
-postgres-tablespace-{{ name }}:
-  postgres_tablespace.present:
-    - name: {{ name }}
-    - directory: {{ directory }}
-    - require:
-      - service: run-postgresql
 {% endfor%}

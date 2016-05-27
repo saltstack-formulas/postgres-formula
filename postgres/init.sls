@@ -5,27 +5,25 @@ include:
   - postgres.upstream
 {% endif %}
 
+postgresql-installed:
+  pkg.installed:
+    - name: {{ postgres.pkg }}
+    - refresh: {{ postgres.use_upstream_repo }}
+
 postgresql-config-dir:
   file.directory:
     - name: {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - makedirs: True
-{% if postgres.conf_dir == postgres.data_dir %}
     - require:
-      - cmd: postgresql-cluster-prepared
-{% endif %}
-
-postgresql-installed:
-  pkg.installed:
-    - name: {{ postgres.pkg }}
-    - refresh: {{ postgres.use_upstream_repo }}
+      - cmd: postgresql-installed
 
 # make sure the data directory and contents have been initialized
+{% if postgres.create_cluster != False %}
 postgresql-cluster-prepared:
   cmd.run:
     - cwd: /
-{% if postgres.create_cluster != False %}
     - user: root
     - name: pg_createcluster {{ postgres.version }} main
     - unless:
@@ -48,8 +46,10 @@ postgresql-running:
     - reload: True
     - name: {{ postgres.service }}
     - reload: true
+    {% if postgres.create_cluster != False %}
     - require:
       - cmd: postgresql-cluster-prepared
+    {% endif %}
 
 {% if postgres.pkgs_extra %}
 postgresql-extra-pkgs-installed:

@@ -6,9 +6,9 @@ driver:
 
 provisioner:
   name: salt_solo
+  data_path: test/shared
+  salt_install: bootstrap
   formula: postgres
-  pillars-from-files:
-    postgres.sls: pillar.example
   pillars:
     top.sls:
       base:
@@ -19,8 +19,44 @@ provisioner:
       "*":
         - postgres
 
-platforms:
-  - name: ubuntu-14.04
-
 suites:
   - name: default
+
+platforms:
+  - name: ubuntu-14.04
+    provisioner:
+      pillars:
+        postgres.sls:
+          postgres:
+            lookup:
+              pkgs_extra:
+                - 'postgresql-contrib' 
+              pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'
+            users:
+              remoteUser:
+                ensure: present
+                password: '98ruj923h4rf'
+            databases:
+              db1:
+                owner: 'remoteUser'
+                tablespace: 'my_space'
+            tablespaces:
+              my_space: '/srv/my_tablespace'
+
+  - name: centos-7
+    driver_config:
+      box: rchrd/centos-7-x64-salt
+    provisioner:
+      pillars:
+        postgres.sls:
+          postgres:
+            lookup:
+              pkg: 'postgresql-server'
+              pkg_client: 'postgresql-client'
+              pg_hba: '/etc/postgresql/9.2/main/pg_hba.conf'
+            commands:
+              initdb: 'postgresql-setup initdb'
+            initdb_args: ''
+            initdb_user: 'root'
+            tablespaces:
+              my_space: '/srv/my_tablespace'

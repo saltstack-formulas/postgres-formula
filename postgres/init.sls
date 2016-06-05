@@ -1,3 +1,6 @@
+# -*- mode: yaml  -*-
+# vim: syntax=yaml:sw=2
+
 {% from "postgres/map.jinja" import postgres with context %}
 
 {% if postgres.use_upstream_repo %}
@@ -11,8 +14,9 @@ postgresql-config-dir:
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - makedirs: True
-{% if postgres.conf_dir == postgres.data_dir %}
     - require:
+      - pkg: postgresql-installed
+{% if postgres.conf_dir == postgres.data_dir %}
       - cmd: postgresql-cluster-prepared
 {% endif %}
 

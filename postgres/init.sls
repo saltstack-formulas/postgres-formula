@@ -28,34 +28,18 @@ postgresql-installed:
 # make sure the data directory and contents have been initialized
 postgresql-cluster-prepared:
   cmd.run:
-    - cwd: /
-{% if postgres.create_cluster != False %}
-    - user: root
-    - name: pg_createcluster {{ postgres.version }} main
-{% else %}
-    - name: test -f {{ postgres.conf_dir }}/environment
-{% endif %}
-    - unless:
-      - test -f {{ postgres.conf_dir }}/environment
-    - require:
-      - pkg: postgresql-installed
-    - env:
-      LC_ALL: C.UTF-8
-
-postgresql-db-prepared:
-  cmd.run:
-{% if postgres.init_db != False %}
-    - user: {{ postgres.initdb_user }}
+    {% if postgres.initdb %}
     - name: {{ postgres.commands.initdb }} {{ postgres.initdb_args }} -D {{ postgres.data_dir }}
-
-{% else %}
-    - name: test -f {{ postgres.data_dir }}/PG_VERSION
-{% endif %}
+    {% elif grains.os_family == 'Debian' %}
+    - name: pg_createcluster {{ postgres.version }} main
+    {# else: TODO #}
+    {% endif %}
+    - cwd: /
+    - user: {{ postgres.initdb_user }}
     - unless:
       - test -f {{ postgres.data_dir }}/PG_VERSION
     - require:
       - pkg: postgresql-installed
-      - cmd: postgresql-cluster-prepared
     - env:
       LC_ALL: C.UTF-8
 
@@ -67,7 +51,6 @@ postgresql-running:
     - reload: true
     - require:
       - cmd: postgresql-cluster-prepared
-      - cmd: postgresql-db-prepared
 
 {% if postgres.pkgs_extra %}
 postgresql-extra-pkgs-installed:

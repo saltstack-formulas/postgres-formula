@@ -8,8 +8,6 @@ postgres:
   service: postgresql
   conf_dir: /var/lib/pgsql/data
   data_dir: /var/lib/pgsql/data
-  create_cluster: False
-  init_db: False
   version: 9.1
   use_upstream_repo: False
   users: {}
@@ -19,9 +17,10 @@ postgres:
   postgresconf_backup: True
   postgresconf: ""
   pg_hba.conf: salt://postgres/pg_hba.conf
-  commands:
-    initdb: service postgresql initdb
+  initdb: True
   initdb_user: root
   initdb_args: --data-checksum
+  commands:
+    initdb: service postgresql initdb
   user: postgres
   group: postgres

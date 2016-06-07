@@ -1,8 +1,7 @@
 RedHat:
-  init_db: True
+  initdb_user: postgres
   commands:
     initdb: initdb
-  initdb_user: postgres
   pkg: postgresql-server
   pkg_client: postgresql
   pkg_repo: pgdg94
@@ -10,20 +9,21 @@ RedHat:
 Arch:
   conf_dir: /var/lib/postgres/data
   data_dir: /var/lib/postgres/data
-  init_db: True
   initdb_user: postgres
+  initdb_args: --locale en_US.UTF8 -E UTF8
   commands:
-    initdb: initdb --locale en_US.UTF8 -E UTF8 -D "/var/lib/postgres/data"
+    initdb: initdb
   pkg_client: postgresql
   pkg_dev: postgresql
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
+  pkg_dev: postgresql-server-dev-all
   pkg_libpq_dev: libpq-dev
+  initdb: False
 Suse:
-  init_db: True
+  initdb_user: postgres
   commands:
     initdb: initdb
-  initdb_user: postgres
   pkg: postgresql-server
   pkg_client: postgresql
 FreeBSD:

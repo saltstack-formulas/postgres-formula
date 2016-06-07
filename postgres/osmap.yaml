@@ -10,8 +10,9 @@ Arch:
   conf_dir: /var/lib/postgres/data
   data_dir: /var/lib/postgres/data
   initdb_user: postgres
+  initdb_args: --locale en_US.UTF8 -E UTF8
   commands:
-    initdb: initdb --locale en_US.UTF8 -E UTF8 -D "/var/lib/postgres/data"
+    initdb: initdb
   pkg_client: postgresql
   pkg_dev: postgresql
 Debian:

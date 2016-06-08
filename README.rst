@@ -18,11 +18,6 @@ Available states
 
 Installs the postgresql package.
 
-``postgres.python``
--------------------
-
-Installs the postgresql python module
-
 ``postgres.client``
 -------------------
 

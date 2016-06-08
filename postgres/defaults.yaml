@@ -4,7 +4,6 @@ postgres:
   pkg_libpq_dev: postgresql-libs
   pkg_client: postgresql-client
   pkgs_extra:
-  python: python-psycopg2
   service: postgresql
   conf_dir: /var/lib/pgsql/data
   data_dir: /var/lib/pgsql/data

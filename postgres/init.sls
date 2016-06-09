@@ -154,8 +154,11 @@ postgresql-db-{{ name }}:
     - user: {{ db.get('runas', postgres.user) }}
     - require:
       - service: postgresql-running
-    {% if db.get('user') %}
-      - postgres_user: postgresql-user-{{ db.get('user') }}
+    {% if db.get('tablespace') %}
+      - postgres_tablespace: postgresql-tablespace-{{ name }}
+    {% endif %}
+    {% if db.get('owner') %}
+      - postgres_user: postgresql-user-{{ db.get('owner') }}
     {% endif %}
 
 {% if db.schemas is defined %}

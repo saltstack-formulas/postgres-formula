@@ -1,39 +1,19 @@
-precise:
-  version: 9.4
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main
-  conf_dir: /etc/postgresql/9.4/main
-  data_dir: /var/lib/postgresql/9.4/main
-wheezy:
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
-  conf_dir: /etc/postgresql/9.1/main
-  data_dir: /var/lib/postgresql/9.1/main
-jessie:
-  version: 9.4
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
-  conf_dir: /etc/postgresql/9.4/main
-  data_dir: /var/lib/postgresql/9.4/main
-trusty:
-  version: 9.3
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main
-  conf_dir: /etc/postgresql/9.3/main
-  data_dir: /var/lib/postgresql/9.3/main
-utopic:
-  version: 9.4
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main
-  conf_dir: /etc/postgresql/9.4/main
-  data_dir: /var/lib/postgresql/9.4/main
-vivid:
-  version: 9.4
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ utopic-pgdg main
-  conf_dir: /etc/postgresql/9.4/main
-  data_dir: /var/lib/postgresql/9.4/main
-wily:
-  version: 9.4
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ wily-pgdg main
-  conf_dir: /etc/postgresql/9.4/main
-  data_dir: /var/lib/postgresql/9.4/main
-xenial:
-  version: 9.5
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main
-  conf_dir: /etc/postgresql/9.5/main
-  data_dir: /var/lib/postgresql/9.5/main
+{%- macro ubuntu_block(name, version) %}
+ {{ name }}:
+   version: {{ version }}
+   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
+   conf_dir: /etc/postgresql/{{ version }}/main
+   data_dir: /var/lib/postgresql/{{ version }}/main
+ {%- endmacro %}
+
+ {{ ubuntu_block('wheezy', 9.1) }}
+
+ {{ ubuntu_block('trusty', 9.3) }}
+
+ {{ ubuntu_block('precise', 9.4) }}
+ {{ ubuntu_block('jessie', 9.4) }}
+ {{ ubuntu_block('utopic', 9.4) }}
+ {{ ubuntu_block('vivid', 9.4) }}
+ {{ ubuntu_block('wily', 9.4) }}
+
+ {{ ubuntu_block('xenial', 9.5) }}

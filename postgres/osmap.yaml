@@ -1,29 +1,37 @@
 RedHat:
-  initdb_user: postgres
-  commands:
-    initdb: initdb
   pkg: postgresql-server
   pkg_client: postgresql
   pkg_repo: pgdg94
   repo_baseurl: http://yum.postgresql.org/9.4/redhat/rhel-$releasever-$basearch
+  prepare_cluster:
+    test: test -f /var/lib/pgsql/data/PG_VERSION
+    env:
+      LC_ALL: C.UTF-8
+{% if grains['os_family'] == 'RedHat' %}
+{% if grains['osmajorrelease'] >= 7 %}
+      PGSETUP_INITDB_OPTIONS:
+    user: root
+    command: postgresql-setup initdb
+{% else %}
+    user: postgres
+    command: initdb -D /var/lib/pgsql/data
+{% endif %}
+{% endif %}
 Arch:
   conf_dir: /var/lib/postgres/data
-  data_dir: /var/lib/postgres/data
-  initdb_user: postgres
-  initdb_args: --locale en_US.UTF8 -E UTF8
-  commands:
-    initdb: initdb
+  prepare_cluster:
+    user: postgres
+    command: initdb -D /var/lib/postgresql/data
+    test: test -f /var/lib/postgres/data/PG_VERSION
+    env:
+      LC_ALL: C.UTF-8
   pkg_client: postgresql
   pkg_dev: postgresql
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_dev: postgresql-server-dev-all
   pkg_libpq_dev: libpq-dev
-  initdb: False
 Suse:
-  initdb_user: postgres
-  commands:
-    initdb: initdb
   pkg: postgresql-server
   pkg_client: postgresql
 FreeBSD:

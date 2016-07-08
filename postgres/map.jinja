@@ -1,22 +1,22 @@
 {% import_yaml "postgres/defaults.yaml" as defaults %}
 {% import_yaml "postgres/osmap.yaml" as osmap %}
-{% import_yaml "postgres/codenamemap.yaml" as codemap %}
+{% import_yaml "postgres/codenamemap.yaml" as oscodenamemap %}
+{% import_yaml "postgres/osfingermap.yaml" as osfingermap %}
 
-{# get the settings for the os_family grain #}
-{% set osfam = salt['grains.filter_by'](osmap, grain='os_family') or {} %}
-{# get the settings for the oscodename grain, os_family data will override
-    oscodename data #}
-{% set oscode = salt['grains.filter_by'](codemap,
-                                         grain='oscodename',
-                                         merge=osfam) or {} %}
+{% set _postgres = salt['grains.filter_by'](
+    osmap,
+    grain='os_family',
+    merge=salt['grains.filter_by'](
+        oscodenamemap,
+        grain='oscodename',
+        merge=salt['grains.filter_by'](
+            osfingermap,
+            grain='osfinger',
+            merge=salt['pillar.get']('postgres', {})
+        )
+    )
+) %}
 
-{# merge the os family/codename specific data over the defaults #}
-{% do defaults.postgres.update(oscode) %}
+{% do defaults.postgres.update(_postgres) %}
 
-{# merge the pillar:lookup dict into the defaults/os specific dict #}
-{% set lookup = salt['pillar.get']('postgres:lookup',
-                                   default=defaults.postgres,
-                                   merge=True) %}
-
-{# merge the actual postgres pillar into the above combined dict #}
-{% set postgres = salt['pillar.get']('postgres', default=lookup, merge=True) %}
+{% set postgres = defaults.postgres %}

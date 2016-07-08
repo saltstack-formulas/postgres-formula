@@ -1,17 +1,19 @@
 postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
-  commands:
-    initdb: service postgresql initdb
+  prepare_cluster:
+    user: root
+    command: service postgresql initdb
+    test: test -f /path/to/some/file
+    env:
+      LC_ALL: C.UTF-8
 
   use_upstream_repo: False
 
-  lookup:
-    pkg: 'postgresql-9.3'
-    pkg_client: 'postgresql-client-9.3'
-    pkgs_extra:
-      - postgresql-contrib
-      - postgresql-plpython
-    pg_hba: '/etc/postgresql/9.3/main/pg_hba.conf'
+  pkg: 'postgresql-9.3'
+  pkg_client: 'postgresql-client-9.3'
+  pkgs_extra:
+    - postgresql-contrib
+    - postgresql-plpython
 
   users:
     localUser:

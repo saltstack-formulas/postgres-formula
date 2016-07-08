@@ -1,19 +1,19 @@
 {%- macro ubuntu_block(name, version) %}
- {{ name }}:
-   version: {{ version }}
-   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
-   conf_dir: /etc/postgresql/{{ version }}/main
-   data_dir: /var/lib/postgresql/{{ version }}/main
- {%- endmacro %}
+{{ name }}:
+  version: {{ version }}
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
+  conf_dir: /etc/postgresql/{{ version }}/main
+  data_dir: /var/lib/postgresql/{{ version }}/main
+{%- endmacro %}
 
- {{ ubuntu_block('wheezy', 9.1) }}
+{{ ubuntu_block('wheezy', 9.1) }}
 
- {{ ubuntu_block('trusty', 9.3) }}
+{{ ubuntu_block('trusty', 9.3) }}
 
- {{ ubuntu_block('precise', 9.4) }}
- {{ ubuntu_block('jessie', 9.4) }}
- {{ ubuntu_block('utopic', 9.4) }}
- {{ ubuntu_block('vivid', 9.4) }}
- {{ ubuntu_block('wily', 9.4) }}
+{{ ubuntu_block('precise', 9.4) }}
+{{ ubuntu_block('jessie', 9.4) }}
+{{ ubuntu_block('utopic', 9.4) }}
+{{ ubuntu_block('vivid', 9.4) }}
+{{ ubuntu_block('wily', 9.4) }}
 
- {{ ubuntu_block('xenial', 9.5) }}
+{{ ubuntu_block('xenial', 9.5) }}

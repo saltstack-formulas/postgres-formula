@@ -174,7 +174,7 @@ def tablespace_exists(name, user=None, host=None, port=None, maintenance_db=None
     return name in tablespaces
 
 
-def tablespace_create(name, location, user=None, host=None, port=None,
+def tablespace_create(name, location, owner=None, user=None, host=None, port=None,
               maintenance_db=None, password=None, runas=None):
     '''
     Adds a tablespace to the Postgres server.
@@ -186,6 +186,8 @@ def tablespace_create(name, location, user=None, host=None, port=None,
         salt '*' postgres_ext.tablespace_create tablespacename '/path/datadir'
     '''
     query = 'CREATE TABLESPACE {0} LOCATION \'{1}\''.format(name, location)
+    if owner is not None:
+        query += ' OWNER \'{1}\''.format(owner)
 
     # Execute the command
     ret = _psql_prepare_and_run(['-c', query],
@@ -252,3 +254,4 @@ def tablespace_remove(name, user=None, host=None, port=None,
                                 maintenance_db=maintenance_db,
                                 password=password)
     return ret['retcode'] == 0
+

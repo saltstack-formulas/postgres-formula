@@ -23,7 +23,11 @@ postgresql-config-dir:
 postgresql-installed:
   pkg.installed:
     - name: {{ postgres.pkg }}
+  {% if postgres.use_upstream_repo %}
     - refresh: {{ postgres.use_upstream_repo }}
+    - require:
+      - pkgrepo: install-postgresql-repo
+  {% endif %}
 
 # make sure the data directory and contents have been initialized
 postgresql-cluster-prepared:

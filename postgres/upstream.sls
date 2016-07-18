@@ -8,8 +8,8 @@ install-postgresql-repo:
     - keyid: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
     - keyserver: keyserver.ubuntu.com
     - file: {{ postgres.pkg_repo_file }}
-    - require_in:
-      - pkg: install-postgresql
+#    - require_in:
+#      - pkg: install-postgresql
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' %}

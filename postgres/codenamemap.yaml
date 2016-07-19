@@ -6,8 +6,7 @@
     command: pg_createcluster {{ version }} main
     test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf
     user: root
-    env:
-      LC_ALL: C.UTF-8
+    env: {}
 {%- endmacro %}
 
 {{ ubuntu_block('wheezy', 9.1) }}

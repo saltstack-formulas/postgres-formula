@@ -5,11 +5,9 @@ RedHat:
   repo_baseurl: http://yum.postgresql.org/9.4/redhat/rhel-$releasever-$basearch
   prepare_cluster:
     test: test -f /var/lib/pgsql/data/PG_VERSION
-    env:
-      LC_ALL: C.UTF-8
+    env: {}
 {% if grains['os_family'] == 'RedHat' %}
 {% if grains['osmajorrelease'] >= 7 %}
-      PGSETUP_INITDB_OPTIONS:
     user: root
     command: postgresql-setup initdb
 {% else %}
@@ -23,8 +21,7 @@ Arch:
     user: postgres
     command: initdb -D /var/lib/postgresql/data
     test: test -f /var/lib/postgres/data/PG_VERSION
-    env:
-      LC_ALL: C.UTF-8
+    env: {}
   pkg_client: postgresql
   pkg_dev: postgresql
 Debian:

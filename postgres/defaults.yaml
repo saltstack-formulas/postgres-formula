@@ -26,6 +26,5 @@ postgres:
     user: root
     command: service postgresql initdb
     test: test -f /var/lib/pgsql/data/PG_VERSION
-    env:
-      LC_ALL: C.UTF-8
+    env: {}
 

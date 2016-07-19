@@ -157,9 +157,15 @@ postgresql-db-{{ name }}:
 {% else %}
   postgres_database.present:
     - name: {{ name }}
-    - encoding: {{ db.get('encoding', 'UTF8') }}
-    - lc_ctype: {{ db.get('lc_ctype', 'en_US.UTF8') }}
-    - lc_collate: {{ db.get('lc_collate', 'en_US.UTF8') }}
+    {% if 'encoding' in db %}
+    - encoding: {{ db.encoding }}
+    {% endif %}
+    {% if 'lc_ctype' in db %}
+    - lc_ctype: {{ db.lc_type }}
+    {% endif %}
+    {% if 'lc_collate' in db %}
+    - lc_collate: {{ db.lc_collate }}
+    {% endif %}
     - template: {{ db.get('template', 'template0') }}
     - tablespace: {{ db.get('tablespace', 'pg_default') }}
     {% if db.get('owner') %}

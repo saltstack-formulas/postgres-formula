@@ -5,7 +5,7 @@ postgres:
     command: service postgresql initdb
     test: test -f /path/to/some/file
     env:
-      LC_ALL: C.UTF-8
+      LC_ALL: en_US.UTF-8
 
   use_upstream_repo: False
 
@@ -57,8 +57,8 @@ postgres:
       owner: 'localUser'
       user: 'localUser'
       template: 'template0'
-      lc_ctype: 'C.UTF-8'
-      lc_collate: 'C.UTF-8'
+      lc_ctype: 'en_US.UTF-8'
+      lc_collate: 'en_US.UTF-8'
       # optional schemas to enable on database
       schemas:
         uuid_ossp:
@@ -71,8 +71,8 @@ postgres:
       owner: 'localUser'
       user: 'remoteUser'
       template: 'template0'
-      lc_ctype: 'C.UTF-8'
-      lc_collate: 'C.UTF-8'
+      lc_ctype: 'en_US.UTF-8'
+      lc_collate: 'en_US.UTF-8'
       tablespace: 'my_space'
       # optional extensions to enable on database
       # extensions:

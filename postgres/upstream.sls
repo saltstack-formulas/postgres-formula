@@ -9,7 +9,7 @@ install-postgresql-repo:
     - keyserver: keyserver.ubuntu.com
     - file: {{ postgres.pkg_repo_file }}
     - require_in:
-      - pkg: install-postgresql
+      - pkg: postgresql-installed
 {% endif %}
 
 {% if grains['os_family'] == 'RedHat' %}

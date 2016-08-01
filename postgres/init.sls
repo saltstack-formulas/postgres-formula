@@ -16,9 +16,7 @@ postgresql-config-dir:
     - makedirs: True
     - require:
       - pkg: postgresql-installed
-{% if postgres.conf_dir == postgres.data_dir %}
       - cmd: postgresql-cluster-prepared
-{% endif %}
 
 postgresql-installed:
   pkg.installed:
@@ -28,20 +26,17 @@ postgresql-installed:
 # make sure the data directory and contents have been initialized
 postgresql-cluster-prepared:
   cmd.run:
-    {% if postgres.initdb %}
-    - name: {{ postgres.commands.initdb }} {{ postgres.initdb_args }} -D {{ postgres.data_dir }}
-    {% elif grains.os_family == 'Debian' %}
-    - name: pg_createcluster {{ postgres.version }} main
-    {# else: TODO #}
-    {% endif %}
     - cwd: /
-    - user: {{ postgres.initdb_user }}
+    - name: {{ postgres.prepare_cluster.command }}
+    - user: {{ postgres.prepare_cluster.user }}
     - unless:
-      - test -f {{ postgres.data_dir }}/PG_VERSION
+      - {{ postgres.prepare_cluster.test }}
     - require:
       - pkg: postgresql-installed
     - env:
-      LC_ALL: C.UTF-8
+{% for name, value in postgres.prepare_cluster.env.items() %}
+        {{ name }}: {{ value }}
+{% endfor %}
 
 postgresql-running:
   service.running:
@@ -96,6 +91,9 @@ postgresql-user-{{ name }}:
   postgres_user.absent:
     - name: {{ name }}
     - user: {{ user.get('runas', postgres.user) }}
+{% if user.get('user') %}
+    - db_user: {{ user.user }}
+{% endif %}
 {% else %}
   postgres_user.present:
     - name: {{ name }}
@@ -104,20 +102,26 @@ postgresql-user-{{ name }}:
     - createuser: {{ user.get('createuser', False) }}
     - inherit: {{ user.get('inherit', True) }}
     - replication: {{ user.get('replication', False) }}
-    - password: {{ user.get('password', 'changethis') }}
-    - user: {{ user.get('runas', postgres.user) }}
+    - password: {{ user.password }}
     - superuser: {{ user.get('superuser', False) }}
+    - user: {{ user.get('runas', postgres.user) }}
+{% if user.get('user') %}
+    - db_user: {{ user.get('runas', postgres.user) }}
+{% endif %}
 {% endif %}
     - require:
       - service: postgresql-running
+{% if user.get('user') %}
+      - postgres_user: postgresql-user-{{ user.user }}
+{% endif %}
 {% endfor %}
 
-{% for name, directory in postgres.tablespaces.items()  %}
-postgresql-tablespace-dir-perms-{{ directory}}:
+{% for name, tblspace in postgres.tablespaces.items()  %}
+postgresql-tablespace-dir-perms-{{ tblspace.directory}}:
   file.directory:
-    - name: {{ directory }}
-    - user: postgres
-    - group: postgres
+    - name: {{ tblspace.directory }}
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
     - makedirs: True
     - recurse:
       - user
@@ -126,11 +130,17 @@ postgresql-tablespace-dir-perms-{{ directory}}:
 postgresql-tablespace-{{ name }}:
   postgres_tablespace.present:
     - name: {{ name }}
-    - directory: {{ directory }}
-    - user: postgres
+    - directory: {{ tblspace.directory }}
+    - user: {{ tblspace.get('runas', postgres.user) }}
+{% if tblspace.get('user') %}
+    - db_user: {{ tblspace.user }}
+{% endif %}
+{% if tblspace.get('owner') %}
+    - owner: {{ tblspace.owner }}
+{% endif %}
     - require:
       - service: postgresql-running
-      - file: postgresql-tablespace-dir-perms-{{ directory}}
+      - file: postgresql-tablespace-dir-perms-{{ tblspace.directory}}
 {% endfor %}
 
 {% for name, db in postgres.databases.items()  %}
@@ -138,58 +148,115 @@ postgresql-db-{{ name }}:
 {% if db.get('ensure', 'present') == 'absent' %}
   postgres_database.absent:
     - name: {{ name }}
+    - user: {{ db.get('runas', postgres.user) }}
+{% if db.get('user') %}
+    - db_user: {{ db.user }}
+{% endif %}
     - require:
       - service: postgresql-running
 {% else %}
   postgres_database.present:
     - name: {{ name }}
-    - encoding: {{ db.get('encoding', 'UTF8') }}
-    - lc_ctype: {{ db.get('lc_ctype', 'en_US.UTF8') }}
-    - lc_collate: {{ db.get('lc_collate', 'en_US.UTF8') }}
+    {% if 'encoding' in db %}
+    - encoding: {{ db.encoding }}
+    {% endif %}
+    {% if 'lc_ctype' in db %}
+    - lc_ctype: {{ db.lc_type }}
+    {% endif %}
+    {% if 'lc_collate' in db %}
+    - lc_collate: {{ db.lc_collate }}
+    {% endif %}
     - template: {{ db.get('template', 'template0') }}
     - tablespace: {{ db.get('tablespace', 'pg_default') }}
     {% if db.get('owner') %}
-    - owner: {{ db.get('owner') }}
+    - owner: {{ db.owner }}
     {% endif %}
     - user: {{ db.get('runas', postgres.user) }}
+    {% if db.get('user') %}
+    - db_user: {{ db.user }}
+    {% endif %}
     - require:
       - service: postgresql-running
     {% if db.get('user') %}
-      - postgres_user: postgresql-user-{{ db.get('user') }}
+      - postgres_user: postgresql-user-{{ db.user }}
+    {% endif %}
+    {% if db.get('owner') %}
+      - postgres_user: postgresql-user-{{ db.owner }}
+    {% endif %}
+    {% if db.get('tablespace') %}
+      - postgres_tablespace: postgresql-tablespace-{{ name }}
     {% endif %}
 
-{% if db.schemas is defined %}
-{% for schema, schema_args in db.schemas.items() %}
-postgresql-schema-{{ schema }}-for-db-{{ name }}:
+{# NOTE: postgres_schema doesn't have a 'runas' equiv. at all #}
+{% for schema_name, schema in db.get('schemas', dict()).items() %}
+postgresql-schema-{{ schema_name }}-for-db-{{ name }}:
+{% if schema.get('ensure', 'present') == 'absent' %}
+  postgres_schema.absent:
+    - name: {{ schema_name }}
+    {% if schema.get('user') %}
+    - db_user: {{ schema.user }}
+    {% endif %}
+    - require:
+      - service: postgresql-running
+{% else %}
   postgres_schema.present:
-    - name: {{ schema }}
+    - name: {{ schema_name }}
     - dbname: {{ name }}
-{% if schema_args is not none %}
-{% for arg, value in schema_args.items() %}
-    - {{ arg }}: {{ value }}
-{% endfor %}
+    {% if schema.get('user') %}
+    - db_user: {{ schema.user }}
+    {% endif %}
+{% if schema.get('owner') %}
+    - owner: {{ schema.owner }}
+{% endif %}
     - require:
       - service: postgresql-running
+      - postgres_database: postgresql-db-{{ name }}
+    {% if schema.get('user') %}
+      - postgres_user: postgresql-user-{{ schema.user }}
+    {% endif %}
+    {% if schema.get('owner') %}
+      - postgres_user: postgresql-user-{{ schema.owner }}
+    {% endif %}
 {% endif %}
 {% endfor %}
-{% endif %}
 
-{% if db.extensions is defined %}
-{% for ext, ext_args in db.extensions.items() %}
-postgresql-ext-{{ ext }}-for-db-{{ name }}:
-  postgres_extension.present:
-    - name: {{ ext }}
-    - user: {{ db.get('runas', postgres.user) }}
-    - maintenance_db: {{ name }}
-{% if ext_args is not none %}
-{% for arg, value in ext_args.items() %}
-    - {{ arg }}: {{ value }}
-{% endfor %}
+{% for ext_name, ext in db.get('extensions', dict()).items() %}
+postgresql-ext-{{ ext_name }}-for-db-{{ name }}:
+  {% if ext.get('ensure', 'present') == 'absent' %}
+  postgres_extension.absent:
+    - name: {{ ext_name }}
+    - user: {{ ext.get('runas', postgres.user) }}
+    {% if ext.get('user') %}
+    - db_user: {{ ext.user }}
+    {% endif %}
     - require:
       - service: postgresql-running
-{% endif %}
+  {% else %}
+  postgres_extension.present:
+    - name: {{ ext_name }}
+    - user: {{ ext.get('runas', postgres.user) }}
+    {% if ext.get('user') %}
+    - db_user: {{ ext.user }}
+    {% endif %}
+    {% if ext.get('version') %}
+    - ext_version: {{ ext.version }}
+    {% endif %}
+    {% if ext.get('schema') %}
+    - schema: {{ ext.schema }}
+    {% endif %}
+    - maintenance_db: {{ name }}
+    - require:
+      - service: postgresql-running
+      - postgres_database: postgresql-db-{{ name }}
+    {% if ext.get('user') %}
+      - postgres_user: postgresql-user-{{ ext.user }}
+    {% endif %}
+    {% if ext.get('schema') %}
+      - postgres_schema: postgresql-schema-{{ ext.schema }}
+    {% endif %}
+  {% endif %}
 {% endfor %}
-{% endif %}
+
 {% endif %}
 {% endfor %}
 

@@ -1,9 +1,12 @@
 {%- macro ubuntu_block(name, version) %}
 {{ name }}:
-  version: {{ version }}
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
   conf_dir: /etc/postgresql/{{ version }}/main
-  data_dir: /var/lib/postgresql/{{ version }}/main
+  prepare_cluster:
+    command: pg_createcluster {{ version }} main
+    test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf
+    user: root
+    env: {}
 {%- endmacro %}
 
 {{ ubuntu_block('wheezy', 9.1) }}

@@ -174,7 +174,7 @@ def tablespace_exists(name, user=None, host=None, port=None, maintenance_db=None
     return name in tablespaces
 
 
-def tablespace_create(name, location, user=None, host=None, port=None,
+def tablespace_create(name, location, owner=None, user=None, host=None, port=None,
               maintenance_db=None, password=None, runas=None):
     '''
     Adds a tablespace to the Postgres server.
@@ -185,7 +185,9 @@ def tablespace_create(name, location, user=None, host=None, port=None,
 
         salt '*' postgres_ext.tablespace_create tablespacename '/path/datadir'
     '''
-    query = 'CREATE TABLESPACE {0} LOCATION \'{1}\''.format(name, location)
+    query = 'CREATE TABLESPACE "{0}" LOCATION \'{1}\''.format(name, location)
+    if owner is not None:
+        query += ' OWNER "{1}"'.format(owner)
 
     # Execute the command
     ret = _psql_prepare_and_run(['-c', query],
@@ -212,16 +214,16 @@ def tablespace_alter(name, user=None, host=None, port=None, maintenance_db=None,
     queries = []
 
     if new_name:
-        queries.append('ALTER TABLESPACE {} RENAME TO {}'.format(
+        queries.append('ALTER TABLESPACE "{}" RENAME TO "{}"'.format(
                        name, new_name))
     if new_owner:
-        queries.append('ALTER TABLESPACE {} OWNER TO {}'.format(
+        queries.append('ALTER TABLESPACE "{}" OWNER TO "{}"'.format(
                        name, new_owner))
     if set_option:
-        queries.append('ALTER TABLESPACE {} SET ({} = {})'.format(
+        queries.append('ALTER TABLESPACE "{}" SET ({} = {})'.format(
                        name, set_option[0], set_option[1]))
     if reset_option:
-        queries.append('ALTER TABLESPACE {} RESET ({})'.format(
+        queries.append('ALTER TABLESPACE "{}" RESET ({})'.format(
                        name, reset_option))
 
     for query in queries:
@@ -243,7 +245,7 @@ def tablespace_remove(name, user=None, host=None, port=None,
     .. code-block:: bash
         salt '*' postgres_ext.tablespace_remove tsname
     '''
-    query = 'DROP TABLESPACE {}'.format(name)
+    query = 'DROP TABLESPACE "{}"'.format(name)
     ret = _psql_prepare_and_run(['-c', query],
                                 user=user,
                                 host=host,
@@ -252,3 +254,4 @@ def tablespace_remove(name, user=None, host=None, port=None,
                                 maintenance_db=maintenance_db,
                                 password=password)
     return ret['retcode'] == 0
+

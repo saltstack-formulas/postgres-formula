@@ -161,7 +161,7 @@ postgresql-db-{{ name }}:
     - encoding: {{ db.encoding }}
     {% endif %}
     {% if 'lc_ctype' in db %}
-    - lc_ctype: {{ db.lc_type }}
+    - lc_ctype: {{ db.lc_ctype }}
     {% endif %}
     {% if 'lc_collate' in db %}
     - lc_collate: {{ db.lc_collate }}

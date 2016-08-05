@@ -1,12 +1,5 @@
 postgres:
   pg_hba.conf: salt://postgres/pg_hba.conf
-  prepare_cluster:
-    user: root
-    command: service postgresql initdb
-    test: test -f /path/to/some/file
-    env:
-      LC_ALL: en_US.UTF-8
-
   use_upstream_repo: False
 
   pkg: 'postgresql-9.3'
@@ -50,12 +43,13 @@ postgres:
     - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
 
   tablespaces:
-    my_space: /srv/my_tablespace
+    my_space:
+      directory: /srv/my_tablespace
+      owner: localUser
 
   databases:
     db1:
       owner: 'localUser'
-      user: 'localUser'
       template: 'template0'
       lc_ctype: 'en_US.UTF-8'
       lc_collate: 'en_US.UTF-8'

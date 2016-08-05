@@ -1,5 +1,7 @@
 require 'serverspec'
 
+set :backend, :exec
+
 describe service('postgresql') do
   it { should be_enabled }
   it { should be_running }
@@ -16,6 +18,6 @@ describe file('/srv/my_tablespace') do
   it { should be_grouped_into 'postgres' }
 end
 
-describe command('su - postgres -c "psql -qtc \"\l+ db2\""') do
-        its(:stdout) { should match(/db2.*localUser.*UTF8.*C.UTF-8.*C.UTF-8.*my_space/) }
+describe command(%q{su - postgres -c 'psql -qtc "\l+ db2"'}) do
+        its(:stdout) { should match(/db2.*localUser.*UTF8.*en_US\.UTF-8.*en_US\.UTF-8.*my_space/) }
 end

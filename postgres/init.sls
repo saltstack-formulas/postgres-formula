@@ -48,9 +48,11 @@ postgresql-running:
       - cmd: postgresql-cluster-prepared
 
 {% if postgres.pkgs_extra %}
-postgresql-extra-pkgs-installed:
+{% for pkg in postgres.pkgs_extra %}
+postgresql-extra-pkgs-installed_{{ pkg }}:
   pkg.installed:
-    - pkgs: {{ postgres.pkgs_extra }}
+    - name: {{ pkg }}
+{% endfor %}
 {% endif %}
 
 {% if postgres.postgresconf %}
@@ -132,8 +134,17 @@ postgresql-tablespace-{{ name }}:
     - name: {{ name }}
     - directory: {{ tblspace.directory }}
     - user: {{ tblspace.get('runas', postgres.user) }}
-{% if tblspace.get('user') %}
-    - db_user: {{ tblspace.user }}
+{% if tblspace.get('db_user') %}
+    - db_user: {{ tblspace.db_user }}
+{% endif %}
+{% if tblspace.get('db_password') %}
+    - db_password: {{ tblspace.db_password }}
+{% endif %}
+{% if tblspace.get('db_host') %}
+    - db_host: {{ tblspace.db_host }}
+{% endif %}
+{% if tblspace.get('db_port') %}
+    - db_port: {{ tblspace.db_port }}
 {% endif %}
 {% if tblspace.get('owner') %}
     - owner: {{ tblspace.owner }}
@@ -172,8 +183,17 @@ postgresql-db-{{ name }}:
     - owner: {{ db.owner }}
     {% endif %}
     - user: {{ db.get('runas', postgres.user) }}
-    {% if db.get('user') %}
-    - db_user: {{ db.user }}
+    {% if db.get('db_user') %}
+    - db_user: {{ db.db_user }}
+    {% endif %}
+    {% if db.get('db_password') %}
+    - db_password: {{ db.db_password }}
+    {% endif %}
+    {% if db.get('db_host') %}
+    - db_host: {{ db.db_host }}
+    {% endif %}
+    {% if db.get('db_port') %}
+    - db_port: {{ db.db_port }}
     {% endif %}
     - require:
       - service: postgresql-running
@@ -184,7 +204,7 @@ postgresql-db-{{ name }}:
       - postgres_user: postgresql-user-{{ db.owner }}
     {% endif %}
     {% if db.get('tablespace') %}
-      - postgres_tablespace: postgresql-tablespace-{{ name }}
+      - postgres_tablespace: postgresql-tablespace-{{ db.get('tablespace') }}
     {% endif %}
 
 {# NOTE: postgres_schema doesn't have a 'runas' equiv. at all #}
@@ -252,7 +272,7 @@ postgresql-ext-{{ ext_name }}-for-db-{{ name }}:
       - postgres_user: postgresql-user-{{ ext.user }}
     {% endif %}
     {% if ext.get('schema') %}
-      - postgres_schema: postgresql-schema-{{ ext.schema }}
+      - postgres_schema: postgresql-schema-{{ ext.schema }}-for-db-{{ name }}
     {% endif %}
   {% endif %}
 {% endfor %}

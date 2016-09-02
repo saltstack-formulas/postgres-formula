@@ -47,13 +47,9 @@ postgresql-running:
     - require:
       - cmd: postgresql-cluster-prepared
 
-{% if postgres.pkgs_extra %}
-{% for pkg in postgres.pkgs_extra %}
-postgresql-extra-pkgs-installed_{{ pkg }}:
+postgresql-extra-pkgs-installed:
   pkg.installed:
-    - name: {{ pkg }}
-{% endfor %}
-{% endif %}
+    - pkgs: {{ postgres.pkgs_extra | default([], True) }}
 
 {% if postgres.postgresconf %}
 postgresql-conf:

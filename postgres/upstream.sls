@@ -1,6 +1,7 @@
-{% from "postgres/map.jinja" import postgres with context %}
+{%- from "postgres/map.jinja" import postgres with context %}
 
-{% if grains['os_family'] == 'Debian' %}
+{%- if grains['os_family'] == 'Debian' %}
+
 install-postgresql-repo:
   pkgrepo.managed:
     - humanname: PostgreSQL Official Repository
@@ -10,16 +11,16 @@ install-postgresql-repo:
     - file: {{ postgres.pkg_repo_file }}
     - require_in:
       - pkg: postgresql-installed
-{% endif %}
 
-{% if grains['os_family'] == 'RedHat' %}
+{%- elif grains['os_family'] == 'RedHat' -%}
+
 install-postgresql-repo:
   file.managed:
     - name: /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
     - source: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
     - source_hash: md5=78b5db170d33f80ad5a47863a7476b22
   pkgrepo.managed:
-    - name: pgdg-{{ postgres.version }}-centos
+    - name: {{ postgres.pkg_repo }}
     - order: 1
     - humanname: PostgreSQL {{ postgres.version }} $releasever - $basearch
     - baseurl: https://download.postgresql.org/pub/repos/yum/{{ postgres.version }}/redhat/rhel-$releasever-$basearch
@@ -27,4 +28,5 @@ install-postgresql-repo:
     - gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
     - require:
       - file: install-postgresql-repo
-{% endif %}
+
+{%- endif %}

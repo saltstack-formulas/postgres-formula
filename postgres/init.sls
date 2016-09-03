@@ -1,5 +1,4 @@
-# -*- mode: yaml  -*-
-# vim: syntax=yaml:sw=2
+# -*- mode: yaml -*-
 
 {% from "postgres/map.jinja" import postgres with context %}
 
@@ -7,16 +6,6 @@
 include:
   - postgres.upstream
 {% endif %}
-
-postgresql-config-dir:
-  file.directory:
-    - name: {{ postgres.conf_dir }}
-    - user: {{ postgres.user }}
-    - group: {{ postgres.group }}
-    - makedirs: True
-    - require:
-      - pkg: postgresql-installed
-      - cmd: postgresql-cluster-prepared
 
 postgresql-installed:
   pkg.installed:
@@ -38,6 +27,16 @@ postgresql-cluster-prepared:
         {{ name }}: {{ value }}
 {% endfor %}
 
+postgresql-config-dir:
+  file.directory:
+    - name: {{ postgres.conf_dir }}
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
+    - makedirs: True
+    - require:
+      - pkg: postgresql-installed
+      - cmd: postgresql-cluster-prepared
+
 postgresql-running:
   service.running:
     - enable: True
@@ -49,7 +48,7 @@ postgresql-running:
 
 postgresql-extra-pkgs-installed:
   pkg.installed:
-    - pkgs: {{ postgres.pkgs_extra | default([], True) }}
+    - pkgs: {{ postgres.pkgs_extra|default([], True) }}
 
 {% if postgres.postgresconf %}
 postgresql-conf:
@@ -275,4 +274,3 @@ postgresql-ext-{{ ext_name }}-for-db-{{ name }}:
 
 {% endif %}
 {% endfor %}
-

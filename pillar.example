@@ -1,12 +1,19 @@
 postgres:
-  pg_hba.conf: salt://postgres/pg_hba.conf
+  # Set True to configure upstream postgresql.org repository for YUM or APT
   use_upstream_repo: False
+  # Version to install from upstream repository
+  version: '9.3'
 
+  # This is Debian/Ubuntu specific package names
   pkg: 'postgresql-9.3'
   pkg_client: 'postgresql-client-9.3'
+
+  # Addtional packages to install, this should be in a list format
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython
+
+  pg_hba.conf: salt://postgres/pg_hba.conf
 
   users:
     localUser:
@@ -78,3 +85,4 @@ postgres:
   postgresconf: |
     listen_addresses = 'localhost,*'
 
+# vim: ft=yaml:sw=2

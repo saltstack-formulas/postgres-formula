@@ -26,4 +26,3 @@ postgres:
     command: service postgresql initdb
     test: test -f /var/lib/pgsql/data/PG_VERSION
     env: {}
-

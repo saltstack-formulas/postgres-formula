@@ -1,20 +1,3 @@
-RedHat:
-  pkg: postgresql-server
-  pkg_client: postgresql
-  pkg_repo: pgdg94
-  repo_baseurl: http://yum.postgresql.org/9.4/redhat/rhel-$releasever-$basearch
-  prepare_cluster:
-    test: test -f /var/lib/pgsql/data/PG_VERSION
-    env: {}
-{% if grains['os_family'] == 'RedHat' %}
-{% if grains['osmajorrelease'] >= 7 %}
-    user: root
-    command: postgresql-setup initdb
-{% else %}
-    user: postgres
-    command: initdb -D /var/lib/pgsql/data
-{% endif %}
-{% endif %}
 Arch:
   conf_dir: /var/lib/postgres/data
   prepare_cluster:
@@ -24,14 +7,53 @@ Arch:
     env: {}
   pkg_client: postgresql
   pkg_dev: postgresql
+
 Debian:
   pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
   pkg_dev: postgresql-server-dev-all
   pkg_libpq_dev: libpq-dev
+
+FreeBSD:
+  user: pgsql
+
+OpenBSD:
+  user: _postgresql
+
+RedHat:
+{%- if salt['pillar.get']('postgres:use_upstream_repo', False) %}
+
+  {%- set version = salt['pillar.get']('postgres:version', '9.5') %}
+  {%- set release = version|replace('.', '') %}
+
+  version: {{ version }}
+  pkg_repo: pgdg{{ release }}
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}
+  conf_dir: /var/lib/pgsql/{{ version }}/data
+  service: postgresql-{{ version }}
+  prepare_cluster:
+    user: postgres
+    command: /usr/pgsql-{{ version }}/bin/initdb -D /var/lib/pgsql/{{ version }}/data
+    test: test -f /var/lib/pgsql/{{ version }}/data/PG_VERSION
+    env: {}
+
+{%- else %}
+
+  pkg: postgresql-server
+  pkg_client: postgresql
+  prepare_cluster:
+  {%- if grains['osmajorrelease'] >= 7 %}
+    user: root
+    command: postgresql-setup initdb
+  {%- else %}
+    user: postgres
+    command: initdb -D /var/lib/pgsql/data
+  {%- endif %}
+    test: test -f /var/lib/pgsql/data/PG_VERSION
+    env: {}
+
+{%- endif %}
+
 Suse:
   pkg: postgresql-server
   pkg_client: postgresql
-FreeBSD:
-  user: pgsql
-OpenBSD:
-  user: _postgresql

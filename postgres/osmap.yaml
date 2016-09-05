@@ -20,10 +20,9 @@ OpenBSD:
   user: _postgresql
 
 RedHat:
-{%- if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-
-  {%- set version = salt['pillar.get']('postgres:version', '9.5') %}
-  {%- set release = version|replace('.', '') %}
+{% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
+  {% set version = salt['pillar.get']('postgres:version', '9.5') %}
+  {% set release = version|replace('.', '') %}
 
   version: {{ version }}
   pkg_repo: pgdg{{ release }}
@@ -31,29 +30,16 @@ RedHat:
   pkg_client: postgresql{{ release }}
   conf_dir: /var/lib/pgsql/{{ version }}/data
   service: postgresql-{{ version }}
-  prepare_cluster:
-    user: postgres
-    command: /usr/pgsql-{{ version }}/bin/initdb -D /var/lib/pgsql/{{ version }}/data
-    test: test -f /var/lib/pgsql/{{ version }}/data/PG_VERSION
-    env: {}
 
-{%- else %}
+{% else %}
 
   pkg: postgresql-server
   pkg_client: postgresql
-  prepare_cluster:
-  {%- if grains['osmajorrelease'] >= 7 %}
-    user: root
-    command: postgresql-setup initdb
-  {%- else %}
-    user: postgres
-    command: initdb -D /var/lib/pgsql/data
-  {%- endif %}
-    test: test -f /var/lib/pgsql/data/PG_VERSION
-    env: {}
 
-{%- endif %}
+{% endif %}
 
 Suse:
   pkg: postgresql-server
   pkg_client: postgresql
+
+# vim: ft=sls

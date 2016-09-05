@@ -1,10 +1,8 @@
-{%- macro ubuntu_block(name, version) %}
+{% macro ubuntu_block(name, version) %}
 
-{%- if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-
-  {%- set version = salt['pillar.get']('postgres:version', '9.5') %}
-
-{%- endif -%}
+{% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
+  {% set version = salt['pillar.get']('postgres:version', '9.5') %}
+{% endif %}
 
 {{ name }}:
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
@@ -17,16 +15,18 @@
     user: root
     env: {}
 
-{%- endmacro -%}
+{% endmacro %}
 
+# Debian GNU/Linux
 {{ ubuntu_block('wheezy', 9.1) }}
-
-{{ ubuntu_block('trusty', 9.3) }}
-
-{{ ubuntu_block('precise', 9.4) }}
 {{ ubuntu_block('jessie', 9.4) }}
+
+# Ubuntu
+{{ ubuntu_block('trusty', 9.3) }}
+{{ ubuntu_block('precise', 9.4) }}
 {{ ubuntu_block('utopic', 9.4) }}
 {{ ubuntu_block('vivid', 9.4) }}
 {{ ubuntu_block('wily', 9.4) }}
-
 {{ ubuntu_block('xenial', 9.5) }}
+
+# vim: ft=sls

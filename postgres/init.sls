@@ -1,11 +1,13 @@
 # -*- mode: yaml -*-
 
-{% from "postgres/map.jinja" import postgres with context %}
+{%- from "postgres/map.jinja" import postgres with context %}
 
-{% if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo %}
+
 include:
   - postgres.upstream
-{% endif %}
+
+{%- endif %}
 
 postgresql-installed:
   pkg.installed:
@@ -15,17 +17,14 @@ postgresql-installed:
 # make sure the data directory and contents have been initialized
 postgresql-cluster-prepared:
   cmd.run:
-    - cwd: /
     - name: {{ postgres.prepare_cluster.command }}
-    - user: {{ postgres.prepare_cluster.user }}
+    - cwd: /
+    - runas: {{ postgres.prepare_cluster.user }}
+    - env: {{ postgres.prepare_cluster.env|default({}) }}
     - unless:
       - {{ postgres.prepare_cluster.test }}
     - require:
       - pkg: postgresql-installed
-    - env:
-{% for name, value in postgres.prepare_cluster.env.items() %}
-        {{ name }}: {{ value }}
-{% endfor %}
 
 postgresql-config-dir:
   file.directory:
@@ -34,23 +33,10 @@ postgresql-config-dir:
     - group: {{ postgres.group }}
     - makedirs: True
     - require:
-      - pkg: postgresql-installed
       - cmd: postgresql-cluster-prepared
 
-postgresql-running:
-  service.running:
-    - enable: True
-    - reload: True
-    - name: {{ postgres.service }}
-    - reload: true
-    - require:
-      - cmd: postgresql-cluster-prepared
+{%- if postgres.postgresconf %}
 
-postgresql-extra-pkgs-installed:
-  pkg.installed:
-    - pkgs: {{ postgres.pkgs_extra|default([], True) }}
-
-{% if postgres.postgresconf %}
 postgresql-conf:
   file.blockreplace:
     - name: {{ postgres.conf_dir }}/postgresql.conf
@@ -67,7 +53,8 @@ postgresql-conf:
        - service: postgresql-running
     - require:
       - file: postgresql-config-dir
-{% endif %}
+
+{%- endif %}
 
 postgresql-pg_hba:
   file.managed:
@@ -79,8 +66,18 @@ postgresql-pg_hba:
     - mode: 644
     - require:
       - file: postgresql-config-dir
-    - watch_in:
-      - service: postgresql-running
+
+postgresql-running:
+  service.running:
+    - name: {{ postgres.service }}
+    - enable: True
+    - reload: True
+    - watch:
+      - file: postgresql-pg_hba
+
+postgresql-extra-pkgs-installed:
+  pkg.installed:
+    - pkgs: {{ postgres.pkgs_extra|default([], True) }}
 
 {% for name, user in postgres.users.items()  %}
 postgresql-user-{{ name }}:

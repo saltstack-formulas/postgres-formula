@@ -4,7 +4,7 @@ postgres:
   # Version to install from upstream repository
   version: '9.3'
 
-  # This is Debian/Ubuntu specific package names
+  # These are Debian/Ubuntu specific package names
   pkg: 'postgresql-9.3'
   pkg_client: 'postgresql-client-9.3'
 
@@ -13,7 +13,28 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
-  pg_hba.conf: salt://postgres/pg_hba.conf
+  # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
+  pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
+
+  # This section covers ACL management in the `pg_hba.conf` file.
+  # acls list controls: which hosts are allowed to connect, how clients
+  # are authenticated, which PostgreSQL user names they can use, which
+  # databases they can access. Records take one of these forms:
+  #
+  #acls:
+  #  - ['local', 'DATABASE',  'USER',  'METHOD']
+  #  - ['host', 'DATABASE',  'USER',  'ADDRESS', 'METHOD']
+  #  - ['hostssl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
+  #  - ['hostnossl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
+  #
+  # The uppercase items must be replaced by actual values.
+  # METHOD could be omitted, 'md5' will be appended by default.
+  acls:
+    - ['local', 'db1', 'localUser']
+    - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
+
+  # PostgreSQL service name
+  service: postgresql
 
   users:
     localUser:
@@ -42,12 +63,6 @@ postgres:
       createuser: False
       inherit: True
       replication: False
-
-  # This section cover this ACL management of the pg_hba.conf file.
-  # <type>, <database>, <user>, [host], <method>
-  acls:
-    - ['local', 'db1', 'localUser']
-    - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
 
   tablespaces:
     my_space:

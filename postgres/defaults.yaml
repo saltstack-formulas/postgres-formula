@@ -1,21 +1,29 @@
 postgres:
+  use_upstream_repo: False
   pkg: postgresql
   pkg_dev: postgresql-devel
   pkg_libpq_dev: postgresql-libs
   pkg_client: postgresql-client
+  pkgs_extra: []
   python: python-psycopg2
-  service: postgresql
+  user: postgres
+  group: postgres
   conf_dir: /var/lib/pgsql/data
-  use_upstream_repo: False
+  pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
+  acls:
+    # "local" is for Unix domain socket connections only
+    - ['local', 'all', 'all', 'peer']
+    # IPv4 local connections:
+    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
+    # IPv6 local connections:
+    - ['host', 'all', 'all', '::1/128', 'md5']
+  service: postgresql
   users: {}
-  acls: []
   databases: {}
   tablespaces: {}
   postgresconf_backup: True
   postgresconf: ""
-  pg_hba.conf: salt://postgres/pg_hba.conf
-  user: postgres
-  group: postgres
+
   # if prepare_cluster is over-ridden in any of:
   # - osmap.yaml
   # - oscodenamemap.yaml

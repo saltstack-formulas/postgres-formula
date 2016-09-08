@@ -1,6 +1,6 @@
 # -*- mode: yaml -*-
 
-{%- from "postgres/map.jinja" import postgres with context %}
+{%- from "postgres/map.jinja" import postgres with context -%}
 
 {%- if postgres.use_upstream_repo %}
 
@@ -46,9 +46,7 @@ postgresql-conf:
         {{ postgres.postgresconf|indent(8) }}
     - show_changes: True
     - append_if_not_found: True
-    {% if not postgres.postgresconf_backup|default(True) -%}
-    - backup: False
-    {% endif -%}
+    - backup: {{ postgres.postgresconf_backup }}
     - watch_in:
        - service: postgresql-running
     - require:
@@ -63,7 +61,7 @@ postgresql-pg_hba:
     - template: jinja
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
-    - mode: 644
+    - mode: 600
     - require:
       - file: postgresql-config-dir
 
@@ -77,7 +75,7 @@ postgresql-running:
 
 postgresql-extra-pkgs-installed:
   pkg.installed:
-    - pkgs: {{ postgres.pkgs_extra|default([], True) }}
+    - pkgs: {{ postgres.pkgs_extra }}
 
 {% for name, user in postgres.users.items()  %}
 postgresql-user-{{ name }}:

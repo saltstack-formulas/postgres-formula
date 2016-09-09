@@ -1,8 +1,8 @@
 {% macro ubuntu_block(name, version) %}
 
-{% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-  {% set version = salt['pillar.get']('postgres:version', '9.5') %}
-{% endif %}
+  {% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
+    {% set version = salt['pillar.get']('postgres:version', '9.5') %}
+  {% endif %}
 
 {{ name }}:
   pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main

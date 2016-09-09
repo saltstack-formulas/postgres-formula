@@ -19,5 +19,5 @@ describe file('/srv/my_tablespace') do
 end
 
 describe command(%q{su - postgres -c 'psql -qtc "\l+ db2"'}) do
-        its(:stdout) { should match(/db2.*localUser.*UTF8.*en_US\.UTF-8.*en_US\.UTF-8.*my_space/) }
+        its(:stdout) { should match(/db2.*remoteUser.*UTF8.*en_US\.UTF-8.*en_US\.UTF-8.*my_space/) }
 end

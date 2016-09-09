@@ -31,11 +31,39 @@ postgres:
   # METHOD could be omitted, 'md5' will be appended by default.
   acls:
     - ['local', 'db1', 'localUser']
-    - ['host', 'db2', 'remoteUser', '123.123.0.0/24']
+    - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
 
   # PostgreSQL service name
   service: postgresql
 
+  # Create/remove users, tablespaces, databases, schema and extensions.
+  # Each of these dictionaries contains PostgreSQL entities which
+  # mapped to the `postgres_*` Salt states with arguments. See the Salt
+  # documentaion to get all supported argument for a particular state.
+  #
+  # Format is the following:
+  #
+  #<users|tablespaces|databases|schemas|extensions>:
+  #  NAME:
+  #    ensure: <present|absent>  # 'present' is the default
+  #    ARGUMENT: VALUE
+  #    ...
+  #
+  # where 'NAME' is the state name, 'ARGUMENT' is the kwarg name, and
+  # 'VALUE' is kwarg value.
+  #
+  # For example, the Pillar:
+  #
+  #users:
+  #  testUser:
+  #    password: test
+  #
+  # will render such state:
+  #
+  #postgres_user-testUser:
+  #  postgres_user.present:
+  #    - name: testUser
+  #    - password: test
   users:
     localUser:
       ensure: present
@@ -57,12 +85,6 @@ postgres:
 
     absentUser:
       ensure: absent
-      password: '98ruj923h4rf'
-      createdb: False
-      createroles: False
-      createuser: False
-      inherit: True
-      replication: False
 
   tablespaces:
     my_space:
@@ -75,26 +97,27 @@ postgres:
       template: 'template0'
       lc_ctype: 'en_US.UTF-8'
       lc_collate: 'en_US.UTF-8'
-      # optional schemas to enable on database
-      schemas:
-        uuid_ossp:
-          owner: localUser
-      # optional extensions to enable on database
-      extensions:
-        uuid-ossp:
-          schema: uuid_ossp
     db2:
-      owner: 'localUser'
-      user: 'remoteUser'
+      owner: 'remoteUser'
       template: 'template0'
       lc_ctype: 'en_US.UTF-8'
       lc_collate: 'en_US.UTF-8'
       tablespace: 'my_space'
-      # optional extensions to enable on database
-      # extensions:
-      #   postgis:
 
-  # backup extension defaults to .bak if postgresconf_backup is True.
+  # optional schemas to enable on database
+  schemas:
+    uuid_ossp:
+      dbname: db1
+      owner: localUser
+
+  # optional extensions to install in schema
+  extensions:
+    uuid-ossp:
+      schema: uuid_ossp
+      maintenance_db: db1
+    #postgis: {}
+
+  # Backup extension defaults to .bak if postgresconf_backup is True.
   # Set to False to stop creation of backup on postgresql.conf changes.
   postgresconf_backup: True
   # This section will append your configuration to postgresql.conf.

@@ -19,8 +19,10 @@ postgres:
     - ['host', 'all', 'all', '::1/128', 'md5']
   service: postgresql
   users: {}
-  databases: {}
   tablespaces: {}
+  databases: {}
+  schemas: {}
+  extensions: {}
   postgresconf_backup: True
   postgresconf: ""
 

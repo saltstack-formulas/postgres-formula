@@ -5,7 +5,8 @@
   {% endif %}
 
 {{ name }}:
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main
+  pkg_repo_humanname: PostgreSQL Official Repository
+  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main {{ version }}
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main

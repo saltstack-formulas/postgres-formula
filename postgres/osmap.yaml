@@ -24,8 +24,9 @@ RedHat:
   {% set version = salt['pillar.get']('postgres:version', '9.5') %}
   {% set release = version|replace('.', '') %}
 
-  version: {{ version }}
   pkg_repo: pgdg{{ release }}
+  pkg_repo_humanname: PostgreSQL {{ version }} $releasever - $basearch
+  pkg_repo_url: https://download.postgresql.org/pub/repos/yum/{{ version }}/redhat/rhel-$releasever-$basearch
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   conf_dir: /var/lib/pgsql/{{ version }}/data

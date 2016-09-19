@@ -1,12 +1,25 @@
-{% macro ubuntu_block(name, version) %}
+### Set parameters based on PostgreSQL version supplied with particular distro
 
-  {% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-    {% set version = salt['pillar.get']('postgres:version', '9.5') %}
-  {% endif %}
+{% macro debian_codename(name, version, codename=none) %}
+  {#
+  Generate lookup dictionary map for Debian and derivative distributions
 
-{{ name }}:
+    name:
+      distro codename
+    version:
+      PostgreSQL release version
+    codename:
+      optional grain value if `name` does not match the one returned by
+      `oscodename` grain
+  #}
+
+  {# use upstream version if configured #}
+  {% set version = upstream_version|default(version) %}
+
+{{ codename|default(name, true) }}:
+  # PostgreSQL packages are mostly downloaded from `main` repo component
+  pkg_repo: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main {{ version }}'
   pkg_repo_humanname: PostgreSQL Official Repository
-  pkg_repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main {{ version }}
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main
@@ -18,16 +31,26 @@
 
 {% endmacro %}
 
-# Debian GNU/Linux
-{{ ubuntu_block('wheezy', 9.1) }}
-{{ ubuntu_block('jessie', 9.4) }}
+{% if salt['pillar.get']('postgres:use_upstream_repo', false) %}
+  {# upstream version will always override all versions given below #}
+  {% set upstream_version = salt['pillar.get']('postgres:version', '9.5') %}
+{% endif %}
 
-# Ubuntu
-{{ ubuntu_block('trusty', 9.3) }}
-{{ ubuntu_block('precise', 9.4) }}
-{{ ubuntu_block('utopic', 9.4) }}
-{{ ubuntu_block('vivid', 9.4) }}
-{{ ubuntu_block('wily', 9.4) }}
-{{ ubuntu_block('xenial', 9.5) }}
+## Debian GNU/Linux
+{{ debian_codename('wheezy', '9.1') }}
+{{ debian_codename('jessie', '9.4') }}
+
+# `oscodename` grain has long distro name
+# if `lsb-release` package not installed
+{{ debian_codename('wheezy', '9.1', 'Debian GNU/Linux 7 (wheezy)') }}
+{{ debian_codename('jessie', '9.4', 'Debian GNU/Linux 8 (jessie)') }}
+
+## Ubuntu
+{{ debian_codename('trusty', '9.3') }}
+{{ debian_codename('precise', '9.4') }}
+{{ debian_codename('utopic', '9.4') }}
+{{ debian_codename('vivid', '9.4') }}
+{{ debian_codename('wily', '9.4') }}
+{{ debian_codename('xenial', '9.5') }}
 
 # vim: ft=sls

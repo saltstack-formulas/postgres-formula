@@ -1,3 +1,6 @@
+{% set version = salt['pillar.get']('postgres:version', '9.5') %}
+{% set release = version|replace('.', '') %}
+
 Arch:
   conf_dir: /var/lib/postgres/data
   prepare_cluster:
@@ -9,7 +12,11 @@ Arch:
   pkg_dev: postgresql
 
 Debian:
-  pkg_repo_file: /etc/apt/sources.list.d/pgdg.list
+  pkg_repo:
+    humanname: PostgreSQL Official Repository
+    key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+    file: /etc/apt/sources.list.d/pgdg.list
+  pkg_repo_keyid: ACCC4CF8
   pkg_dev: postgresql-server-dev-all
   pkg_libpq_dev: libpq-dev
 
@@ -20,13 +27,15 @@ OpenBSD:
   user: _postgresql
 
 RedHat:
-{% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-  {% set version = salt['pillar.get']('postgres:version', '9.5') %}
-  {% set release = version|replace('.', '') %}
+  pkg_repo:
+    name: pgdg{{ release }}
+    humanname: PostgreSQL {{ version }} $releasever - $basearch
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/redhat/rhel-$releasever-$basearch'
+    gpgcheck: 1
+    gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
 
-  pkg_repo: pgdg{{ release }}
-  pkg_repo_humanname: PostgreSQL {{ version }} $releasever - $basearch
-  pkg_repo_url: https://download.postgresql.org/pub/repos/yum/{{ version }}/redhat/rhel-$releasever-$basearch
+{% if salt['pillar.get']('postgres:use_upstream_repo', false) %}
+
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   conf_dir: /var/lib/pgsql/{{ version }}/data

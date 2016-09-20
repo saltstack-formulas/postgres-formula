@@ -1,5 +1,15 @@
 {%- from "postgres/map.jinja" import postgres with context -%}
 
+{%- macro format_kwargs(kwarg) -%}
+
+  {%- filter indent(4) %}
+    {%- for k, v in kwarg|dictsort() %}
+- {{ k }}: {{ v }}
+    {%- endfor %}
+  {%- endfilter %}
+
+{%- endmacro %}
+
 {%- macro format_state(name, state, kwarg) %}
 
   {%- do kwarg.update({'name': name}) %}
@@ -12,9 +22,7 @@
 
 {{ state }}-{{ name }}:
   {{ state }}.{{ ensure|default('present') }}:
-  {%- for k, v in kwarg|dictsort() %}
-    - {{ k }}: {{ v }}
-  {%- endfor %}
+    {{- format_kwargs(kwarg) }}
 
 {%- endmacro %}
 

@@ -1,5 +1,8 @@
 ### Set parameters based on PostgreSQL version supplied with particular distro
 
+{% set use_upstream_repo = salt['pillar.get']('postgres:use_upstream_repo', false) %}
+{% set upstream_version = salt['pillar.get']('postgres:version', '9.5') %}
+
 {% macro debian_codename(name, version, codename=none) %}
   {#
   Generate lookup dictionary map for Debian and derivative distributions
@@ -14,12 +17,14 @@
   #}
 
   {# use upstream version if configured #}
-  {% set version = upstream_version|default(version) %}
+  {% if use_upstream_repo %}
+    {% set version = upstream_version %}
+  {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
-  pkg_repo: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main {{ version }}'
-  pkg_repo_humanname: PostgreSQL Official Repository
+  pkg_repo:
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ upstream_version }}'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main
@@ -30,11 +35,6 @@
     env: {}
 
 {% endmacro %}
-
-{% if salt['pillar.get']('postgres:use_upstream_repo', false) %}
-  {# upstream version will always override all versions given below #}
-  {% set upstream_version = salt['pillar.get']('postgres:version', '9.5') %}
-{% endif %}
 
 ## Debian GNU/Linux
 {{ debian_codename('wheezy', '9.1') }}

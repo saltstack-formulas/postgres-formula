@@ -9,6 +9,10 @@ install-postgresql-client:
   pkg.installed:
     - name: {{ postgres.pkg_client }}
     - refresh: {{ postgres.use_upstream_repo }}
+{% if postgres.use_upstream_repo %}
+    - require:
+      - pkgrepo: install-postgresql-repo
+{%- endif %}
 
 {% if postgres.pkg_libpq_dev %}
 install-postgres-libpq-dev:

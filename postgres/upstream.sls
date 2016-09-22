@@ -9,8 +9,6 @@ install-postgresql-repo:
     - keyid: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
     - keyserver: keyserver.ubuntu.com
     - file: {{ postgres.pkg_repo_file }}
-    - require_in:
-      - pkg: postgresql-installed
 
 {%- elif grains['os_family'] == 'RedHat' -%}
 
@@ -27,7 +25,5 @@ install-postgresql-repo:
     - gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
     - require:
       - file: install-postgresql-repo
-    - require_in:
-      - pkg: postgresql-installed
 
 {%- endif %}

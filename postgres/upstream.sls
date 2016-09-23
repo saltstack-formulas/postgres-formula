@@ -1,29 +1,33 @@
-{%- from "postgres/map.jinja" import postgres with context %}
+{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from "postgres/macros.jinja" import format_kwargs with context -%}
 
-{%- if grains['os_family'] == 'Debian' -%}
+{%- if 'pkg_repo' in postgres -%}
 
+  {%- if postgres.use_upstream_repo -%}
+
+# Add upstream repository for your distro
 install-postgresql-repo:
   pkgrepo.managed:
-    - humanname: {{ postgres.pkg_repo_humanname }}
-    - name: {{ postgres.pkg_repo }}
-    - keyid: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
-    - keyserver: keyserver.ubuntu.com
-    - file: {{ postgres.pkg_repo_file }}
+    {{- format_kwargs(postgres.pkg_repo) }}
 
-{%- elif grains['os_family'] == 'RedHat' -%}
+  {%- else -%}
 
+# Remove the repo configuration (and GnuPG key) as requested
+remove-postgresql-repo:
+  pkgrepo.absent:
+    - name: {{ postgres.pkg_repo.name }}
+    {%- if 'pkg_repo_keyid' in postgres %}
+    - keyid: {{ postgres.pkg_repo_keyid }}
+    {%- endif %}
+
+  {%- endif -%}
+
+{%- else -%}
+
+# Notify that we don't manage this distro
 install-postgresql-repo:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
-    - source: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
-    - source_hash: md5=78b5db170d33f80ad5a47863a7476b22
-  pkgrepo.managed:
-    - name: {{ postgres.pkg_repo }}
-    - humanname: {{ postgres.pkg_repo_humanname }}
-    - baseurl: {{ postgres.pkg_repo_url }}
-    - gpgcheck: 1
-    - gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
-    - require:
-      - file: install-postgresql-repo
+  test.show_notification:
+    - text: |
+        PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
 
 {%- endif %}

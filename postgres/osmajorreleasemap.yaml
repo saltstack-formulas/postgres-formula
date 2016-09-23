@@ -1,33 +1,36 @@
+{% import_yaml "postgres/repo.yaml" as repo %}
+
 {% if grains['os_family'] == 'RedHat' %}
 
 ### RedHat releases
 
-  {% if salt['pillar.get']('postgres:use_upstream_repo', False) %}
-    {% set version = salt['pillar.get']('postgres:version', '9.5') %}
-    {% set data_dir = '/var/lib/pgsql/' ~ version ~ '/data' %}
+  {% if repo.use_upstream_repo %}
+
+    {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
 # PostgreSQL from upstream repository
 
 default:
   prepare_cluster:
     user: postgres
-    command: /usr/pgsql-{{ version }}/bin/initdb -D {{ data_dir }}
+    command: /usr/pgsql-{{ repo.version }}/bin/initdb -D {{ data_dir }}
     test: test -f {{ data_dir }}/PG_VERSION
     env: {}
 '6':
   prepare_cluster:
     user: root
-    command: service postgresql-{{ version }} initdb
+    command: service postgresql-{{ repo.version }} initdb
     test: test -f {{ data_dir }}/PG_VERSION
     env: {}
 '7':
   prepare_cluster:
     user: root
-    command: /usr/pgsql-{{ version }}/bin/postgresql95-setup initdb
+    command: /usr/pgsql-{{ repo.version }}/bin/postgresql95-setup initdb
     test: test -f {{ data_dir }}/PG_VERSION
     env: {}
 
   {% else %}
+
     {% set data_dir = '/var/lib/pgsql/data' %}
 
 # PostgreSQL from OS repositories

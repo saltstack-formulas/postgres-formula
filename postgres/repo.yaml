@@ -1,0 +1,11 @@
+# This file allows to get PostgreSQL version and upstream repo settings
+# early from Pillar to set correct lookup dictionaty items
+
+{% import_yaml "postgres/defaults.yaml" as defaults %}
+
+use_upstream_repo: {{ salt['pillar.get']('postgres:use_upstream_repo',
+                                         defaults.postgres.use_upstream_repo) }}
+version: {{ salt['pillar.get']('postgres:version',
+                               defaults.postgres.version) }}
+
+# vim: ft=sls

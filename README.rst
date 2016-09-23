@@ -37,8 +37,8 @@ applicable.
 The state relies on the ``postgres:use_upstream_repo`` Pillar value which could
 be set as following:
 
-* ``False`` (default): makes sure that the repository configuration is absent
-* ``True``: adds the upstream repository to install packages from
+* ``True`` (default): adds the upstream repository to install packages from
+* ``False``: makes sure that the repository configuration is absent
 
 The ``postgres:version`` Pillar controls which version of the PostgreSQL
 packages should be installed from the upstream repository. Defaults to ``9.5``.

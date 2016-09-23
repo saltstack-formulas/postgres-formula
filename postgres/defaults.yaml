@@ -1,5 +1,8 @@
+# Default lookup dictionary
+
 postgres:
-  use_upstream_repo: False
+  use_upstream_repo: True
+  version: '9.5'
   pkg: postgresql
   pkgs_extra: []
   pkg_client: postgresql-client

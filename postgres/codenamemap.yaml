@@ -1,7 +1,6 @@
 ### Set parameters based on PostgreSQL version supplied with particular distro
 
-{% set use_upstream_repo = salt['pillar.get']('postgres:use_upstream_repo', false) %}
-{% set upstream_version = salt['pillar.get']('postgres:version', '9.5') %}
+{% import_yaml "postgres/repo.yaml" as repo %}
 
 {% macro debian_codename(name, version, codename=none) %}
   {#
@@ -17,14 +16,14 @@
   #}
 
   {# use upstream version if configured #}
-  {% if use_upstream_repo %}
-    {% set version = upstream_version %}
+  {% if repo.use_upstream_repo %}
+    {% set version = repo.version %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ upstream_version }}'
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ repo.version }}'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main

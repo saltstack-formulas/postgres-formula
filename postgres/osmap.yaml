@@ -39,6 +39,7 @@ RedHat:
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
+  bin_dir: /usr/pgsql-{{ repo.version }}/bin
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data
   service: postgresql-{{ repo.version }}
 

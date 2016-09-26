@@ -12,13 +12,13 @@ include:
 
 ### Installation states
 
-postgresql-installed:
+postgresql-server:
   pkg.installed:
     - name: {{ postgres.pkg }}
-    - refresh: {{ postgres.use_upstream_repo }}
-{% if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo %}
+    - refresh: True
     - require:
-      - pkgrepo: install-postgresql-repo
+      - pkgrepo: postgresql-repo
 {%- endif %}
 
 # make sure the data directory and contents have been initialized
@@ -31,7 +31,7 @@ postgresql-cluster-prepared:
     - unless:
       - {{ postgres.prepare_cluster.test }}
     - require:
-      - pkg: postgresql-installed
+      - pkg: postgresql-server
 
 postgresql-config-dir:
   file.directory:

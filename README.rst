@@ -16,17 +16,25 @@ Available states
 ``postgres``
 ------------
 
-Installs the PostgreSQL server package and prepares the DB cluster.
+Installs and configures both PostgreSQL server and client with creation of
+various DB objects in the cluster.
 
 ``postgres.client``
 -------------------
 
 Installs the PostgreSQL client binaries and libraries.
+Allows to create such DB objects as: users, tablespaces, databases, schemas and
+extensions. See ``pillar.example`` file for details.
 
 ``postgres.python``
 -------------------
 
 Installs the PostgreSQL adapter for Python.
+
+``postgres.server``
+-------------------
+
+Installs the PostgreSQL server package and prepares the DB cluster.
 
 ``postgres.upstream``
 ---------------------

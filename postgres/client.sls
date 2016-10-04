@@ -1,21 +1,45 @@
-{% from "postgres/map.jinja" import postgres with context %}
+{%- from "postgres/map.jinja" import postgres with context -%}
 
-{% if postgres.use_upstream_repo %}
+{%- set pkgs = [] %}
+{%- for pkg in (postgres.pkg_client, postgres.pkg_libpq_dev) %}
+  {%- if pkg %}
+    {%- do pkgs.append(pkg) %}
+  {%- endif %}
+{%- endfor -%}
+
+{%- if postgres.use_upstream_repo %}
+
 include:
   - postgres.upstream
-{% endif %}
 
-install-postgresql-client:
-  pkg.installed:
-    - name: {{ postgres.pkg_client }}
-    - refresh: {{ postgres.use_upstream_repo }}
-{% if postgres.use_upstream_repo %}
-    - require:
-      - pkgrepo: install-postgresql-repo
 {%- endif %}
 
-{% if postgres.pkg_libpq_dev %}
-install-postgres-libpq-dev:
+postgresql-client-libs:
   pkg.installed:
-    - name: {{ postgres.pkg_libpq_dev }}
-{% endif %}
+    - pkgs: {{ pkgs }}
+{%- if postgres.use_upstream_repo %}
+    - refresh: True
+    - require:
+      - pkgrepo: postgresql-repo
+{%- endif %}
+
+{%- if 'bin_dir' in postgres %}
+
+# Make client binaries available in $PATH
+
+  {%- for bin in postgres.client_bins %}
+
+    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+
+{{ bin }}:
+  alternatives.install:
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: 30
+    - onlyif: test -f {{ path }}
+    - require:
+      - pkg: postgresql-client-libs
+
+  {%- endfor %}
+
+{%- endif %}

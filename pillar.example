@@ -8,7 +8,8 @@ postgres:
   pkg: 'postgresql-9.3'
   pkg_client: 'postgresql-client-9.3'
 
-  # Addtional packages to install, this should be in a list format
+  # Additional packages to install with PostgreSQL server,
+  # this should be in a list format
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython

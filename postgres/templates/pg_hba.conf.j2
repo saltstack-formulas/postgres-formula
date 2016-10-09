@@ -38,5 +38,5 @@ local   all             postgres                                peer
     {%- endif %}
 
   {%- endif %}
-{{ '{0:<8}{1:<16}{2:<16}{3:<24}{4}'.format(*acl) -}}
+{{ '{0:<7} {1:<15} {2:<15} {3:<23} {4}'.format(*acl) -}}
 {% endfor %}

@@ -23,7 +23,11 @@ various DB objects in the cluster.
 -------------------
 
 Installs the PostgreSQL client binaries and libraries.
-Allows to create such DB objects as: users, tablespaces, databases, schemas and
+
+``postgres.manage``
+-------------------
+
+Creates such DB objects as: users, tablespaces, databases, schemas and
 extensions. See ``pillar.example`` file for details.
 
 ``postgres.python``

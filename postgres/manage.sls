@@ -8,6 +8,10 @@
 
 include:
   - postgres.client
+  {%- if 'server_bins' in postgres and grains['saltversion'] == '2016.11.0' %}
+  # FIXME: Salt v2016.11.0 bug https://github.com/saltstack/salt/issues/37935
+  - postgres.server
+  {%- endif %}
 
 {%- endif %}
 

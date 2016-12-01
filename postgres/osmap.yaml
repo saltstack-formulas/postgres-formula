@@ -69,6 +69,15 @@ RedHat:
     - psql
     - reindexdb
     - vacuumdb
+  server_bins:
+    - initdb
+    - pg_controldata
+    - pg_ctl
+    - pg_resetxlog
+    - postgres
+    - postgresql{{ release }}-check-db-dir
+    - postgresql{{ release }}-setup
+    - postmaster
 
 {% else %}
 

@@ -92,3 +92,24 @@ postgresql-tablespace-dir-{{ name }}:
       - group
 
 {%- endfor %}
+
+{%- if 'bin_dir' in postgres %}
+
+# Make server binaries available in $PATH
+
+  {%- for bin in postgres.server_bins %}
+
+    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+
+{{ bin }}:
+  alternatives.install:
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: 30
+    - onlyif: test -f {{ path }}
+    - require:
+      - pkg: postgresql-server
+
+  {%- endfor %}
+
+{%- endif %}

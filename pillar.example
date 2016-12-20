@@ -14,9 +14,10 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
-  # This section will append your configuration to postgresql.conf.
+  # Append the lines under this item to your postgresql.conf file.
+  # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |
-    listen_addresses = 'localhost,*'
+    listen_addresses = '*'  # listen on all interfaces
 
   # Backup extension for postgresql.conf file, defaults to `.bak`.
   # Set to False to stop creation of backup on postgresql.conf changes.

@@ -20,6 +20,27 @@ postgresql-server:
       - pkgrepo: postgresql-repo
 {%- endif %}
 
+{%- if 'bin_dir' in postgres %}
+
+# Make server binaries available in $PATH
+
+  {%- for bin in postgres.server_bins %}
+
+    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+
+{{ bin }}:
+  alternatives.install:
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: 30
+    - onlyif: test -f {{ path }}
+    - require:
+      - pkg: postgresql-server
+
+  {%- endfor %}
+
+{%- endif %}
+
 postgresql-cluster-prepared:
   cmd.run:
     - name: {{ postgres.prepare_cluster.command }}
@@ -93,23 +114,28 @@ postgresql-tablespace-dir-{{ name }}:
 
 {%- endfor %}
 
-{%- if 'bin_dir' in postgres %}
+# An attempt to launch PostgreSQL with `pg_ctl` if service failed to start
+# with init system or Salt unable to load the `service` state module
+postgresql-start:
+  cmd.run:
+    - name: pg_ctl -D {{ postgres.conf_dir }} -l logfile start
+    - runas: {{ postgres.user }}
+    - unless:
+      - ps -p $(head -n 1 {{ postgres.conf_dir }}/postmaster.pid) 2>/dev/null
+    - onfail:
+      - service: postgresql-running
 
-# Make server binaries available in $PATH
-
-  {%- for bin in postgres.server_bins %}
-
-    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
-
-{{ bin }}:
-  alternatives.install:
-    - link: {{ salt['file.join']('/usr/bin', bin) }}
-    - path: {{ path }}
-    - priority: 30
-    - onlyif: test -f {{ path }}
-    - require:
-      - pkg: postgresql-server
-
-  {%- endfor %}
-
+# Try to enable PostgreSQL in "manual" way for systemd and RedHat-based distros.
+# The packages for other OS (i.e. `*.deb`) should do it automatically by default
+postgresql-enable:
+  cmd.run:
+{%- if salt['file.file_exists']('/bin/systemctl') %}
+    - name: systemctl enable {{ postgres.service }}
+{%- elif salt['cmd.which']('chkconfig') %}
+    - name: chkconfig {{ postgres.service }} on
+{%- else %}
+    # Nothing to do
+    - name: 'true'
 {%- endif %}
+    - onchanges:
+      - cmd: postgresql-start

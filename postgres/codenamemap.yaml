@@ -31,7 +31,6 @@
     command: pg_createcluster {{ version }} main
     test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf
     user: root
-    env: {}
 
 {% endmacro %}
 

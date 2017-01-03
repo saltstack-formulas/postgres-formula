@@ -5,10 +5,8 @@
 Arch:
   conf_dir: /var/lib/postgres/data
   prepare_cluster:
-    user: postgres
     command: initdb -D /var/lib/postgresql/data
     test: test -f /var/lib/postgres/data/PG_VERSION
-    env: {}
   pkg_client: postgresql
   pkg_dev: postgresql
 
@@ -37,10 +35,16 @@ RedHat:
 
 {% if repo.use_upstream_repo %}
 
+  {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data
   service: postgresql-{{ repo.version }}
+
+  prepare_cluster:
+    command: initdb --pgdata='{{ data_dir }}'
+    test: test -f '{{ data_dir }}/PG_VERSION'
 
   # Directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin

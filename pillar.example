@@ -14,6 +14,17 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
+  # Append the lines under this item to your postgresql.conf file.
+  # Pay attention to indent exactly with 4 spaces for all lines.
+  postgresconf: |
+    listen_addresses = '*'  # listen on all interfaces
+
+  # Backup extension for postgresql.conf file, defaults to `.bak`.
+  # Set to False to stop creation of backup on postgresql.conf changes.
+  {%- if 'status.time' in salt.keys() %}
+  postgresconf_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
+  {%- endif %}
+
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
 
@@ -87,11 +98,13 @@ postgres:
     absentUser:
       ensure: absent
 
+  # tablespaces to be created
   tablespaces:
     my_space:
       directory: /srv/my_tablespace
       owner: localUser
 
+  # databases to be created
   databases:
     db1:
       owner: 'localUser'
@@ -118,11 +131,4 @@ postgres:
       maintenance_db: db1
     #postgis: {}
 
-  # Backup extension defaults to .bak if postgresconf_backup is True.
-  # Set to False to stop creation of backup on postgresql.conf changes.
-  postgresconf_backup: True
-  # This section will append your configuration to postgresql.conf.
-  postgresconf: |
-    listen_addresses = 'localhost,*'
-
-# vim: ft=yaml:sw=2
+# vim: ft=yaml ts=2 sts=2 sw=2 et

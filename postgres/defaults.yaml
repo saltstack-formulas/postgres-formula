@@ -11,23 +11,6 @@ postgres:
   python: python-psycopg2
   user: postgres
   group: postgres
-  conf_dir: /var/lib/pgsql/data
-  pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
-  acls:
-    # "local" is for Unix domain socket connections only
-    - ['local', 'all', 'all', 'peer']
-    # IPv4 local connections:
-    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
-    # IPv6 local connections:
-    - ['host', 'all', 'all', '::1/128', 'md5']
-  service: postgresql
-  users: {}
-  tablespaces: {}
-  databases: {}
-  schemas: {}
-  extensions: {}
-  postgresconf_backup: True
-  postgresconf: ""
 
   # if prepare_cluster is over-ridden in any of:
   # - osmap.yaml
@@ -39,3 +22,24 @@ postgres:
     command: service postgresql initdb
     test: test -f /var/lib/pgsql/data/PG_VERSION
     env: {}
+
+  conf_dir: /var/lib/pgsql/data
+  postgresconf: ""
+  postgresconf_backup: '.bak'
+
+  pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
+  acls:
+    # "local" is for Unix domain socket connections only
+    - ['local', 'all', 'all', 'peer']
+    # IPv4 local connections:
+    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
+    # IPv6 local connections:
+    - ['host', 'all', 'all', '::1/128', 'md5']
+
+  service: postgresql
+
+  users: {}
+  tablespaces: {}
+  databases: {}
+  schemas: {}
+  extensions: {}

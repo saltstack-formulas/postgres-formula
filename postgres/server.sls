@@ -130,8 +130,9 @@ postgresql-start:
     - unless:
       - ps -p $(head -n 1 {{ postgres.conf_dir }}/postmaster.pid) 2>/dev/null
 
-# Try to enable PostgreSQL in "manual" way for systemd and RedHat-based distros.
-# The packages for other OS (i.e. `*.deb`) should do it automatically by default
+# Try to enable PostgreSQL in "manual" way if Salt `service` state module
+# is currently not available (e.g. during Docker or Packer build when is no init
+# system running)
 
 postgresql-enable:
   cmd.run:
@@ -139,6 +140,8 @@ postgresql-enable:
     - name: systemctl enable {{ postgres.service }}
   {%- elif salt['cmd.which']('chkconfig') %}
     - name: chkconfig {{ postgres.service }} on
+  {%- elif salt['file.file_exists']('/usr/sbin/update-rc.d') %}
+    - name: update-rc.d {{ service }} defaults
   {%- else %}
     # Nothing to do
     - name: 'true'

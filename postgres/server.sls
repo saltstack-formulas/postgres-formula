@@ -88,16 +88,10 @@ postgresql-pg_hba:
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - mode: 600
+    - defaults:
+        acls: {{ postgres.acls }}
     - require:
       - file: postgresql-config-dir
-
-postgresql-running:
-  service.running:
-    - name: {{ postgres.service }}
-    - enable: True
-    - reload: True
-    - watch:
-      - file: postgresql-pg_hba
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
@@ -114,28 +108,42 @@ postgresql-tablespace-dir-{{ name }}:
 
 {%- endfor %}
 
-# An attempt to launch PostgreSQL with `pg_ctl` if service failed to start
-# with init system or Salt unable to load the `service` state module
+{%- if grains['init'] != 'unknown' %}
+
+postgresql-running:
+  service.running:
+    - name: {{ postgres.service }}
+    - enable: True
+    - reload: True
+    - watch:
+      - file: postgresql-pg_hba
+
+{%- else %}
+
+# An attempt to launch PostgreSQL with `pg_ctl` if Salt was unable to
+# detect local init system (`service` module would fail in this case)
+
 postgresql-start:
   cmd.run:
     - name: pg_ctl -D {{ postgres.conf_dir }} -l logfile start
     - runas: {{ postgres.user }}
     - unless:
       - ps -p $(head -n 1 {{ postgres.conf_dir }}/postmaster.pid) 2>/dev/null
-    - onfail:
-      - service: postgresql-running
 
 # Try to enable PostgreSQL in "manual" way for systemd and RedHat-based distros.
 # The packages for other OS (i.e. `*.deb`) should do it automatically by default
+
 postgresql-enable:
   cmd.run:
-{%- if salt['file.file_exists']('/bin/systemctl') %}
+  {%- if salt['file.file_exists']('/bin/systemctl') %}
     - name: systemctl enable {{ postgres.service }}
-{%- elif salt['cmd.which']('chkconfig') %}
+  {%- elif salt['cmd.which']('chkconfig') %}
     - name: chkconfig {{ postgres.service }} on
-{%- else %}
+  {%- else %}
     # Nothing to do
     - name: 'true'
-{%- endif %}
+  {%- endif %}
     - onchanges:
       - cmd: postgresql-start
+
+{%- endif %}

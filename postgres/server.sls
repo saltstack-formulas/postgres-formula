@@ -108,7 +108,9 @@ postgresql-tablespace-dir-{{ name }}:
 
 {%- endfor %}
 
-{%- if grains['init'] != 'unknown' %}
+{%- if not postgres.bake_image %}
+
+# Start PostgreSQL server using OS init
 
 postgresql-running:
   service.running:
@@ -120,8 +122,7 @@ postgresql-running:
 
 {%- else %}
 
-# An attempt to launch PostgreSQL with `pg_ctl` if Salt was unable to
-# detect local init system (`service` module would fail in this case)
+# An attempt to launch PostgreSQL with `pg_ctl` during an image preparation
 
 postgresql-start:
   cmd.run:
@@ -129,10 +130,10 @@ postgresql-start:
     - runas: {{ postgres.user }}
     - unless:
       - ps -p $(head -n 1 {{ postgres.conf_dir }}/postmaster.pid) 2>/dev/null
+    - require:
+      - file: postgresql-pg_hba
 
-# Try to enable PostgreSQL in "manual" way if Salt `service` state module
-# is currently not available (e.g. during Docker or Packer build when is no init
-# system running)
+# Try to enable PostgreSQL in "manual" way when baking an image
 
 postgresql-enable:
   cmd.run:
@@ -146,7 +147,7 @@ postgresql-enable:
     # Nothing to do
     - name: 'true'
   {%- endif %}
-    - onchanges:
+    - require:
       - cmd: postgresql-start
 
 {%- endif %}

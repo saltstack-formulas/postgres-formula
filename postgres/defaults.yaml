@@ -33,6 +33,8 @@ postgres:
 
   service: postgresql
 
+  bake_image: False
+
   users: {}
   tablespaces: {}
   databases: {}

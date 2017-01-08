@@ -1,11 +1,19 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from "postgres/map.jinja" import postgres with context %}
 
-{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra -%}
-
+{%- set includes = [] %}
+{%- if postgres.bake_image %}
+  {%- do includes.append('postgres.server.image') %}
+{%- endif %}
 {%- if postgres.use_upstream_repo -%}
+  {%- do includes.append('postgres.upstream') %}
+{%- endif %}
+
+{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
+
+{%- if includes -%}
 
 include:
-  - postgres.upstream
+  {{ includes|yaml(false)|indent(2) }}
 
 {%- endif %}
 
@@ -36,6 +44,8 @@ postgresql-server:
     - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-server
+    - require_in:
+      - cmd: postgresql-cluster-prepared
 
   {%- endfor %}
 
@@ -119,35 +129,5 @@ postgresql-running:
     - reload: True
     - watch:
       - file: postgresql-pg_hba
-
-{%- else %}
-
-# An attempt to launch PostgreSQL with `pg_ctl` during an image preparation
-
-postgresql-start:
-  cmd.run:
-    - name: pg_ctl -D {{ postgres.conf_dir }} -l logfile start
-    - runas: {{ postgres.user }}
-    - unless:
-      - ps -p $(head -n 1 {{ postgres.conf_dir }}/postmaster.pid) 2>/dev/null
-    - require:
-      - file: postgresql-pg_hba
-
-# Try to enable PostgreSQL in "manual" way when baking an image
-
-postgresql-enable:
-  cmd.run:
-  {%- if salt['file.file_exists']('/bin/systemctl') %}
-    - name: systemctl enable {{ postgres.service }}
-  {%- elif salt['cmd.which']('chkconfig') %}
-    - name: chkconfig {{ postgres.service }} on
-  {%- elif salt['file.file_exists']('/usr/sbin/update-rc.d') %}
-    - name: update-rc.d {{ service }} defaults
-  {%- else %}
-    # Nothing to do
-    - name: 'true'
-  {%- endif %}
-    - require:
-      - cmd: postgresql-start
 
 {%- endif %}

@@ -115,6 +115,8 @@ postgresql-tablespace-dir-{{ name }}:
     - recurse:
       - user
       - group
+    - require:
+      - pkg: postgresql-server
 
 {%- endfor %}
 

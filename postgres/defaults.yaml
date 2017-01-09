@@ -12,15 +12,10 @@ postgres:
   user: postgres
   group: postgres
 
-  # if prepare_cluster is over-ridden in any of:
-  # - osmap.yaml
-  # - oscodenamemap.yaml
-  # - osfingermap.yaml
-  # you will have to specify a complete dictionary.
   prepare_cluster:
-    user: root
-    command: service postgresql initdb
+    command: initdb --pgdata=/var/lib/pgsql/data
     test: test -f /var/lib/pgsql/data/PG_VERSION
+    user: postgres
     env: {}
 
   conf_dir: /var/lib/pgsql/data
@@ -37,6 +32,8 @@ postgres:
     - ['host', 'all', 'all', '::1/128', 'md5']
 
   service: postgresql
+
+  bake_image: False
 
   users: {}
   tablespaces: {}

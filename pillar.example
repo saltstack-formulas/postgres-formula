@@ -19,7 +19,7 @@ postgres:
   postgresconf: |
     listen_addresses = '*'  # listen on all interfaces
 
-  # Backup extension for postgresql.conf file, defaults to `.bak`.
+  # Backup extension for postgresql.conf file, defaults to ``.bak``.
   # Set to False to stop creation of backup on postgresql.conf changes.
   {%- if 'status.time' in salt.keys() %}
   postgresconf_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
@@ -28,7 +28,7 @@ postgres:
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
 
-  # This section covers ACL management in the `pg_hba.conf` file.
+  # This section covers ACL management in the ``pg_hba.conf`` file.
   # acls list controls: which hosts are allowed to connect, how clients
   # are authenticated, which PostgreSQL user names they can use, which
   # databases they can access. Records take one of these forms:
@@ -48,9 +48,20 @@ postgres:
   # PostgreSQL service name
   service: postgresql
 
+  {%- if grains['init'] == 'unknown' %}
+
+  # If Salt is unable to detect init system running in the scope of state run,
+  # probably we are trying to bake a container/VM image with PostgreSQL.
+  # Use ``bake_image`` setting to contol how PostgreSQL will be started: if set
+  # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
+  # script, job or unit run with Salt ``service`` state.
+  bake_image: True
+
+  {%- endif %}
+
   # Create/remove users, tablespaces, databases, schema and extensions.
   # Each of these dictionaries contains PostgreSQL entities which
-  # mapped to the `postgres_*` Salt states with arguments. See the Salt
+  # mapped to the ``postgres_*`` Salt states with arguments. See the Salt
   # documentaion to get all supported argument for a particular state.
   #
   # Format is the following:

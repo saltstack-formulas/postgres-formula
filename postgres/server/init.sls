@@ -1,11 +1,19 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from "postgres/map.jinja" import postgres with context %}
 
-{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra -%}
-
+{%- set includes = [] %}
+{%- if postgres.bake_image %}
+  {%- do includes.append('postgres.server.image') %}
+{%- endif %}
 {%- if postgres.use_upstream_repo -%}
+  {%- do includes.append('postgres.upstream') %}
+{%- endif %}
+
+{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
+
+{%- if includes -%}
 
 include:
-  - postgres.upstream
+  {{ includes|yaml(false)|indent(2) }}
 
 {%- endif %}
 
@@ -18,6 +26,29 @@ postgresql-server:
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
+{%- endif %}
+
+{%- if 'bin_dir' in postgres %}
+
+# Make server binaries available in $PATH
+
+  {%- for bin in postgres.server_bins %}
+
+    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+
+{{ bin }}:
+  alternatives.install:
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: 30
+    - onlyif: test -f {{ path }}
+    - require:
+      - pkg: postgresql-server
+    - require_in:
+      - cmd: postgresql-cluster-prepared
+
+  {%- endfor %}
+
 {%- endif %}
 
 postgresql-cluster-prepared:
@@ -67,16 +98,10 @@ postgresql-pg_hba:
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - mode: 600
+    - defaults:
+        acls: {{ postgres.acls }}
     - require:
       - file: postgresql-config-dir
-
-postgresql-running:
-  service.running:
-    - name: {{ postgres.service }}
-    - enable: True
-    - reload: True
-    - watch:
-      - file: postgresql-pg_hba
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
@@ -90,26 +115,21 @@ postgresql-tablespace-dir-{{ name }}:
     - recurse:
       - user
       - group
-
-{%- endfor %}
-
-{%- if 'bin_dir' in postgres %}
-
-# Make server binaries available in $PATH
-
-  {%- for bin in postgres.server_bins %}
-
-    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
-
-{{ bin }}:
-  alternatives.install:
-    - link: {{ salt['file.join']('/usr/bin', bin) }}
-    - path: {{ path }}
-    - priority: 30
-    - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-server
 
-  {%- endfor %}
+{%- endfor %}
+
+{%- if not postgres.bake_image %}
+
+# Start PostgreSQL server using OS init
+
+postgresql-running:
+  service.running:
+    - name: {{ postgres.service }}
+    - enable: True
+    - reload: True
+    - watch:
+      - file: postgresql-pg_hba
 
 {%- endif %}

@@ -1,7 +1,7 @@
 {%- from "postgres/map.jinja" import postgres with context -%}
 
-# This state is used to launch PostgreSQL and enable it on "boot" with `pg_ctl`
-# during an image (Docker, Virtual Appliance, AMI) preparation
+# This state is used to launch PostgreSQL with ``pg_ctl`` command and enable it
+# on "boot" during an image (Docker, Virtual Appliance, AMI) preparation
 
 {%- if postgres.bake_image %}
 
@@ -40,6 +40,6 @@ postgresql-enable:
 
 postgresql-start:
   test.show_notification:
-    - text: The 'postgres.bake_image' Pillar is disabled (set to 'False').
+    - text: The 'postgres:bake_image' Pillar is disabled (set to 'False').
 
 {%- endif %}

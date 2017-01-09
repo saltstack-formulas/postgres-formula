@@ -52,8 +52,8 @@ postgres:
 
   # If Salt is unable to detect init system running in the scope of state run,
   # probably we are trying to bake a container/VM image with PostgreSQL.
-  # Use ``service`` setting to contol how PostgreSQL will be started: if set to
-  # ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
+  # Use ``bake_image`` setting to contol how PostgreSQL will be started: if set
+  # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
   # script, job or unit run with Salt ``service`` state.
   bake_image: True
 

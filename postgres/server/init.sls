@@ -93,13 +93,17 @@ postgresql-conf:
 postgresql-pg_hba:
   file.managed:
     - name: {{ postgres.conf_dir }}/pg_hba.conf
-    - source: {{ postgres['pg_hba.conf'] }}
-    - template: jinja
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - mode: 600
+{%- if postgres.acls %}
+    - source: {{ postgres['pg_hba.conf'] }}
+    - template: jinja
     - defaults:
         acls: {{ postgres.acls }}
+{%- else %}
+    - replace: False
+{%- endif %}
     - require:
       - file: postgresql-config-dir
 

@@ -41,6 +41,9 @@ postgres:
   #
   # The uppercase items must be replaced by actual values.
   # METHOD could be omitted, 'md5' will be appended by default.
+  #
+  # If ``acls`` item value is empty ('', [], null), then the contents of
+  # ``pg_hba.conf`` file will not be touched at all.
   acls:
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
@@ -52,7 +55,7 @@ postgres:
 
   # If Salt is unable to detect init system running in the scope of state run,
   # probably we are trying to bake a container/VM image with PostgreSQL.
-  # Use ``bake_image`` setting to contol how PostgreSQL will be started: if set
+  # Use ``bake_image`` setting to control how PostgreSQL will be started: if set
   # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
   # script, job or unit run with Salt ``service`` state.
   bake_image: True
@@ -62,7 +65,7 @@ postgres:
   # Create/remove users, tablespaces, databases, schema and extensions.
   # Each of these dictionaries contains PostgreSQL entities which
   # mapped to the ``postgres_*`` Salt states with arguments. See the Salt
-  # documentaion to get all supported argument for a particular state.
+  # documentation to get all supported argument for a particular state.
   #
   # Format is the following:
   #

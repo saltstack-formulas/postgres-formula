@@ -19,12 +19,6 @@ postgres:
   postgresconf: |
     listen_addresses = '*'  # listen on all interfaces
 
-  # Backup extension for postgresql.conf file, defaults to ``.bak``.
-  # Set to False to stop creation of backup on postgresql.conf changes.
-  {%- if 'status.time' in salt.keys() %}
-  postgresconf_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
-  {%- endif %}
-
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
 
@@ -47,6 +41,12 @@ postgres:
   acls:
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+
+  # Backup extension for configuration files, defaults to ``.bak``.
+  # Set ``False`` to stop creation of backups when config files change.
+  {%- if 'status.time' in salt.keys() %}
+  config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
+  {%- endif %}
 
   # PostgreSQL service name
   service: postgresql

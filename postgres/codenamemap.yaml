@@ -34,6 +34,32 @@
 
 {% endmacro %}
 
+
+{% macro fedora_codename(name, version, codename=none) %}
+  {#
+  Generate lookup dictionary map for Fedora distributions
+
+    name:
+      distro codename
+    version:
+      PostgreSQL release version
+    codename:
+      optional grain value if `name` does not match the one returned by
+      `oscodename` grain
+  #}
+
+  {# use upstream version if configured #}
+  {% if repo.use_upstream_repo %}
+    {% set version = repo.version %}
+  {% endif %}
+
+{{ codename|default(name, true) }}:
+  # PostgreSQL packages are mostly downloaded from `main` repo component
+  pkg_repo:
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
+
+{% endmacro %}
+
 ## Debian GNU/Linux
 {{ debian_codename('wheezy', '9.1') }}
 {{ debian_codename('jessie', '9.4') }}
@@ -50,5 +76,11 @@
 {{ debian_codename('vivid', '9.4') }}
 {{ debian_codename('wily', '9.4') }}
 {{ debian_codename('xenial', '9.5') }}
+
+## Fedora
+# `oscodename` grain has long distro name
+{{ fedora_codename('Fedora-25', '9.5', 'Fedora 25 (Twenty Five)') }}
+{{ fedora_codename('Fedora-24', '9.5', 'Fedora 24 (Twenty Four)') }}
+{{ fedora_codename('Fedora-23', '9.4', 'Fedora 23 (Twenty Three)') }}
 
 # vim: ft=sls

@@ -8,14 +8,14 @@
   {%- do includes.append('postgres.upstream') %}
 {%- endif %}
 
-{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
-
 {%- if includes -%}
 
 include:
   {{ includes|yaml(false)|indent(2) }}
 
 {%- endif %}
+
+{%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
 
 # Install, configure and start PostgreSQL server
 
@@ -82,7 +82,7 @@ postgresql-conf:
         {{ postgres.postgresconf|indent(8) }}
     - show_changes: True
     - append_if_not_found: True
-    - backup: {{ postgres.postgresconf_backup }}
+    - backup: {{ postgres.config_backup }}
     - require:
       - file: postgresql-config-dir
     - watch_in:
@@ -90,9 +90,23 @@ postgresql-conf:
 
 {%- endif %}
 
+{%- set pg_hba_path = salt['file.join'](postgres.conf_dir, 'pg_hba.conf') %}
+
+postgresql-pg_hba-backup:
+  file.copy:
+    - name: {{ pg_hba_path ~ postgres.config_backup }}
+    - source: {{ pg_hba_path }}
+    - force: True
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
+    - mode: 600
+    - onlyif: test -f {{ pg_hba_path }}
+    - prereq:
+      - file: postgresql-pg_hba
+
 postgresql-pg_hba:
   file.managed:
-    - name: {{ postgres.conf_dir }}/pg_hba.conf
+    - name: {{ pg_hba_path }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - mode: 600

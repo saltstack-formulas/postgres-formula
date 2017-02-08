@@ -1,5 +1,6 @@
 {%- from "postgres/map.jinja" import postgres with context -%}
 {%- from "postgres/macros.jinja" import format_state with context -%}
+{%- from "postgres/macros.jinja" import format_kwargs with context -%}
 
 {%- if not salt.get('postgres.user_create') %}
 
@@ -25,6 +26,7 @@ postgres-reload-modules:
 
 {%- for name, user in postgres.users|dictsort() %}
 
+ {%- do user.update({'name': name}) %}
 {{ format_state(name, 'postgres_user', user) }}
     - require:
       - test: postgres-reload-modules
@@ -34,6 +36,7 @@ postgres-reload-modules:
 # Tablespace states
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
+ {%- do tblspace.update({'name': name}) %}
 
 {{ format_state(name, 'postgres_tablespace', tblspace) }}
     - require:
@@ -46,45 +49,78 @@ postgres-reload-modules:
 
 # Database states
 
-{%- for name, db in postgres.databases|dictsort() %}
+{%- macro format_database(db_name, kwarg) %}
 
-{{ format_state(name, 'postgres_database', db) }}
-    - require:
-      - test: postgres-reload-modules
-  {%- if 'owner' in db %}
-      - postgres_user: postgres_user-{{ db.owner }}
+  {%- do kwarg.update({'name': db_name}) %}
+  {%- if 'ensure' in kwarg %}
+    {%- set ensure = kwarg.pop('ensure') %}
   {%- endif %}
-  {%- if 'tablespace' in db %}
-      - postgres_tablespace: postgres_tablespace-{{ db.tablespace }}
+  {%- if 'user' not in kwarg %}
+    {%- do kwarg.update({'user': postgres.user}) %}
   {%- endif %}
 
-{%- endfor %}
+  {# extract any extensions or schemas #}
+  {%- if 'schemas' in kwarg %}
+    {%- set schemas = kwarg.pop('schemas') %}
+  {%- else %}
+    {%- set schemas = {} %}
+  {%- endif %}
 
-# Schema states
 
-{%- for name, schema in postgres.schemas|dictsort() %}
-
-{{ format_state(name, 'postgres_schema', schema) }}
+postgres_database-{{ db_name }}:
+  postgres_database.{{ ensure|default('present') }}:
+  {{- format_kwargs(kwarg) }}
     - require:
       - test: postgres-reload-modules
+    {%- if 'owner' in kwarg %}
+      - postgres_user: postgres_user-{{ kwarg.owner }}
+    {%- endif %}
+    {%- if 'tablespace' in kwarg %}
+      - postgres_tablespace: postgres_tablespace-{{ kwarg.tablespace }}
+    {% endif %}
+
+{# per db schemas #}
+{%- for schema_name, schema in schemas|dictsort() %}
+
+  {%- do schema.update({'dbname': db_name, 'name': schema_name}) %}
+  {# multiple databases can have a schema with the same name #}
+  {%- set schema_salt_state_suffix = db_name ~ '-' ~ schema_name %}
+  {%- if 'extensions' in schema %}
+    {%- set extensions = schema.pop('extensions') %}
+  {%- else %}
+    {%- set extensions = {} %}
+  {%- endif %}
+
+{{ format_state(schema_salt_state_suffix, 'postgres_schema', schema) }}
+    - require:
+      - test: postgres-reload-modules
+      - postgres_database: postgres_database-{{ db_name }}
   {%- if 'owner' in schema %}
       - postgres_user: postgres_user-{{ schema.owner }}
   {%- endif %}
 
-{%- endfor %}
+  {# per schema extensions #}
+  {%- for extension in extensions %}
 
-# Extension states
 
-{%- for name, extension in postgres.extensions|dictsort() %}
-
-{{ format_state(name, 'postgres_extension', extension) }}
+    {# multiple databases can use the same extension #}
+postgres_extension-{{ db_name }}-{{ extension }}:
+  postgres_extension.present:
+    - schema: {{ schema_name }}
+    - name: {{ extension }}
     - require:
       - test: postgres-reload-modules
-  {%- if 'maintenance_db' in extension %}
-      - postgres_database: postgres_database-{{ extension.maintenance_db }}
-  {%- endif %}
-  {%- if 'schema' in extension %}
-      - postgres_schema: postgres_schema-{{ extension.schema }}
-  {%- endif %}
+      - postgres_database: postgres_database-{{ db_name }}
+      - postgres_schema: postgres_schema-{{ schema_salt_state_suffix }}
+
+  {%- endfor %}
+
+{%- endfor %}
+
+{%- endmacro %}
+
+{%- for name, db in postgres.databases|dictsort() %}
+
+{{ format_database(name, db) }}
 
 {%- endfor %}

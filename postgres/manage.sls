@@ -107,6 +107,7 @@ postgres_database-{{ db_name }}:
 postgres_extension-{{ db_name }}-{{ extension }}:
   postgres_extension.present:
     - schema: {{ schema_name }}
+    - maintenance_db: {{ db_name }}
     - name: {{ extension }}
     - require:
       - test: postgres-reload-modules

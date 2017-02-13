@@ -1,7 +1,7 @@
 {%- from "postgres/map.jinja" import postgres with context -%}
 {%- from "postgres/macros.jinja" import format_state with context -%}
 
-{%- if not salt.get('postgres.user_create') %}
+{%- if salt['postgres.user_create']|default(none) is not callable %}
 
 # Salt states for managing PostgreSQL is not available,
 # need to provision client binaries first

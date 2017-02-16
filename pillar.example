@@ -44,7 +44,7 @@ postgres:
 
   # Backup extension for configuration files, defaults to ``.bak``.
   # Set ``False`` to stop creation of backups when config files change.
-  {%- if 'status.time' in salt.keys() %}
+  {%- if salt['status.time']|default(none) is callable %}
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
   {%- endif %}
 

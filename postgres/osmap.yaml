@@ -93,5 +93,7 @@ RedHat:
 Suse:
   pkg: postgresql-server
   pkg_client: postgresql
+  pkg_libpq_dev: postgresql
+
 
 # vim: ft=sls

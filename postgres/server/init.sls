@@ -82,7 +82,8 @@ postgresql-conf:
         {{ postgres.postgresconf|indent(8) }}
     - show_changes: True
     - append_if_not_found: True
-    - backup: {{ postgres.config_backup }}
+    {#- Detect empty values (none, '') in the config_backup #}
+    - backup: {{ postgres.config_backup|default(false, true) }}
     - require:
       - file: postgresql-config-dir
     - watch_in:
@@ -91,18 +92,6 @@ postgresql-conf:
 {%- endif %}
 
 {%- set pg_hba_path = salt['file.join'](postgres.conf_dir, 'pg_hba.conf') %}
-
-postgresql-pg_hba-backup:
-  file.copy:
-    - name: {{ pg_hba_path ~ postgres.config_backup }}
-    - source: {{ pg_hba_path }}
-    - force: True
-    - user: {{ postgres.user }}
-    - group: {{ postgres.group }}
-    - mode: 600
-    - onlyif: test -f {{ pg_hba_path }}
-    - prereq:
-      - file: postgresql-pg_hba
 
 postgresql-pg_hba:
   file.managed:
@@ -115,6 +104,14 @@ postgresql-pg_hba:
     - template: jinja
     - defaults:
         acls: {{ postgres.acls }}
+  {%- if postgres.config_backup %}
+    # Create the empty file before managing to overcome the limitation of check_cmd
+    - onlyif: test -f {{ pg_hba_path }} || touch {{ pg_hba_path }}
+    # Make a local backup before the file modification
+    - check_cmd: >-
+        salt-call --local file.copy
+        {{ pg_hba_path }} {{ pg_hba_path ~ postgres.config_backup }} remove_existing=true
+  {%- endif %}
 {%- else %}
     - replace: False
 {%- endif %}

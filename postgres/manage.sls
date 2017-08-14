@@ -23,9 +23,9 @@ postgres-reload-modules:
 
 # User states
 
-{%- for name, user in postgres.users|dictsort() %}
+{%- for key, user in postgres.users|dictsort() %}
 
-{{ format_state(name, 'postgres_user', user) }}
+{{ format_state(user.name or key, 'postgres_user', user) }}
     - require:
       - test: postgres-reload-modules
 
@@ -33,9 +33,9 @@ postgres-reload-modules:
 
 # Tablespace states
 
-{%- for name, tblspace in postgres.tablespaces|dictsort() %}
+{%- for key, tblspace in postgres.tablespaces|dictsort() %}
 
-{{ format_state(name, 'postgres_tablespace', tblspace) }}
+{{ format_state(tblspace.name or key, 'postgres_tablespace', tblspace) }}
     - require:
       - test: postgres-reload-modules
   {%- if 'owner' in tblspace %}
@@ -46,9 +46,9 @@ postgres-reload-modules:
 
 # Database states
 
-{%- for name, db in postgres.databases|dictsort() %}
+{%- for key, db in postgres.databases|dictsort() %}
 
-{{ format_state(name, 'postgres_database', db) }}
+{{ format_state(db.name or key, 'postgres_database', db) }}
     - require:
       - test: postgres-reload-modules
   {%- if 'owner' in db %}
@@ -62,9 +62,9 @@ postgres-reload-modules:
 
 # Schema states
 
-{%- for name, schema in postgres.schemas|dictsort() %}
+{%- for key, schema in postgres.schemas|dictsort() %}
 
-{{ format_state(name, 'postgres_schema', schema) }}
+{{ format_state(schema.name or key, 'postgres_schema', schema) }}
     - require:
       - test: postgres-reload-modules
   {%- if 'owner' in schema %}
@@ -75,9 +75,9 @@ postgres-reload-modules:
 
 # Extension states
 
-{%- for name, extension in postgres.extensions|dictsort() %}
+{%- for key, extension in postgres.extensions|dictsort() %}
 
-{{ format_state(name, 'postgres_extension', extension) }}
+{{ format_state(extension.name or key, 'postgres_extension', extension) }}
     - require:
       - test: postgres-reload-modules
   {%- if 'maintenance_db' in extension %}

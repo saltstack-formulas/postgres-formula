@@ -43,6 +43,8 @@ postgres:
   # Set ``False`` to stop creation of backups when config files change.
   {%- if salt['status.time']|default(none) is callable %}
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
+  {% else %}
+  config_backup: '.bak'
   {%- endif %}
 
   # PostgreSQL service name
@@ -55,7 +57,7 @@ postgres:
   # Use ``bake_image`` setting to control how PostgreSQL will be started: if set
   # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
   # script, job or unit run with Salt ``service`` state.
-  bake_image: True
+  bake_image: False
 
   {%- endif %}
 

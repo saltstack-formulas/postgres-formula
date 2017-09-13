@@ -19,6 +19,17 @@ Debian:
   pkg_dev: postgresql-server-dev-all
   pkg_libpq_dev: libpq-dev
 
+  pkg: 'postgresql-{{ repo.version }}'
+  pkg_client: 'postgresql-client-{{ repo.version }}'
+  pkgs_extra: [ postgresql-contrib, postgresql-plpython-{{ repo.version }}, libpostgresql-jdbc-java]
+  python: python-psycopg2
+  {% set data_dir = '/var/lib/postgresql/data' %}
+  conf_dir: {{ data_dir }}
+  prepare_cluster:
+    command: /usr/lib/postgresql/9.6/bin/initdb --pgdata={{ data_dir }}
+    test: test -f {{ data_dir }}/PG_VERSION
+    user: postgres
+
 FreeBSD:
   user: pgsql
 
@@ -39,12 +50,6 @@ RedHat:
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
-  conf_dir: /var/lib/pgsql/{{ repo.version }}/data
-  service: postgresql-{{ repo.version }}
-
-  prepare_cluster:
-    command: initdb --pgdata='{{ data_dir }}'
-    test: test -f '{{ data_dir }}/PG_VERSION'
 
   # Directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
@@ -85,15 +90,30 @@ RedHat:
 
 {% else %}
 
+  {% set data_dir = '/var/lib/pgsql/data' %}
   pkg: postgresql-server
   pkg_client: postgresql
 
 {% endif %}
 
+  service: postgresql-{{ repo.version }}
+  pkgs_extra: [ postgresql-contrib, postgresql-plpython, postgresql-jdbc, postgresql-docs]
+  conf_dir: {{ data_dir }}
+  prepare_cluster:
+    command: initdb --pgdata='{{ data_dir }}'
+    test: test -f '{{ data_dir }}/PG_VERSION'
+    user: postgres
+
 Suse:
   pkg: postgresql-server
   pkg_client: postgresql
   pkg_libpq_dev: postgresql
+  pkgs_extra: [ postgresql-contrib, postgresql-plpython, postgresql-jdbc, postgresql-docs]
 
+  {% set data_dir = '/var/lib/pgsql/data' %}
+  prepare_cluster:
+    command: /usr/lib/postgresql/bin/initdb --pgdata={{ data_dir }}
+    test: test -f {{ data_dir }}/PG_VERSION
+    user: postgres
 
 # vim: ft=sls

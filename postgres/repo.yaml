@@ -1,5 +1,5 @@
 # This file allows to get PostgreSQL version and upstream repo settings
-# early from Pillar to set correct lookup dictionaty items
+# early from Pillar to set correct lookup dictionary items
 
 {% import_yaml "postgres/defaults.yaml" as defaults %}
 

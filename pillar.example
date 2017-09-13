@@ -4,15 +4,12 @@ postgres:
   # Version to install from upstream repository
   version: '9.3'
 
-  # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
-
-  # Additional packages to install with PostgreSQL server,
-  # this should be in a list format
-  pkgs_extra:
-    - postgresql-contrib
-    - postgresql-plpython
+  ### Package names are normally defined in osmap.yaml
+  ## pkg: 'postgresql-9.3'
+  ## pkg_client: 'postgresql-client-9.3'
+  ## pkgs_extra:
+    ## - postgresql-contrib
+    ## - postgresql-plpython
 
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.

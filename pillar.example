@@ -4,15 +4,9 @@ postgres:
   # Version to install from upstream repository
   version: '9.3'
 
-  # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
-
-  # Additional packages to install with PostgreSQL server,
-  # this should be in a list format
-  pkgs_extra:
-    - postgresql-contrib
-    - postgresql-plpython
+  # Package names are defined in codenamemap.yaml and osmap.yaml
+  # Extra packages: ditto
+  pkgs_extra: []
 
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
@@ -58,7 +52,7 @@ postgres:
   # Use ``bake_image`` setting to control how PostgreSQL will be started: if set
   # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
   # script, job or unit run with Salt ``service`` state.
-  bake_image: True
+  # bake_image: True
 
   {%- endif %}
 

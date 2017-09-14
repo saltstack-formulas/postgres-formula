@@ -5,7 +5,7 @@ postgres:
   version: '9.3'
 
   # Package names are defined in codenamemap.yaml and osmap.yaml
-  # Extra package: ditto
+  # Extra packages: ditto
   pkgs_extra: []
 
   # Append the lines under this item to your postgresql.conf file.

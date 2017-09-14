@@ -7,9 +7,7 @@ postgres:
   # Package names are normally defined in osmap.yaml
   # pkg: 'postgresql-9.3'
   # pkg_client: 'postgresql-client-9.3'
-  # pkgs_extra:
-  # - postgresql-contrib
-  # - postgresql-plpython
+  pkgs_extra: []
 
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.

@@ -7,7 +7,7 @@ Arch:
   prepare_cluster:
     command: initdb -D /var/lib/postgresql/data
     test: test -f /var/lib/postgres/data/PG_VERSION
-  pkg_client: postgresql
+  pkg_client: postgresql-lib
   pkg_dev: postgresql
 
 Debian:

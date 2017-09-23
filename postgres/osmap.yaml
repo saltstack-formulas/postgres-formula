@@ -96,7 +96,7 @@ Suse:
   pkg_libpq_dev: postgresql
 
 MacOS:
-  service: postgres
+  service: postgresql
   pkg: postgresql
   pkg_client:
   pkg_libpq_dev:

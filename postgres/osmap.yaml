@@ -98,6 +98,8 @@ Suse:
 MacOS:
   service: postgres
   pkg: postgres
+  pkg_client:
+  pkg_libpq_dev:
   conf_dir: /usr/local/var/postgres
   prepare_cluster:
     command: initdb -D /usr/local/var/postgres/

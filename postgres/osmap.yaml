@@ -95,5 +95,11 @@ Suse:
   pkg_client: postgresql
   pkg_libpq_dev: postgresql
 
+MacOS:
+  pkg: postgres
+  prepare_cluster:
+    user: _postgres
+    #binpath: /usr/local/bin
+
 
 # vim: ft=sls

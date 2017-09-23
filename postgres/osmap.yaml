@@ -96,10 +96,13 @@ Suse:
   pkg_libpq_dev: postgresql
 
 MacOS:
+  service: postgres
   pkg: postgres
+  conf_dir: /usr/local/var/postgres
   prepare_cluster:
+    command: initdb -D /usr/local/var/postgres/
+    test: test -f /usr/local/var/postgres/PG_VERSION
     user: _postgres
-    #binpath: /usr/local/bin
 
 
 # vim: ft=sls

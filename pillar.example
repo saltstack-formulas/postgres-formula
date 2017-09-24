@@ -5,8 +5,8 @@ postgres:
 
   ## OR UPSTREAM REPO (Suse/Redhat)
   # use_upstream_repo: True
-  # version: '9.3'
-  # service: postgresql-9.3
+  # version: '9.5'
+  # service: postgresql-9.5
 
   ## AND OVERRIDES
   # Additional packages to install with PostgreSQL server,

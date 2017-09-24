@@ -95,8 +95,8 @@ Suse:
     name: pgdg{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-$releasever-$basearch'
-    gpgcheck: 1
-    gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
+    gpgcheck=1
+    gpgkey: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-$releasever-$basearch/repodata/repomd.xml'
 
 {% if repo.use_upstream_repo %}
 

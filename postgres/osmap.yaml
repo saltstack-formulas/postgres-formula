@@ -95,5 +95,19 @@ Suse:
   pkg_client: postgresql
   pkg_libpq_dev: postgresql
 
+MacOS:
+  service: postgresql
+  pkg: postgresql
+  pkg_client:
+  pkg_libpq_dev:
+  conf_dir: /usr/local/var/postgres
+  user: _postgres
+  group: _postgres
+  prepare_cluster:
+    command: initdb -D /usr/local/var/postgres/
+    test: test -f /usr/local/var/postgres/PG_VERSION
+    user: _postgres
+    group: _postgres
+
 
 # vim: ft=sls

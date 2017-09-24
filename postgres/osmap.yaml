@@ -92,8 +92,9 @@ RedHat:
 
 Suse:
   pkg: postgresql-server
-  pkg_client: postgresql
-  pkg_libpq_dev: postgresql
+  pkg_client: postgresql-server
+  pkg_libpq_dev: libpq5
+  #pkgs_extra: [postgresql-jdbc, postgresql-jdbc-javadoc, postgresql-devel]
 
 MacOS:
   service: postgresql

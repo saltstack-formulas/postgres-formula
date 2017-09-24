@@ -5,9 +5,9 @@
 Arch:
   conf_dir: /var/lib/postgres/data
   prepare_cluster:
-    command: initdb -D /var/lib/postgresql/data
+    command: initdb -D /var/lib/postgres/data
     test: test -f /var/lib/postgres/data/PG_VERSION
-  pkg_client: postgresql
+  pkg_client: postgresql-libs
   pkg_dev: postgresql
 
 Debian:

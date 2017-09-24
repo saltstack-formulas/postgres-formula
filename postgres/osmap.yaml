@@ -94,23 +94,24 @@ Suse:
   pkg_repo:
     name: pgdg-sles-{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
-    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-$releasever-$basearch'
-    gpgcheck: 1
-    gpgkey: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-$releasever-$basearch/repodata/repomd.xml'
+    #Suse repos are suffixed 'suse/sles-12-$basearch' by upstream community convention.
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-12-$basearch'
+    gpgkey:  'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-12-$basearch/repodata/repomd.xml'
+    #future: fix suse "4-Signatures public key is not available" issue and enable gpgcheck.
+    gpgcheck: 0
 
 {% if repo.use_upstream_repo %}
 
-  {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}-server
-  conf_dir: /var/lib/pgsql/{{ repo.version }}/data
-  bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  conf_dir: {{ lib_dir }}
   service: postgresql-{{ repo.version }}
 
   prepare_cluster:
-    command: initdb --pgdata='{{ data_dir }}'
-    test: test -f '{{ data_dir }}/PG_VERSION'
+    command: initdb --pgdata='{{ lib_dir }}'
+    test: test -f '{{ lib_dir }}/PG_VERSION'
 
   # Directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin

@@ -91,9 +91,34 @@ RedHat:
 {% endif %}
 
 Suse:
-  pkg: postgresql-server
-  pkg_client: postgresql
-  pkg_libpq_dev: postgresql
+  pkg_repo:
+    name: pgdg{{ release }}
+    humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-$releasever-$basearch'
+    gpgcheck: 1
+    gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
 
+{% if repo.use_upstream_repo %}
+
+  {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}-server
+  conf_dir: /var/lib/pgsql/{{ repo.version }}/data
+  bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  service: postgresql-{{ repo.version }}
+
+  prepare_cluster:
+    command: initdb --pgdata='{{ data_dir }}'
+    test: test -f '{{ data_dir }}/PG_VERSION'
+
+{% else %}
+
+  pkg: postgresql-server
+  pkg_client: postgresql-server
+
+{% endif %}
+  pkg_libpq_dev: libpq5
+  #pkgs_extra: [postgresql-jdbc, postgresql-jdbc-javadoc, postgresql-devel]
 
 # vim: ft=sls

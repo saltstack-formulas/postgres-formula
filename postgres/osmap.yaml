@@ -154,6 +154,8 @@ Suse:
   pkg: postgresql-server
   pkg_client: postgresql-server
 
+{% endif %}
+
 MacOS:
   service: postgresql
   pkg: postgresql

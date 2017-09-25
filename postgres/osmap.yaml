@@ -5,9 +5,9 @@
 Arch:
   conf_dir: /var/lib/postgres/data
   prepare_cluster:
-    command: initdb -D /var/lib/postgresql/data
+    command: initdb -D /var/lib/postgres/data
     test: test -f /var/lib/postgres/data/PG_VERSION
-  pkg_client: postgresql
+  pkg_client: postgresql-libs
   pkg_dev: postgresql
 
 Debian:
@@ -154,8 +154,18 @@ Suse:
   pkg: postgresql-server
   pkg_client: postgresql-server
 
-{% endif %}
-  pkg_libpq_dev: libpq5
-  #pkgs_extra: [postgresql-jdbc, postgresql-jdbc-javadoc, postgresql-devel]
+MacOS:
+  service: postgresql
+  pkg: postgresql
+  pkg_client:
+  pkg_libpq_dev:
+  conf_dir: /usr/local/var/postgres
+  user: _postgres
+  group: _postgres
+  prepare_cluster:
+    command: initdb -D /usr/local/var/postgres/
+    test: test -f /usr/local/var/postgres/PG_VERSION
+    user: _postgres
+    group: _postgres
 
 # vim: ft=sls

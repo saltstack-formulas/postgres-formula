@@ -91,9 +91,70 @@ RedHat:
 {% endif %}
 
 Suse:
+  pkg_repo:
+    name: pgdg-sles-{{ release }}
+    humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
+    #Suse repos are suffixed 'suse/sles-12-$basearch' by upstream community convention.
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-12-$basearch'
+    gpgkey:  'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/suse/sles-12-$basearch/repodata/repomd.xml'
+    #future: fix suse "4-Signatures public key is not available" issue and enable gpgcheck.
+    gpgcheck: 0
+
+{% if repo.use_upstream_repo %}
+
+  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}-server
+  conf_dir: {{ lib_dir }}
+  service: postgresql-{{ repo.version }}
+
+  prepare_cluster:
+    command: initdb --pgdata='{{ lib_dir }}'
+    test: test -f '{{ lib_dir }}/PG_VERSION'
+
+  # Directory containing PostgreSQL client executables
+  bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  client_bins:
+    - clusterdb
+    - createdb
+    - createlang
+    - createuser
+    - dropdb
+    - droplang
+    - dropuser
+    - pg_archivecleanup
+    - pg_basebackup
+    - pg_config
+    - pg_dump
+    - pg_dumpall
+    - pg_isready
+    - pg_receivexlog
+    - pg_restore
+    - pg_rewind
+    - pg_test_fsync
+    - pg_test_timing
+    - pg_upgrade
+    - pg_xlogdump
+    - pgbench
+    - psql
+    - reindexdb
+    - vacuumdb
+  server_bins:
+    - initdb
+    - pg_controldata
+    - pg_ctl
+    - pg_resetxlog
+    - postgres
+    - postgresql{{ release }}-check-db-dir
+    - postgresql{{ release }}-setup
+    - postmaster
+{% else %}
+
   pkg: postgresql-server
-  pkg_client: postgresql
-  pkg_libpq_dev: postgresql
+  pkg_client: postgresql-server
+
+{% endif %}
 
 MacOS:
   service: postgresql
@@ -108,6 +169,5 @@ MacOS:
     test: test -f /usr/local/var/postgres/PG_VERSION
     user: _postgres
     group: _postgres
-
 
 # vim: ft=sls

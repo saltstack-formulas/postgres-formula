@@ -1,17 +1,18 @@
 postgres:
-  ## USE DISTRO REPO
+  # Set True to configure upstream postgresql.org repository for YUM or APT
   use_upstream_repo: False
-  service: postgresql
+  # Version to install from upstream repository
+  version: '9.3'
 
-  ## OR UPSTREAM REPO (Suse/Redhat)
-  # use_upstream_repo: True
-  # version: '9.5'
-  # service: postgresql-9.5
+  # These are Debian/Ubuntu specific package names
+  pkg: 'postgresql-9.3'
+  pkg_client: 'postgresql-client-9.3'
 
-  ## AND OVERRIDES
   # Additional packages to install with PostgreSQL server,
   # this should be in a list format
-  pkgs_extra: []
+  pkgs_extra:
+    - postgresql-contrib
+    - postgresql-plpython
 
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
@@ -46,6 +47,9 @@ postgres:
   {%- if salt['status.time']|default(none) is callable %}
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
   {%- endif %}
+
+  # PostgreSQL service name
+  service: postgresql
 
   {%- if grains['init'] == 'unknown' %}
 

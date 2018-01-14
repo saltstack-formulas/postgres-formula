@@ -8,10 +8,8 @@
 {%- endfor %}
 
 {%- if postgres.use_upstream_repo %}
-
 include:
   - postgres.upstream
-
 {%- endif %}
 
 # Install PostgreSQL client and libraries
@@ -23,14 +21,14 @@ postgresql-client-libs:
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
+       {% if grains.os_family == 'Suse' %}
+      - cmd: postgresql-repo
+       {% endif %}
 {%- endif %}
 
 {%- if 'bin_dir' in postgres %}
-
-# Make client binaries available in $PATH
-
+  # Make client binaries available in $PATH
   {%- for bin in postgres.client_bins %}
-
     {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
 {{ bin }}:
@@ -43,5 +41,4 @@ postgresql-client-libs:
       - pkg: postgresql-client-libs
 
   {%- endfor %}
-
 {%- endif %}

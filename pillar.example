@@ -1,12 +1,12 @@
 postgres:
-  # Set True to configure upstream postgresql.org repository for YUM or APT
+  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
   # Version to install from upstream repository
-  version: '9.3'
+  version: '9.6'
 
   # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
+  pkg: 'postgresql-9.6'
+  pkg_client: 'postgresql-client-9.6'
 
   # Additional packages to install with PostgreSQL server,
   # this should be in a list format

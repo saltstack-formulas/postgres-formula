@@ -41,3 +41,7 @@ postgres:
   databases: {}
   schemas: {}
   extensions: {}
+
+  linux:
+    #debian alternatives are disabled by a 'altpriority=0' pillar.
+    altpriority: 30

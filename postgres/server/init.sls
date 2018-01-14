@@ -9,16 +9,12 @@
 {%- endif %}
 
 {%- if includes -%}
-
 include:
   {{ includes|yaml(false)|indent(2) }}
-
 {%- endif %}
 
 {%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
-
 # Install, configure and start PostgreSQL server
-
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
@@ -28,27 +24,27 @@ postgresql-server:
       - pkgrepo: postgresql-repo
 {%- endif %}
 
-{%- if 'bin_dir' in postgres %}
-
-# Make server binaries available in $PATH
-
-  {%- for bin in postgres.server_bins %}
-
-    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+# Debian Alternatives
+{% if postgres.linux.altpriority|int > 0 %}
+  {%- if 'bin_dir' in postgres %}
+    {% if grains.os_family not in ('Arch',) %}
+      {%- for bin in postgres.server_bins %}
+        {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
 {{ bin }}:
   alternatives.install:
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
-    - priority: 30
+    - priority: {{ postgres.linux.altpriority|int }}
     - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-server
     - require_in:
       - cmd: postgresql-cluster-prepared
 
-  {%- endfor %}
-
+      {%- endfor %}
+    {% endif %}
+  {%- endif %}
 {%- endif %}
 
 postgresql-cluster-prepared:
@@ -138,7 +134,6 @@ postgresql-tablespace-dir-{{ name }}:
 {%- if not postgres.bake_image %}
 
 # Start PostgreSQL server using OS init
-
 postgresql-running:
   service.running:
     - name: {{ postgres.service }}

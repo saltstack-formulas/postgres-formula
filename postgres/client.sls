@@ -8,14 +8,11 @@
 {%- endfor %}
 
 {%- if postgres.use_upstream_repo %}
-
 include:
   - postgres.upstream
-
 {%- endif %}
 
 # Install PostgreSQL client and libraries
-
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
@@ -25,23 +22,27 @@ postgresql-client-libs:
       - pkgrepo: postgresql-repo
 {%- endif %}
 
+# Debian Alternatives
 {%- if 'bin_dir' in postgres %}
+  {% if postgres.linux.altpriority|int > 0 %}
+    {% if grains.os_family not in ('Arch',) %}
 
 # Make client binaries available in $PATH
 
-  {%- for bin in postgres.client_bins %}
-
-    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+      {%- for bin in postgres.client_bins %}
+        {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
 {{ bin }}:
   alternatives.install:
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
-    - priority: 30
+    - priority: {{ postgres.linux.altpriority|int }}
     - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-client-libs
 
-  {%- endfor %}
+      {%- endfor %}
 
+    {%- endif %}
+  {%- endif %}
 {%- endif %}

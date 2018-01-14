@@ -2,17 +2,21 @@ postgres:
   # Set True to configure upstream postgresql.org repository for YUM or APT
   use_upstream_repo: False
   # Version to install from upstream repository
-  version: '9.3'
+  version: '9.6'
 
   # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
+  pkg: 'postgresql-9.6'
+  pkg_client: 'postgresql-client-9.6'
 
   # Additional packages to install with PostgreSQL server,
   # this should be in a list format
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython
+
+  #Debian alternatives priority incremental. 0 disables feature.
+  linux:
+    altpriority: 30
 
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.

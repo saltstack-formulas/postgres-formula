@@ -14,6 +14,10 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
+  #'Alternatives system' priority incremental. 0 disables feature.
+  linux:
+    altpriority: 30
+
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |

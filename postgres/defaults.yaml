@@ -41,3 +41,7 @@ postgres:
   databases: {}
   schemas: {}
   extensions: {}
+
+  linux:
+    #Alternatives system are disabled by a 'altpriority=0' pillar.
+    altpriority:

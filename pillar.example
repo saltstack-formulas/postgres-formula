@@ -1,26 +1,26 @@
 postgres:
+  # REPO
 {% if grains.os == 'MacOS' %}
 
-  # Set to 'postgresapp' to install that upstream MacOS package
-  use_upstream_repo: 'postgresapp'
+  # Set to 'postgresapp' or 'homebrew' to install that package on MacOS
+  use_upstream_repo: 'homebrew'
 
 {% else %}
-  # Set False to use distro packaged postgresql.
-  # Set True to use upstream postgresql.org repo for YUM/APT/ZYPP
+  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
-
-  # Upstream version
+  # Version to install from upstream repository (if upstream_repo: True)
   version: '9.6'
 
-  # Additional packages to install with PostgreSQL server,
-  # this should be in a list format and correctly named.
-  pkgs_extra:
-  - postgresql-contrib
-  - postgresql-plpython
-
-  # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.6'
-  pkg_client: 'postgresql-client-9.6'
+  # PACKAGE
+  # These pillars are typically only required if formula defaults are
+  # known to 'not work' (please raise github issue).
+  # pkg: 'postgresql-9.6'
+  # pkg_client: 'postgresql-client-9.6'
+  #pkgs_extra:
+  #  - postgresql-contrib
+  #  - postgresql-plpython
+  # PostgreSQL service name
+  # service: postgresql
 
   #Debian alternatives priority incremental. 0 disables feature.
   linux:
@@ -31,6 +31,7 @@ postgres:
     soft: 64000
     hard: 64000
 
+  # POSTGRES
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |

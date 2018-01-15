@@ -7,7 +7,7 @@
   {%- endif %}
 {%- endfor %}
 
-{%- if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo == 'True' %}
 include:
   - postgres.upstream
 {%- endif %}
@@ -16,7 +16,7 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo == 'True' %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
@@ -28,7 +28,7 @@ postgresql-client-libs:
 # Debian Alternatives
 {%- if 'bin_dir' in postgres %}
   {% if postgres.linux.altpriority|int > 0 %}
-    {% if grains.os_family not in ('Arch',) %}
+    {% if grains.os_family not in ('Arch', 'MacOS',) %}
 
 # Make client binaries available in $PATH
 

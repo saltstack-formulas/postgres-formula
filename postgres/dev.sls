@@ -29,19 +29,16 @@ postgres_maxfiles_limits_conf:
     - context:
       soft_limit: {{ postgres.limits.soft or postgres.limits.hard }}
       hard_limit: {{ postgres.limits.hard or postgres.limits.soft }}
-    - group: wheel
+    - group: {{ postgres.group }}
   {% endif %}
 
-  # MacOS Shortcut for system user
-  {% if postgres.systemuser|lower not in (None, '',) %}
-
+  {% if postgres.use_upstream_repo == 'postgresapp' %}
+  # Shortcut for PostgresApp
 postgres-desktop-shortcut-clean:
   file.absent:
-    - name: '{{ postgres.userhomes }}/{{ postgres.systemuser }}/Desktop/postgres'
+    - name: '{{ postgres.userhomes }}/{{ postgres.user }}/Desktop/Postgres ({{ postgres.use_upstream_repo }})'
     - require_in:
       - file: postgres-desktop-shortcut-add
-
-  {% endif %}
 
 postgres-desktop-shortcut-add:
   file.managed:
@@ -50,12 +47,13 @@ postgres-desktop-shortcut-add:
     - mode: 755
     - template: jinja
     - context:
-      user: {{ postgres.systemuser }}
+      user: {{ postgres.user }}
       homes: {{ postgres.userhomes }}
   cmd.run:
-    - name: /tmp/mac_shortcut.sh {{ postgres.use_upstream_repo }}
-    - runas: {{ postgres.systemuser }}
+    - name: '/tmp/mac_shortcut.sh "Postgres ({{ postgres.use_upstream_repo }})"'
+    - runas: {{ postgres.user }}
     - require:
       - file: postgres-desktop-shortcut-add
+  {% endif %}
 
 {% endif %}

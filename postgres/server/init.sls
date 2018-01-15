@@ -4,7 +4,7 @@
 {%- if postgres.bake_image %}
   {%- do includes.append('postgres.server.image') %}
 {%- endif %}
-{%- if postgres.use_upstream_repo -%}
+{%- if postgres.use_upstream_repo|lower == 'true' -%}
   {%- do includes.append('postgres.upstream') %}
 {%- endif %}
 
@@ -18,18 +18,29 @@ include:
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+  {%- if postgres.use_upstream_repo|lower == 'true' %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
+  {%- if grains.os == 'MacOS' %}
+     #Register as Launchd LaunchAgent for system users
+    - require_in:
+      - file: postgresql-server
+  file.managed:
+    - name: /Library/LaunchAgents/{{ postgres.service }}.plist
+    - source: /usr/local/opt/postgres/{{ postgres.service }}.plist
+    - group: wheel
+    - require_in:
+      - service: postgresql-running
+  {% else %}
 
 # Debian Alternatives
-{% if postgres.linux.altpriority|int > 0 %}
-  {%- if 'bin_dir' in postgres %}
-    {% if grains.os_family not in ('Arch',) %}
-      {%- for bin in postgres.server_bins %}
-        {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+    {% if postgres.linux.altpriority|int > 0 %}
+      {%- if 'bin_dir' in postgres %}
+        {% if grains.os_family not in ('Arch',) %}
+          {%- for bin in postgres.server_bins %}
+            {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
 {{ bin }}:
   alternatives.install:
@@ -42,10 +53,12 @@ postgresql-server:
     - require_in:
       - cmd: postgresql-cluster-prepared
 
-      {%- endfor %}
-    {% endif %}
+          {%- endfor %}
+        {% endif %}
+      {%- endif %}
+    {%- endif %}
+
   {%- endif %}
-{%- endif %}
 
 postgresql-cluster-prepared:
   cmd.run:
@@ -63,6 +76,12 @@ postgresql-config-dir:
     - name: {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
+    - dir_mode: 775
+    - force: True
+    - file_mode: 644
+    - recurse:
+      - user
+      - group
     - makedirs: True
     - require:
       - cmd: postgresql-cluster-prepared
@@ -138,7 +157,9 @@ postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
+   {% if grains.os not in ('MacOS',) %}
     - reload: True
+   {% endif %}
     - watch:
       - file: postgresql-pg_hba
 

@@ -130,6 +130,8 @@ MacOS:
   pkg_client:
   pkg_libpq_dev:
   conf_dir: /usr/local/var/postgres
+  userhomes: /Users
+  systemuser: {{ salt['pillar.get']('postgres.systemuser') or salt['cmd.run']("stat -f '%Su' /dev/console")  }}
   user: _postgres
   group: _postgres
   prepare_cluster:

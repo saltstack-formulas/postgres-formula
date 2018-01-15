@@ -17,12 +17,12 @@ Available states
 ------------
 
 Installs and configures both PostgreSQL server and client with creation of various DB objects in
-the cluster.
+the cluster. This state applies to both Linux and MacOS.
 
 ``postgres.client``
 -------------------
 
-Installs the PostgreSQL client binaries and libraries.
+Installs the PostgreSQL client binaries and libraries on Linux.
 
 ``postgres.manage``
 -------------------
@@ -33,18 +33,18 @@ See ``pillar.example`` file for details.
 ``postgres.python``
 -------------------
 
-Installs the PostgreSQL adapter for Python.
+Installs the PostgreSQL adapter for Python on Linux.
 
 ``postgres.server``
 -------------------
 
-Installs the PostgreSQL server package, prepares the DB cluster and starts the server using
-packaged init script, job or unit.
+Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server
+using packaged init script, job or unit.
 
 ``postgres.server.image``
 -------------------------
 
-Installs the PostgreSQL server package, prepares the DB cluster and starts the server by issuing
+Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server by issuing
 raw ``pg_ctl`` command. The ``postgres:bake_image`` Pillar toggles this behaviour. For example:
 
 .. code:: yaml
@@ -76,15 +76,17 @@ applicable.
 The state relies on the ``postgres:use_upstream_repo`` Pillar value which could be set as following:
 
 * ``True`` (default): adds the upstream repository to install packages from
-* ``False``: makes sure that the repository configuration is absent
+* ``False`` makes sure that the repository configuration is absent
+* ``postgresapp`` (MacOS) uses upstream PostgresApp package repository.
 
 The ``postgres:version`` Pillar controls which version of the PostgreSQL packages should be
-installed from the upstream repository. Defaults to ``9.5``.
+installed from the upstream Linux repository. Defaults to ``9.5``.
 
 Testing
 =======
+The postgres state was tested on MacOS (El Capitan 10.11.6)
 
-Testing is done with the ``kitchen-salt``.
+Linux testing is done with the ``kitchen-salt``.
 
 ``kitchen converge``
 --------------------

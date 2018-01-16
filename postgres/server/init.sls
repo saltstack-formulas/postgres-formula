@@ -56,7 +56,7 @@ postgresql-cluster-prepared:
     - name: {{ postgres.prepare_cluster.command }}
     - cwd: /
     - runas: {{ postgres.prepare_cluster.user }}
-    - env: {{ postgres.prepare_cluster.env|default({}) }}
+    - env: {{ postgres.prepare_cluster.env|default({}) or None }}
     - unless:
       - {{ postgres.prepare_cluster.test }}
     - require:

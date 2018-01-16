@@ -47,6 +47,9 @@ postgres:
     # IPv6 local connections:
     - ['host', 'all', 'all', '::1/128', 'md5']
 
+  pg_ident.conf: salt://postgres/templates/pg_ident.conf.j2
+  identity_map: []
+
   config_backup: '.bak'
 
   service: postgresql

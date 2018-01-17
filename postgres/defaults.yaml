@@ -8,6 +8,8 @@ postgres:
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
   pkg_libpq_dev: postgresql-libs
+  pkg_libs:
+  pkg_contrib:
   python: python-psycopg2
   user: postgres
   group: postgres
@@ -20,6 +22,9 @@ postgres:
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""
+
+  #For removal states, keep data and configuration directories?
+  keep_dataconf: False
 
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
   acls:

@@ -4,15 +4,9 @@
 {%- if postgres.bake_image %}
   {%- do includes.append('postgres.server.image') %}
 {%- endif %}
-{%- if postgres.use_upstream_repo -%}
-  {%- do includes.append('postgres.upstream') %}
-{%- endif %}
-
 {%- if includes -%}
-
 include:
   {{ includes|yaml(false)|indent(2) }}
-
 {%- endif %}
 
 {%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
@@ -22,11 +16,16 @@ include:
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+  {%- if postgres.pkg_repo.name %}
+    - fromrepo: {{ postgres.pkg_repo.name }}
+  {%- endif %}
+  {%- if postgres.use_upstream_repo %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+
+    {%- do includes.append('postgres.upstream') %}
+  {%- endif %}
 
 {%- if 'bin_dir' in postgres %}
 
@@ -56,7 +55,7 @@ postgresql-cluster-prepared:
     - name: {{ postgres.prepare_cluster.command }}
     - cwd: /
     - runas: {{ postgres.prepare_cluster.user }}
-    - env: {{ postgres.prepare_cluster.env|default({}) }}
+    - env: {{ postgres.prepare_cluster.env }}
     - unless:
       - {{ postgres.prepare_cluster.test }}
     - require:

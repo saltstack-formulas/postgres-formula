@@ -81,6 +81,20 @@ The state relies on the ``postgres:use_upstream_repo`` Pillar value which could 
 The ``postgres:version`` Pillar controls which version of the PostgreSQL packages should be
 installed from the upstream repository. Defaults to ``9.5``.
 
+Removal
+=======
+
+``postgres.server.remove``
+-------------------
+
+Stops Postgres service, remove packages (and upstream repo), and tablespace directories.
+
+``postgres.client.remove``
+-------------------
+
+Remove postgres client and developer packages.
+
+
 Testing
 =======
 

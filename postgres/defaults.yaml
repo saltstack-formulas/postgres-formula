@@ -16,7 +16,8 @@ postgres:
     command: initdb --pgdata=/var/lib/pgsql/data
     test: test -f /var/lib/pgsql/data/PG_VERSION
     user: postgres
-    env: {}
+    # Be aware that there's no ``None`` value exists in YAML
+    env: []
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""

@@ -17,7 +17,7 @@ postgres:
     test: test -f /var/lib/pgsql/data/PG_VERSION
     user: postgres
     # Be aware that there's no ``None`` value exists in YAML
-    env: Null
+    env: []
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""

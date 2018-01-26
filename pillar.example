@@ -135,22 +135,14 @@ postgres:
       schemas:
         public:
           owner: 'localUser'
-      # enable per-db extension
-      extensions:
-        uuid-ossp:
-          schema: 'public'
-
-  # optional schemas to enable on database
-  schemas:
-    uuid_ossp:
-      dbname: db1
-      owner: localUser
-
-  # optional extensions to install in schema
-  extensions:
-    uuid-ossp:
-      schema: uuid_ossp
-      maintenance_db: db1
-    #postgis: {}
+          # enable per-schema extension
+          extensions:
+            - uuid-ossp
+        secret_business_logic:
+          owner: 'remoteUser'
+          # enable per-schema extension
+          extensions:
+            - uuid-ossp
+            - pg_trgm
 
 # vim: ft=yaml ts=2 sts=2 sw=2 et

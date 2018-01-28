@@ -91,23 +91,57 @@ RedHat:
 {% endif %}
 
 Suse:
+  pkg_repo:
+    name: pgdg-sles-{{ release }}
+    humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
+    #Using sles-12 upstream repo for opensuse
+    baseurl: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch'
+    key_url: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch/repodata/repomd.xml.key'
+    gpgcheck: 1
+
+{% if repo.use_upstream_repo %}
+
+  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}-server
+  conf_dir: {{ lib_dir }}
+   {% if release|int >= 10 %}
+  service: postgresql-{{ release }}
+   {% endif %}
+  pkg_libpq_dev: libpqxx
+  pkg_dev: postgresql{{ release }}-devel
+
+  prepare_cluster:
+    command: initdb --pgdata='{{ lib_dir }}'
+    test: test -f '{{ lib_dir }}/PG_VERSION'
+
+{% else %}
+
   pkg: postgresql-server
   pkg_client: postgresql
-  pkg_libpq_dev: postgresql
+  pkg_libpq_dev: libpq5
 
+{% endif %}
+
+{% if grains.os == 'MacOS' %}
 MacOS:
-  service: postgresql
+    {% if repo.use_upstream_repo == 'homebrew' %}
+  service: homebrew.mxcl.postgresql
+    {% elif repo.use_upstream_repo == 'postgresapp' %}
+  service: com.postgresapp.Postgres2
+    {% endif %}
   pkg: postgresql
   pkg_client:
   pkg_libpq_dev:
-  conf_dir: /usr/local/var/postgres
-  user: _postgres
-  group: _postgres
+  userhomes: /Users
+  user: {{ repo.user }}
+  group: {{ repo.group }}
+  conf_dir: /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
   prepare_cluster:
-    command: initdb -D /usr/local/var/postgres/
-    test: test -f /usr/local/var/postgres/PG_VERSION
-    user: _postgres
-    group: _postgres
-
+    command: initdb -D /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
+    test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
+    user: {{ repo.user }}
+{% endif %}
 
 # vim: ft=sls

@@ -4,15 +4,21 @@
 {%- if 'pkg_repo' in postgres -%}
 
   {%- if postgres.use_upstream_repo -%}
+   # Add upstream repository for your distro
 
-# Add upstream repository for your distro
 postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
+    {% if grains.os_family == 'Suse' %}
+  cmd.run:
+    - name: zypper --gpg-auto-import-keys refresh --force
+    - require:
+      - pkgrepo: postgresql-repo
+    {% endif %}
 
   {%- else -%}
 
-# Remove the repo configuration (and GnuPG key) as requested
+   # Remove the repo configuration (and GnuPG key) as requested
 postgresql-repo:
   pkgrepo.absent:
     - name: {{ postgres.pkg_repo.name }}
@@ -24,10 +30,12 @@ postgresql-repo:
 
 {%- else -%}
 
-# Notify that we don't manage this distro
+  {% if grains.os not in ('Windows', 'MacOS',) %}
+# Notify that we don't manage this Linux distro
 postgresql-repo:
   test.show_notification:
     - text: |
         PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
+  {% endif %}
 
 {%- endif %}

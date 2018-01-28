@@ -9,6 +9,7 @@ postgres:
   pkg_dev: postgresql-devel
   pkg_libpq_dev: postgresql-libs
   python: python-psycopg2
+  userhomes: /home
   user: postgres
   group: postgres
 
@@ -20,6 +21,18 @@ postgres:
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""
+
+  macos:
+    archive: postgres.dmg
+    tmpdir: /tmp/postgrestmp
+    postgresapp:
+      #See: https://github.com/PostgresApp/PostgresApp/releases/
+      url: https://github.com/PostgresApp/PostgresApp/releases/download/v2.1.1/Postgres-2.1.1.dmg
+      sum: sha256=ac0656b522a58fd337931313f09509c09610c4a6078fe0b8e469e69af1e1750b
+    dl:
+      opts: -s -L
+      interval: 60
+      retries: 2
 
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
   acls:
@@ -41,3 +54,7 @@ postgres:
   databases: {}
   schemas: {}
   extensions: {}
+
+  linux:
+    #debian alternatives are disabled by a 'altpriority=0' pillar.
+    altpriority: 30

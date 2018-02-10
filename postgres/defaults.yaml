@@ -7,19 +7,37 @@ postgres:
   pkgs_extra: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
-  pkg_libpq_dev: postgresql-libs
-  python: python-psycopg2
+  pkg_libpq_dev: libpq-dev
+  pkg_libs: postgresql-libs
+  pkg_python: python-psycopg2
+  userhomes: /home
   user: postgres
   group: postgres
 
+  conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   prepare_cluster:
-    command: initdb --pgdata=/var/lib/pgsql/data
-    test: test -f /var/lib/pgsql/data/PG_VERSION
+    pgcommand: initdb --pgdata=
+    pgtestfile: PG_VERSION
     user: postgres
     env: []
 
-  conf_dir: /var/lib/pgsql/data
   postgresconf: ""
+
+  macos:
+    archive: postgres.dmg
+    tmpdir: /tmp/postgrestmp
+    postgresapp:
+      #See: https://github.com/PostgresApp/PostgresApp/releases/
+      url: https://github.com/PostgresApp/PostgresApp/releases/download/v2.1.1/Postgres-2.1.1.dmg
+      sum: sha256=ac0656b522a58fd337931313f09509c09610c4a6078fe0b8e469e69af1e1750b
+    homebrew:
+      url:
+      sum:
+    dl:
+      opts: -s -L
+      interval: 60
+      retries: 2
 
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
   acls:

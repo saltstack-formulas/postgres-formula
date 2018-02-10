@@ -2,4 +2,4 @@
 
 postgresql-python:
   pkg.installed:
-    - name: {{ postgres.python}}
+    - name: {{ postgres.pkg_python}}

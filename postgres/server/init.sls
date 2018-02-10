@@ -52,24 +52,39 @@ postgresql-server:
 {%- endif %}
 
 postgresql-cluster-prepared:
+  file.directory:
+    # The next state runs as unprivledged user but "unless" check needs privledge.
+    # This state ensures "cmd.run.unless='test -f data_dir/PG_VERSION'" works below.
+    - name: {{ postgres.data_dir }}
+    - dir_mode: 0755
+    - onlyif: test -f {{ postgres.data_dir }}/{{ postgres.prepare_cluster.pgtestfile }}
   cmd.run:
+ {%- if postgres.prepare_cluster.command is defined %}
+      {# support for depreciated 'prepare_cluster.command' pillar #}
     - name: {{ postgres.prepare_cluster.command }}
+    - unless: {{ postgres.prepare_cluster.test }}
+ {%- else %}
+    - name: {{ postgres.prepare_cluster.pgcommand + ' ' }} {{ postgres.data_dir }}
+    - unless: test -f {{ postgres.data_dir }}/{{ postgres.prepare_cluster.pgtestfile }}
+ {%- endif %}
     - cwd: /
     - runas: {{ postgres.prepare_cluster.user }}
     - env: {{ postgres.prepare_cluster.env }}
-    - unless:
-      - {{ postgres.prepare_cluster.test }}
     - require:
+      - file: postgresql-cluster-prepared
       - pkg: postgresql-server
 
 postgresql-config-dir:
   file.directory:
-    - name: {{ postgres.conf_dir }}
+    - names:
+      - {{ postgres.data_dir }}
+      - {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - makedirs: True
     - require:
       - cmd: postgresql-cluster-prepared
+    - dir_mode: 0700
 
 {%- if postgres.postgresconf %}
 

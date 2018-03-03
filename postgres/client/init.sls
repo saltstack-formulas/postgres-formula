@@ -7,23 +7,23 @@
   {%- endif %}
 {%- endfor %}
 
-{%- if postgres.use_upstream_repo %}
-
-include:
-  - postgres.upstream
-
-{%- endif %}
-
 # Install PostgreSQL client and libraries
 
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+  {%- if postgres.pkg_repo.name %}
+    - fromrepo: {{ postgres.pkg_repo.name }}
+  {%- endif %}
+  {%- if postgres.use_upstream_repo %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+
+include:
+  - postgres.upstream
+
+  {%- endif %}
 
 {%- if 'bin_dir' in postgres %}
 

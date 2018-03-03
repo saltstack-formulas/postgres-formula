@@ -27,6 +27,7 @@
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main
+  data_dir: /var/lib/postgresql/{{ version }}/main
   prepare_cluster:
     command: pg_createcluster {{ version }} main
     test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf

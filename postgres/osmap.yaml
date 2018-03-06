@@ -95,9 +95,43 @@ RedHat:
 {% endif %}
 
 Suse:
+  pkg_repo:
+    name: pgdg-sles-{{ release }}
+    humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
+    #Using sles-12 upstream repo for opensuse
+    baseurl: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch'
+    key_url: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch/repodata/repomd.xml.key'
+    gpgcheck: 1
+    gpgautoimport: True
+
+{% if repo.use_upstream_repo %}
+  {# Pillars needed are 'use_upstream_repo: True' and 'version: n.n'. #}
+  {# Avoid setting package names as pillars, as may corrupt postgres. #}
+  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}
+  conf_dir: {{ lib_dir }}
+  service: postgresql-{{ repo.version }}
+
+  #This is postgresql-libs in defaults.yml but upstream is libpqxx
+  pkg_libpq_dev: libpqxx
+  pkg_dev: postgresql{{ release }}-devel
+  pkg_libs: postgresql{{ release }}-libs
+
+  prepare_cluster:
+    #Full path needed as initdb is NOT 'cross version compatible' binary
+    command: /usr/pgsql-{{ repo.version }}/bin/initdb --pgdata='{{ lib_dir }}'
+    test: test -f '{{ lib_dir }}/PG_VERSION'
+
+{% else %}
+
   pkg: postgresql-server
   pkg_client: postgresql
-  pkg_libpq_dev: postgresql
+  pkg_libpq_dev: libqpxx
+  pkg_libs: postgresql-libs
+
+{% endif %}
 
 MacOS:
   service: postgresql
@@ -112,6 +146,5 @@ MacOS:
     test: test -f /usr/local/var/postgres/PG_VERSION
     user: _postgres
     group: _postgres
-
 
 # vim: ft=sls

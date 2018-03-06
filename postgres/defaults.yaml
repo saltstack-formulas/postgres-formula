@@ -16,7 +16,7 @@ postgres:
     command: initdb --pgdata=/var/lib/pgsql/data
     test: test -f /var/lib/pgsql/data/PG_VERSION
     user: postgres
-    env: {}
+    env: []
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""

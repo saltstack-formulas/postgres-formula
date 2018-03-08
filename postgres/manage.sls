@@ -18,7 +18,7 @@ include:
 # Ensure that Salt is able to use postgres modules
 
 postgres-reload-modules:
-  test.nop:
+  test.succeed_with_changes:
     - reload_modules: True
 
 # User states
@@ -26,8 +26,6 @@ postgres-reload-modules:
 {%- for name, user in postgres.users|dictsort() %}
 
 {{ format_state(name, 'postgres_user', user) }}
-    - require:
-      - test: postgres-reload-modules
 
 {%- endfor %}
 
@@ -36,9 +34,8 @@ postgres-reload-modules:
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
 {{ format_state(name, 'postgres_tablespace', tblspace) }}
-    - require:
-      - test: postgres-reload-modules
   {%- if 'owner' in tblspace %}
+    - require:
       - postgres_user: postgres_user-{{ tblspace.owner }}
   {%- endif %}
 
@@ -49,8 +46,9 @@ postgres-reload-modules:
 {%- for name, db in postgres.databases|dictsort() %}
 
 {{ format_state(name, 'postgres_database', db) }}
+  {%- if 'owner' in db or 'tablespace' in db %}
     - require:
-      - test: postgres-reload-modules
+  {%- endif %}
   {%- if 'owner' in db %}
       - postgres_user: postgres_user-{{ db.owner }}
   {%- endif %}
@@ -65,9 +63,8 @@ postgres-reload-modules:
 {%- for name, schema in postgres.schemas|dictsort() %}
 
 {{ format_state(name, 'postgres_schema', schema) }}
-    - require:
-      - test: postgres-reload-modules
   {%- if 'owner' in schema %}
+    - require:
       - postgres_user: postgres_user-{{ schema.owner }}
   {%- endif %}
 
@@ -78,8 +75,9 @@ postgres-reload-modules:
 {%- for name, extension in postgres.extensions|dictsort() %}
 
 {{ format_state(name, 'postgres_extension', extension) }}
+  {%- if 'maintenance_db' in extension or 'schema' in extension %}
     - require:
-      - test: postgres-reload-modules
+  {%- endif %}
   {%- if 'maintenance_db' in extension %}
       - postgres_database: postgres_database-{{ extension.maintenance_db }}
   {%- endif %}

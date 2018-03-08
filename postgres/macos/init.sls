@@ -3,7 +3,7 @@
 include:
 {% if postgres.use_upstream_repo == 'postgresapp' %}
   - postgres.macos.postgresapp
-{% else %}
+{% elif postgres.use_upstream_repo == 'homebrew' %}
   - postgres.server
   - postgres.client
 {% endif %}

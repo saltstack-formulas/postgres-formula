@@ -7,7 +7,7 @@
     <string>limit.maxfiles</string>
     <key>ProgramArguments</key>
     <array>
-      <string>launchctl</string>
+      <string>/bin/launchctl</string>
       <string>limit</string>
       <string>maxfiles</string>
       <string>{{ soft_limit }}</string>

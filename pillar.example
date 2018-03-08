@@ -6,8 +6,9 @@ postgres:
   version: '9.6'
 
   ### MACOS
-  # Set to 'postgresapp' to install that upstream MacOS package
+  # Set to 'postgresapp' OR 'homebrew' for MacOS
   #use_upstream_repo: 'postgresapp'
+  #use_upstream_repo: 'homebrew'
 
   # PACKAGE
   # These pillars are typically never required.

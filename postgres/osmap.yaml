@@ -33,7 +33,7 @@ RedHat:
     gpgcheck: 1
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
 
-{% if repo.use_upstream_repo %}
+{% if repo.use_upstream_repo == true %}
 
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
@@ -104,7 +104,7 @@ Suse:
     gpgcheck: 1
     gpgautoimport: True
 
-{% if repo.use_upstream_repo %}
+{% if repo.use_upstream_repo == true %}
   {# Pillars needed are 'use_upstream_repo: True' and 'version: n.n'. #}
   {# Avoid setting package names as pillars, as may corrupt postgres. #}
   {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
@@ -133,13 +133,14 @@ Suse:
 
 {% endif %}
 
+{%- if grains.os == 'MacOS' %}
+## jinja check avoids rendering noise/failure on Linux
 MacOS:
-   {# todo: homebrew postgresql #}
-   {% if repo.use_upstream_repo == 'homebrew' %}
+   {%- if repo.use_upstream_repo == 'homebrew' %}
   service: homebrew.mxcl.postgresql
-   {% elif repo.use_upstream_repo == 'postgresapp' %}
+   {%- elif repo.use_upstream_repo == 'postgresapp' %}
   service: com.postgresapp.Postgres2
-    {% endif %}
+   {%- endif %}
   pkg: postgresql
   pkg_client:
   pkg_libpq_dev:
@@ -152,5 +153,6 @@ MacOS:
     test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
     user: {{ repo.user }}
     group: {{ repo.group }}
+{%- endif %}
 
 # vim: ft=sls

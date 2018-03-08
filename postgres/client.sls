@@ -7,7 +7,7 @@
   {%- endif %}
 {%- endfor %}
 
-{%- if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo == true %}
 include:
   - postgres.upstream
 {%- endif %}
@@ -16,7 +16,7 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo

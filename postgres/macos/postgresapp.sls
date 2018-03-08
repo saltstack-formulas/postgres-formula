@@ -27,9 +27,7 @@ pg-download-archive:
         interval: {{ pg.macos.dl.interval }}
       {% endif %}
 
-{%- if pg.macos.postgresapp.sum %}
-   #Check hashstring for archive downloads
-  {%- if grains['saltversioninfo'] <= [2016, 11, 6] %}
+  {%- if pg.macos.postgresapp.sum %}
 pg-check-archive-hash:
    module.run:
      - name: file.check_hash
@@ -40,7 +38,6 @@ pg-check-archive-hash:
      - require_in:
        - archive: pg-package-install
   {%- endif %}
-{%- endif %}
 
 pg-package-install:
   macpackage.installed:
@@ -56,7 +53,7 @@ pg-package-install:
       - file: pg-package-install
       - file: pg-remove-archive
   file.append:
-    - name: {{ pg.userhomes }}/{{ pg.systemuser }}/.bash_profile
+    - name: {{ pg.userhomes }}/{{ pg.user }}/.bash_profile
     - text: 'export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin'
 
 pg-remove-archive:

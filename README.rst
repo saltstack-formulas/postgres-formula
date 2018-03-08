@@ -77,7 +77,8 @@ The state relies on the ``postgres:use_upstream_repo`` Pillar value which could 
 
 * ``True`` (default): adds the upstream repository to install packages from
 * ``False``: makes sure that the repository configuration is absent
-* ``postgresapp`` (MacOS) uses upstream PostgresApp package repository.
+* ``'postgresapp'`` (MacOS) uses upstream PostgresApp package repository.
+* ``'homebrew'`` (MacOS) uses Homebrew postgres
 
 The ``postgres:version`` Pillar controls which version of the PostgreSQL packages should be
 installed from the upstream Linux repository. Defaults to ``9.5``.

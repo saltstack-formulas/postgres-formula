@@ -4,15 +4,15 @@
 {%- if 'pkg_repo' in postgres -%}
 
   {%- if postgres.use_upstream_repo -%}
+   # Add upstream repository for your distro
 
-# Add upstream repository for your distro
 postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
 
   {%- else -%}
 
-# Remove the repo configuration (and GnuPG key) as requested
+   # Remove the repo configuration (and GnuPG key) as requested
 postgresql-repo:
   pkgrepo.absent:
     - name: {{ postgres.pkg_repo.name }}

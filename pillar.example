@@ -5,6 +5,10 @@ postgres:
   # Version to install from upstream repository (if upstream_repo: True)
   version: '9.6'
 
+  ### MACOS
+  # Set to 'postgresapp' to install that upstream MacOS package
+  #use_upstream_repo: 'postgresapp'
+
   # PACKAGE
   # These pillars are typically never required.
   # pkg: 'postgresql'
@@ -14,10 +18,14 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
-
   #'Alternatives system' priority incremental. 0 disables feature.
   linux:
     altpriority: 30
+
+  # macos limits
+  limits:
+    soft: 64000
+    hard: 64000
 
   # POSTGRES
   # Append the lines under this item to your postgresql.conf file.

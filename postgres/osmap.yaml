@@ -134,17 +134,23 @@ Suse:
 {% endif %}
 
 MacOS:
-  service: postgresql
+   {# todo: homebrew postgresql #}
+   {% if repo.use_upstream_repo == 'homebrew' %}
+  service: homebrew.mxcl.postgresql
+   {% elif repo.use_upstream_repo == 'postgresapp' %}
+  service: com.postgresapp.Postgres2
+    {% endif %}
   pkg: postgresql
   pkg_client:
   pkg_libpq_dev:
-  conf_dir: /usr/local/var/postgres
-  user: _postgres
-  group: _postgres
+  userhomes: /Users
+  user: {{ repo.user }}
+  group: {{ repo.group }}
+  conf_dir: /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
   prepare_cluster:
-    command: initdb -D /usr/local/var/postgres/
-    test: test -f /usr/local/var/postgres/PG_VERSION
-    user: _postgres
-    group: _postgres
+    command: initdb -D /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
+    test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
+    user: {{ repo.user }}
+    group: {{ repo.group }}
 
 # vim: ft=sls

@@ -129,6 +129,33 @@ postgresql-pg_hba:
     - require:
       - file: postgresql-config-dir
 
+{%- set pg_ident_path = salt['file.join'](postgres.conf_dir, 'pg_ident.conf') %}
+
+postgresql-pg_ident:
+  file.managed:
+    - name: {{ pg_ident_path }}
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
+    - mode: 600
+{%- if postgres.identity_map %}
+    - source: {{ postgres['pg_ident.conf'] }}
+    - template: jinja
+    - defaults:
+        mappings: {{ postgres.identity_map }}
+  {%- if postgres.config_backup %}
+    # Create the empty file before managing to overcome the limitation of check_cmd
+    - onlyif: test -f {{ pg_ident_path }} || touch {{ pg_ident_path }}
+    # Make a local backup before the file modification
+    - check_cmd: >-
+        salt-call --local file.copy
+        {{ pg_ident_path }} {{ pg_ident_path ~ postgres.config_backup }} remove_existing=true
+  {%- endif %}
+{%- else %}
+    - replace: False
+{%- endif %}
+    - require:
+      - file: postgresql-config-dir
+
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
 postgresql-tablespace-dir-{{ name }}:
@@ -158,5 +185,6 @@ postgresql-running:
    {% endif %}
     - watch:
       - file: postgresql-pg_hba
+      - file: postgresql-pg_ident
 
 {%- endif %}

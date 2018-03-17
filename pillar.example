@@ -5,6 +5,11 @@ postgres:
   # Version to install from upstream repository (if upstream_repo: True)
   version: '9.6'
 
+  ### MACOS
+  # Set to 'postgresapp' OR 'homebrew' for MacOS
+  #use_upstream_repo: 'postgresapp'
+  #use_upstream_repo: 'homebrew'
+
   # PACKAGE
   # These pillars are typically never required.
   # pkg: 'postgresql'
@@ -14,10 +19,14 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
-
   #'Alternatives system' priority incremental. 0 disables feature.
   linux:
     altpriority: 30
+
+  # macos limits
+  limits:
+    soft: 64000
+    hard: 64000
 
   # POSTGRES
   # Append the lines under this item to your postgresql.conf file.
@@ -45,8 +54,13 @@ postgres:
   # If ``acls`` item value is empty ('', [], null), then the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
+    - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+
+  identity_map:
+    - ['users_as_appuser', 'jdoe', 'connuser']
+    - ['users_as_appuser', 'jsmith', 'connuser']
 
   # Backup extension for configuration files, defaults to ``.bak``.
   # Set ``False`` to stop creation of backups when config files change.

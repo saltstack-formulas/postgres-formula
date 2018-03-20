@@ -3,7 +3,7 @@
 
 {%- if 'pkg_repo' in postgres -%}
 
-  {%- if postgres.use_upstream_repo -%}
+  {%- if postgres.use_upstream_repo == true -%}
 
 # Add upstream repository for your distro
 postgresql-repo:
@@ -25,9 +25,11 @@ postgresql-repo:
 {%- else -%}
 
 # Notify that we don't manage this distro
+  {% if grains.os not in ('Windows', 'MacOS',) %}
 postgresql-repo:
   test.show_notification:
     - text: |
         PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
+  {% endif %}
 
 {%- endif %}

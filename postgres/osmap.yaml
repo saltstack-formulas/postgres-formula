@@ -17,7 +17,6 @@ Debian:
     file: /etc/apt/sources.list.d/pgdg.list
   pkg_repo_keyid: ACCC4CF8
   pkg_dev: postgresql-server-dev-all
-  pkg_libpq_dev: libpq-dev
 
 FreeBSD:
   user: pgsql
@@ -39,6 +38,7 @@ RedHat:
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
+  pkg_libs: postgresql{{ release }}-libs
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data
   service: postgresql-{{ repo.version }}
 
@@ -114,7 +114,6 @@ Suse:
   conf_dir: {{ lib_dir }}
   service: postgresql-{{ repo.version }}
 
-  #This is postgresql-libs in defaults.yml but upstream is libpqxx
   pkg_libpq_dev: libpqxx
   pkg_dev: postgresql{{ release }}-devel
   pkg_libs: postgresql{{ release }}-libs
@@ -156,7 +155,6 @@ Suse:
   pkg: postgresql-server
   pkg_client: postgresql
   pkg_libpq_dev: libqpxx
-  pkg_libs: postgresql-libs
 
 {% endif %}
 

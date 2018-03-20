@@ -31,11 +31,16 @@ RedHat:
   pkg_repo:
     name: pgdg{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
-    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
     gpgcheck: 1
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
+    {% if grains.os == 'Fedora' %}
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/fedora/fedora-$releasever-$basearch'
+    {% else %}
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
+    {% endif %}
 
-{% if repo.use_upstream_repo %}
+{% if repo.use_upstream_repo == true %}
+  {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}

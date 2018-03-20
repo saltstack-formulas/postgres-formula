@@ -1,19 +1,34 @@
 postgres:
-  # Set True to configure upstream postgresql.org repository for YUM or APT
+  # UPSTREAM REPO
+  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
-  # Version to install from upstream repository
-  version: '9.3'
+  # Version to install from upstream repository (if upstream_repo: True)
+  version: '9.6'
 
-  # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
+  ### MACOS
+  # Set to 'postgresapp' OR 'homebrew' for MacOS
+  #use_upstream_repo: 'postgresapp'
+  #use_upstream_repo: 'homebrew'
 
-  # Additional packages to install with PostgreSQL server,
-  # this should be in a list format
+  # PACKAGE
+  # These pillars are typically never required.
+  # pkg: 'postgresql'
+  # pkg_client: 'postgresql-client'
+  # service: postgresql
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython
 
+  #'Alternatives system' priority incremental. 0 disables feature.
+  linux:
+    altpriority: 30
+
+  # macos limits
+  limits:
+    soft: 64000
+    hard: 64000
+
+  # POSTGRES
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |
@@ -39,17 +54,19 @@ postgres:
   # If ``acls`` item value is empty ('', [], null), then the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
+    - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+
+  identity_map:
+    - ['users_as_appuser', 'jdoe', 'connuser']
+    - ['users_as_appuser', 'jsmith', 'connuser']
 
   # Backup extension for configuration files, defaults to ``.bak``.
   # Set ``False`` to stop creation of backups when config files change.
   {%- if salt['status.time']|default(none) is callable %}
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
   {%- endif %}
-
-  # PostgreSQL service name
-  service: postgresql
 
   {%- if grains['init'] == 'unknown' %}
 

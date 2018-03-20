@@ -16,7 +16,7 @@
   #}
 
   {# use upstream version if configured #}
-  {% if repo.use_upstream_repo %}
+  {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
   {% endif %}
 
@@ -49,7 +49,7 @@
   #}
 
   {# use upstream version if configured #}
-  {% if repo.use_upstream_repo %}
+  {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
   {% endif %}
 

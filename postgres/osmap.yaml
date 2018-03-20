@@ -32,7 +32,7 @@ RedHat:
     gpgcheck: 1
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
 
-{% if repo.use_upstream_repo %}
+{% if repo.use_upstream_repo == true %}
 
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
@@ -46,7 +46,11 @@ RedHat:
     command: initdb --pgdata='{{ data_dir }}'
     test: test -f '{{ data_dir }}/PG_VERSION'
 
-  # Directory containing PostgreSQL client executables
+  # Alternatives system
+  linux:
+    altpriority: 30
+
+  # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
   client_bins:
     - clusterdb

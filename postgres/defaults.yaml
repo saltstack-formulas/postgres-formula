@@ -7,8 +7,10 @@ postgres:
   pkgs_extra: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
-  pkg_libpq_dev: postgresql-libs
-  python: python-psycopg2
+  pkg_libpq_dev: libpq-dev
+  pkg_libs: postgresql-libs
+  pkg_python: python-psycopg2
+  userhomes: /home
   user: postgres
   group: postgres
 

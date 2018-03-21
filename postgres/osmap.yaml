@@ -50,7 +50,11 @@ RedHat:
     pgcommand: initdb --pgdata=
     pgtestfile: PG_VERSION
 
-  # Directory containing PostgreSQL client executables
+  # Alternatives system
+  linux:
+    altpriority: 30
+
+  # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
   client_bins:
     - clusterdb

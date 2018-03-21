@@ -4,50 +4,55 @@
 {%- if postgres.bake_image %}
   {%- do includes.append('postgres.server.image') %}
 {%- endif %}
-{%- if postgres.use_upstream_repo -%}
+{%- if postgres.use_upstream_repo == true -%}
   {%- do includes.append('postgres.upstream') %}
 {%- endif %}
 
 {%- if includes -%}
-
 include:
   {{ includes|yaml(false)|indent(2) }}
-
 {%- endif %}
 
 {%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
-
 # Install, configure and start PostgreSQL server
-
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo %}
+{%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
 {%- endif %}
+  {%- if grains.os == 'MacOS' %}
+     #Register as Launchd LaunchAgent for system users
+    - require_in:
+      - file: postgresql-server
+  file.managed:
+    - name: /Library/LaunchAgents/{{ postgres.service }}.plist
+    - source: /usr/local/opt/postgres/{{ postgres.service }}.plist
+    - group: wheel
+    - require_in:
+      - service: postgresql-running
+  {%- else %}
 
-{%- if 'bin_dir' in postgres %}
-
-# Make server binaries available in $PATH
-
-  {%- for bin in postgres.server_bins %}
-
-    {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
+# Alternatives system. Make server binaries available in $PATH
+    {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
+      {%- for bin in postgres.server_bins %}
+        {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
 {{ bin }}:
   alternatives.install:
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
-    - priority: 30
+    - priority: {{ postgres.linux.altpriority }}
     - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-server
     - require_in:
       - cmd: postgresql-cluster-prepared
 
-  {%- endfor %}
+      {%- endfor %}
+    {%- endif %}
 
 {%- endif %}
 
@@ -81,6 +86,12 @@ postgresql-config-dir:
       - {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
+    - dir_mode: 775
+    - force: True
+    - file_mode: 644
+    - recurse:
+      - user
+      - group
     - makedirs: True
     - require:
       - cmd: postgresql-cluster-prepared
@@ -133,6 +144,33 @@ postgresql-pg_hba:
     - require:
       - file: postgresql-config-dir
 
+{%- set pg_ident_path = salt['file.join'](postgres.conf_dir, 'pg_ident.conf') %}
+
+postgresql-pg_ident:
+  file.managed:
+    - name: {{ pg_ident_path }}
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
+    - mode: 600
+{%- if postgres.identity_map %}
+    - source: {{ postgres['pg_ident.conf'] }}
+    - template: jinja
+    - defaults:
+        mappings: {{ postgres.identity_map }}
+  {%- if postgres.config_backup %}
+    # Create the empty file before managing to overcome the limitation of check_cmd
+    - onlyif: test -f {{ pg_ident_path }} || touch {{ pg_ident_path }}
+    # Make a local backup before the file modification
+    - check_cmd: >-
+        salt-call --local file.copy
+        {{ pg_ident_path }} {{ pg_ident_path ~ postgres.config_backup }} remove_existing=true
+  {%- endif %}
+{%- else %}
+    - replace: False
+{%- endif %}
+    - require:
+      - file: postgresql-config-dir
+
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
 postgresql-tablespace-dir-{{ name }}:
@@ -153,13 +191,15 @@ postgresql-tablespace-dir-{{ name }}:
 {%- if not postgres.bake_image %}
 
 # Start PostgreSQL server using OS init
-
 postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
+   {% if grains.os not in ('MacOS',) %}
     - reload: True
+   {% endif %}
     - watch:
       - file: postgresql-pg_hba
+      - file: postgresql-pg_ident
 
 {%- endif %}

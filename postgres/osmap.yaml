@@ -4,9 +4,10 @@
 
 Arch:
   conf_dir: /var/lib/postgres/data
+  data_dir: /var/lib/postgres/data
   prepare_cluster:
-    command: initdb -D /var/lib/postgres/data
-    test: test -f /var/lib/postgres/data/PG_VERSION
+    pgcommand: initdb -D
+    pgtestfile: PG_VERSION
   pkg_client: postgresql-libs
   pkg_dev: postgresql
 
@@ -22,6 +23,8 @@ FreeBSD:
   user: pgsql
 
 OpenBSD:
+  conf_dir: /var/postgresql/data
+  data_dir: /var/postgresql/data
   user: _postgresql
 
 RedHat:
@@ -39,12 +42,13 @@ RedHat:
   pkg_client: postgresql{{ release }}
   pkg_libs: postgresql{{ release }}-libs
   pkg_dev: postgresql{{ release }}-devel
-  conf_dir: /var/lib/pgsql/{{ repo.version }}/data
+  conf_dir: {{ data_dir }}
+  data_dir: {{ data_dir }}
   service: postgresql-{{ repo.version }}
 
   prepare_cluster:
-    command: initdb --pgdata='{{ data_dir }}'
-    test: test -f '{{ data_dir }}/PG_VERSION'
+    pgcommand: initdb --pgdata=
+    pgtestfile: PG_VERSION
 
   # Alternatives system
   linux:

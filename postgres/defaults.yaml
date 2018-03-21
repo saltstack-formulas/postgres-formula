@@ -14,13 +14,14 @@ postgres:
   user: postgres
   group: postgres
 
+  conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   prepare_cluster:
-    command: initdb --pgdata=/var/lib/pgsql/data
-    test: test -f /var/lib/pgsql/data/PG_VERSION
+    pgcommand: initdb --pgdata=
+    pgtestfile: PG_VERSION
     user: postgres
     env: []
 
-  conf_dir: /var/lib/pgsql/data
   postgresconf: ""
 
   macos:

@@ -33,12 +33,12 @@ RedHat:
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
 
 {% if repo.use_upstream_repo == true %}
-
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_libs: postgresql{{ release }}-libs
+  pkg_dev: postgresql{{ release }}-devel
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data
   service: postgresql-{{ repo.version }}
 
@@ -93,6 +93,7 @@ RedHat:
   pkg_client: postgresql
 
 {% endif %}
+  pkg_libpq_dev: libpqxx-devel
 
 Suse:
   pkg_repo:
@@ -105,21 +106,16 @@ Suse:
     gpgautoimport: True
 
 {% if repo.use_upstream_repo == true %}
-  {# Pillars needed are 'use_upstream_repo: True' and 'version: n.n'. #}
-  {# Avoid setting package names as pillars, as may corrupt postgres. #}
   {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
+  pkg_dev: postgresql{{ release }}-devel
+  pkg_libs: postgresql{{ release }}-libs
   conf_dir: {{ lib_dir }}
   service: postgresql-{{ repo.version }}
 
-  pkg_libpq_dev: libpqxx
-  pkg_dev: postgresql{{ release }}-devel
-  pkg_libs: postgresql{{ release }}-libs
-
   prepare_cluster:
-    #Full path needed as initdb is NOT 'cross version compatible' binary
     command: /usr/pgsql-{{ repo.version }}/bin/initdb --pgdata='{{ lib_dir }}'
     test: test -f '{{ lib_dir }}/PG_VERSION'
 
@@ -154,9 +150,9 @@ Suse:
 
   pkg: postgresql-server
   pkg_client: postgresql
-  pkg_libpq_dev: libqpxx
 
 {% endif %}
+  pkg_libpq_dev: libqpxx
 
 {%- if grains.os == 'MacOS' %}
 ## jinja check avoids rendering noise/failure on Linux

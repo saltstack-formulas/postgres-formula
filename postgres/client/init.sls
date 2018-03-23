@@ -16,19 +16,23 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo == true %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
+  {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
 
 # Alternatives system. Make client binaries available in $PATH
-{%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
+  {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
     {%- for bin in postgres.client_bins %}
       {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
-{{ bin }}:
+postgresql-{{ bin }}-altinstall:
   alternatives.install:
+    - name: {{ bin }}
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}
@@ -37,4 +41,4 @@ postgresql-client-libs:
       - pkg: postgresql-client-libs
 
     {%- endfor %}
-{%- endif %}
+  {%- endif %}

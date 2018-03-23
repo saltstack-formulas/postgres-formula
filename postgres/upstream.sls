@@ -22,14 +22,11 @@ postgresql-repo:
 
   {%- endif -%}
 
-{%- else -%}
+{%- elif grains.os not in ('Windows', 'MacOS',) %}
 
-# Notify that we don't manage this distro
-  {% if grains.os not in ('Windows', 'MacOS',) %}
 postgresql-repo:
   test.show_notification:
     - text: |
         PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
-  {% endif %}
 
 {%- endif %}

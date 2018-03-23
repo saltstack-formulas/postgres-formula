@@ -17,6 +17,7 @@ Debian:
     file: /etc/apt/sources.list.d/pgdg.list
   pkg_repo_keyid: ACCC4CF8
   pkg_dev: postgresql-server-dev-all
+  pkg_libpq_dev: libpq-dev
 
 FreeBSD:
   user: pgsql
@@ -52,6 +53,8 @@ RedHat:
 
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - clusterdb
     - createdb
@@ -66,17 +69,20 @@ RedHat:
     - pg_dump
     - pg_dumpall
     - pg_isready
+    - pg_receivewal
     - pg_receivexlog
     - pg_restore
     - pg_rewind
     - pg_test_fsync
     - pg_test_timing
     - pg_upgrade
+    - pg_waldump
     - pg_xlogdump
     - pgbench
     - psql
     - reindexdb
     - vacuumdb
+
   server_bins:
     - initdb
     - pg_controldata
@@ -122,20 +128,26 @@ Suse:
   # Alternatives system
   linux:
     altpriority: 30
-
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - pg_archivecleanup
     - pg_config
     - pg_isready
+    - pg_receivewal
     - pg_receivexlog
     - pg_rewind
     - pg_test_fsync
     - pg_test_timing
     - pg_upgrade
+    - pg_waldump
     - pg_xlogdump
     - pgbench
+    - psql
+    - reindexdb
+    - vacuumdb
   server_bins:
     - initdb
     - pg_controldata

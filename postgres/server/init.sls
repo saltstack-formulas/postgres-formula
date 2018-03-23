@@ -14,15 +14,20 @@ include:
 {%- endif %}
 
 {%- set pkgs = [postgres.pkg] + postgres.pkgs_extra %}
+
 # Install, configure and start PostgreSQL server
+
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo == true %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
+  {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
   {%- if grains.os == 'MacOS' %}
      #Register as Launchd LaunchAgent for system users
     - require_in:
@@ -33,6 +38,7 @@ postgresql-server:
     - group: wheel
     - require_in:
       - service: postgresql-running
+
   {%- else %}
 
 # Alternatives system. Make server binaries available in $PATH
@@ -40,8 +46,9 @@ postgresql-server:
       {%- for bin in postgres.server_bins %}
         {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
-{{ bin }}:
+postgresql-{{ bin }}-altinstall:
   alternatives.install:
+    - name: {{ bin }}
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}
@@ -54,7 +61,7 @@ postgresql-server:
       {%- endfor %}
     {%- endif %}
 
-{%- endif %}
+  {%- endif %}
 
 postgresql-cluster-prepared:
   cmd.run:

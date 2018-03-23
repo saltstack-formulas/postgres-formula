@@ -14,10 +14,7 @@ install-postgres-libpq-dev:
     - name: {{ postgres.pkg_libpq_dev }}
   {% endif %}
 
-{% endif %}
-
-
-{% if grains.os == 'MacOS' %}
+{% elif grains.os == 'MacOS' %}
 
   # Darwin maxfiles limits
   {% if postgres.limits.soft or postgres.limits.hard %}

@@ -56,6 +56,10 @@ postgres:
 
   bake_image: False
 
+  fromrepo:
+  pkg_repo:
+    name: []
+
   users: {}
   tablespaces: {}
   databases: {}

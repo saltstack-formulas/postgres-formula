@@ -17,6 +17,7 @@ Debian:
     file: /etc/apt/sources.list.d/pgdg.list
   pkg_repo_keyid: ACCC4CF8
   pkg_dev: postgresql-server-dev-all
+  pkg_libpq_dev: libpq-dev
 
 FreeBSD:
   user: pgsql
@@ -35,6 +36,7 @@ RedHat:
 {% if repo.use_upstream_repo == true %}
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
+  fromrepo: pgdg{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_libs: postgresql{{ release }}-libs
@@ -108,6 +110,7 @@ Suse:
 {% if repo.use_upstream_repo == true %}
   {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
+  fromrepo: pgdg-sles-{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_dev: postgresql{{ release }}-devel
@@ -150,6 +153,7 @@ Suse:
 
   pkg: postgresql-server
   pkg_client: postgresql
+  pkg_libpq_dev: postgresql
 
 {% endif %}
   pkg_libpq_dev: libqpxx

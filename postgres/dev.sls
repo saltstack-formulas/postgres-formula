@@ -6,18 +6,21 @@
 install-postgres-dev-package:
   pkg.installed:
     - name: {{ postgres.pkg_dev }}
+    {% if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+    {% endif %}
   {% endif %}
 
   {% if postgres.pkg_libpq_dev %}
 install-postgres-libpq-dev:
   pkg.installed:
     - name: {{ postgres.pkg_libpq_dev }}
+    {% if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+    {% endif %}
   {% endif %}
 
-{% endif %}
-
-
-{% if grains.os == 'MacOS' %}
+{% elif grains.os == 'MacOS' %}
 
   # Darwin maxfiles limits
   {% if postgres.limits.soft or postgres.limits.hard %}

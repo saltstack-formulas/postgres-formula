@@ -16,6 +16,9 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
+{% if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+{% endif %}
 {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:

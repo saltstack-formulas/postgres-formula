@@ -18,11 +18,14 @@ include:
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo == true %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
+  {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
   {%- if grains.os == 'MacOS' %}
      #Register as Launchd LaunchAgent for system users
     - require_in:
@@ -53,8 +56,7 @@ postgresql-server:
 
       {%- endfor %}
     {%- endif %}
-
-{%- endif %}
+  {%- endif %}
 
 postgresql-cluster-prepared:
   cmd.run:

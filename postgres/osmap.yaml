@@ -37,6 +37,7 @@ RedHat:
 
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
+  fromrepo: pgdg{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data

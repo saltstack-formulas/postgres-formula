@@ -3,7 +3,7 @@
 
 {%- if 'pkg_repo' in postgres -%}
 
-  {%- if postgres.use_upstream_repo -%}
+  {%- if postgres.use_upstream_repo == true -%}
 
 # Add upstream repository for your distro
 postgresql-repo:
@@ -22,7 +22,7 @@ postgresql-repo:
 
   {%- endif -%}
 
-{%- else -%}
+{%- elif grains.os not in ('Windows', 'MacOS',) %}
 
 # Notify that we don't manage this distro
 postgresql-repo:

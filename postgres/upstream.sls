@@ -3,17 +3,17 @@
 
 {%- if 'pkg_repo' in postgres -%}
 
-  {%- if postgres.use_upstream_repo -%}
+  {%- if postgres.use_upstream_repo == true -%}
 
 # Add upstream repository for your distro
-install-postgresql-repo:
+postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
 
   {%- else -%}
 
 # Remove the repo configuration (and GnuPG key) as requested
-remove-postgresql-repo:
+postgresql-repo:
   pkgrepo.absent:
     - name: {{ postgres.pkg_repo.name }}
     {%- if 'pkg_repo_keyid' in postgres %}
@@ -25,9 +25,11 @@ remove-postgresql-repo:
 {%- else -%}
 
 # Notify that we don't manage this distro
-install-postgresql-repo:
+  {% if grains.os not in ('Windows', 'MacOS',) %}
+postgresql-repo:
   test.show_notification:
     - text: |
         PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
+  {% endif %}
 
 {%- endif %}

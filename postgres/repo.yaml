@@ -8,4 +8,12 @@ use_upstream_repo: {{ salt['pillar.get']('postgres:use_upstream_repo',
 version: {{ salt['pillar.get']('postgres:version',
                                defaults.postgres.version) }}
 
+#Early lookup for system user on MacOS
+{% if grains.os == 'MacOS' %}
+  {% set sysuser = salt['pillar.get']('postgres.user') or salt['cmd.run']("stat -f '%Su' /dev/console") %}
+  {% set sysgroup = salt['pillar.get']('postgres.group') or salt['cmd.run']("stat -f '%Sg' /dev/console") %}
+user: {{ sysuser }}
+group: {{ sysgroup }}
+{% endif %}
+
 # vim: ft=sls

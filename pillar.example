@@ -1,22 +1,43 @@
 postgres:
-  # Set True to configure upstream postgresql.org repository for YUM or APT
+  # UPSTREAM REPO
+  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
-  # Version to install from upstream repository
-  version: '9.3'
+  # Version to install from upstream repository (if upstream_repo: True)
+  version: '9.6'
 
-  # These are Debian/Ubuntu specific package names
-  pkg: 'postgresql-9.3'
-  pkg_client: 'postgresql-client-9.3'
+  ### MACOS
+  # Set to 'postgresapp' OR 'homebrew' for MacOS
+  #use_upstream_repo: 'postgresapp'
+  #use_upstream_repo: 'homebrew'
 
-  # Addtional packages to install, this should be in a list format
+  # PACKAGE
+  # These pillars are typically never required.
+  # pkg: 'postgresql'
+  # pkg_client: 'postgresql-client'
+  # service: postgresql
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython
 
+  #'Alternatives system' priority incremental. 0 disables feature.
+  linux:
+    altpriority: 30
+
+  # macos limits
+  limits:
+    soft: 64000
+    hard: 64000
+
+  # POSTGRES
+  # Append the lines under this item to your postgresql.conf file.
+  # Pay attention to indent exactly with 4 spaces for all lines.
+  postgresconf: |
+    listen_addresses = '*'  # listen on all interfaces
+
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
 
-  # This section covers ACL management in the `pg_hba.conf` file.
+  # This section covers ACL management in the ``pg_hba.conf`` file.
   # acls list controls: which hosts are allowed to connect, how clients
   # are authenticated, which PostgreSQL user names they can use, which
   # databases they can access. Records take one of these forms:
@@ -29,17 +50,39 @@ postgres:
   #
   # The uppercase items must be replaced by actual values.
   # METHOD could be omitted, 'md5' will be appended by default.
+  #
+  # If ``acls`` item value is empty ('', [], null), then the contents of
+  # ``pg_hba.conf`` file will not be touched at all.
   acls:
+    - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
 
-  # PostgreSQL service name
-  service: postgresql
+  identity_map:
+    - ['users_as_appuser', 'jdoe', 'connuser']
+    - ['users_as_appuser', 'jsmith', 'connuser']
+
+  # Backup extension for configuration files, defaults to ``.bak``.
+  # Set ``False`` to stop creation of backups when config files change.
+  {%- if salt['status.time']|default(none) is callable %}
+  config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
+  {%- endif %}
+
+  {%- if grains['init'] == 'unknown' %}
+
+  # If Salt is unable to detect init system running in the scope of state run,
+  # probably we are trying to bake a container/VM image with PostgreSQL.
+  # Use ``bake_image`` setting to control how PostgreSQL will be started: if set
+  # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
+  # script, job or unit run with Salt ``service`` state.
+  bake_image: True
+
+  {%- endif %}
 
   # Create/remove users, tablespaces, databases, schema and extensions.
   # Each of these dictionaries contains PostgreSQL entities which
-  # mapped to the `postgres_*` Salt states with arguments. See the Salt
-  # documentaion to get all supported argument for a particular state.
+  # mapped to the ``postgres_*`` Salt states with arguments. See the Salt
+  # documentation to get all supported argument for a particular state.
   #
   # Format is the following:
   #
@@ -86,11 +129,13 @@ postgres:
     absentUser:
       ensure: absent
 
+  # tablespaces to be created
   tablespaces:
     my_space:
       directory: /srv/my_tablespace
       owner: localUser
 
+  # databases to be created
   databases:
     db1:
       owner: 'localUser'
@@ -103,6 +148,14 @@ postgres:
       lc_ctype: 'en_US.UTF-8'
       lc_collate: 'en_US.UTF-8'
       tablespace: 'my_space'
+      # set custom schema
+      schemas:
+        public:
+          owner: 'localUser'
+      # enable per-db extension
+      extensions:
+        uuid-ossp:
+          schema: 'public'
 
   # optional schemas to enable on database
   schemas:
@@ -117,11 +170,4 @@ postgres:
       maintenance_db: db1
     #postgis: {}
 
-  # Backup extension defaults to .bak if postgresconf_backup is True.
-  # Set to False to stop creation of backup on postgresql.conf changes.
-  postgresconf_backup: True
-  # This section will append your configuration to postgresql.conf.
-  postgresconf: |
-    listen_addresses = 'localhost,*'
-
-# vim: ft=yaml:sw=2
+# vim: ft=yaml ts=2 sts=2 sw=2 et

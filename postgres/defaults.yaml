@@ -7,8 +7,10 @@ postgres:
   pkgs_extra: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
-  pkg_libpq_dev: postgresql-libs
-  python: python-psycopg2
+  pkg_libpq_dev: libpq-dev
+  pkg_libs: postgresql-libs
+  pkg_python: python-psycopg2
+  userhomes: /home
   user: postgres
   group: postgres
 
@@ -16,10 +18,25 @@ postgres:
     command: initdb --pgdata=/var/lib/pgsql/data
     test: test -f /var/lib/pgsql/data/PG_VERSION
     user: postgres
-    env: {}
+    env: []
 
   conf_dir: /var/lib/pgsql/data
   postgresconf: ""
+
+  macos:
+    archive: postgres.dmg
+    tmpdir: /tmp/postgrestmp
+    postgresapp:
+      #See: https://github.com/PostgresApp/PostgresApp/releases/
+      url: https://github.com/PostgresApp/PostgresApp/releases/download/v2.1.1/Postgres-2.1.1.dmg
+      sum: sha256=ac0656b522a58fd337931313f09509c09610c4a6078fe0b8e469e69af1e1750b
+    homebrew:
+      url:
+      sum:
+    dl:
+      opts: -s -L
+      interval: 60
+      retries: 2
 
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
   acls:
@@ -29,6 +46,9 @@ postgres:
     - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
     # IPv6 local connections:
     - ['host', 'all', 'all', '::1/128', 'md5']
+
+  pg_ident.conf: salt://postgres/templates/pg_ident.conf.j2
+  identity_map: []
 
   config_backup: '.bak'
 
@@ -41,3 +61,7 @@ postgres:
   databases: {}
   schemas: {}
   extensions: {}
+
+  linux:
+    #Alternatives system are disabled by a 'altpriority=0' pillar.
+    altpriority:

@@ -17,7 +17,6 @@ Debian:
     file: /etc/apt/sources.list.d/pgdg.list
   pkg_repo_keyid: ACCC4CF8
   pkg_dev: postgresql-server-dev-all
-  pkg_libpq_dev: libpq-dev
 
 FreeBSD:
   user: pgsql
@@ -29,16 +28,21 @@ RedHat:
   pkg_repo:
     name: pgdg{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
-    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
     gpgcheck: 1
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
+    {% if grains.os == 'Fedora' %}
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/fedora/fedora-$releasever-$basearch'
+    {% else %}
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
+    {% endif %}
 
-{% if repo.use_upstream_repo %}
-
+{% if repo.use_upstream_repo == true %}
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
+  pkg_libs: postgresql{{ release }}-libs
+  pkg_dev: postgresql{{ release }}-devel
   conf_dir: /var/lib/pgsql/{{ repo.version }}/data
   service: postgresql-{{ repo.version }}
 
@@ -46,7 +50,11 @@ RedHat:
     command: initdb --pgdata='{{ data_dir }}'
     test: test -f '{{ data_dir }}/PG_VERSION'
 
-  # Directory containing PostgreSQL client executables
+  # Alternatives system
+  linux:
+    altpriority: 30
+
+  # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
   client_bins:
     - clusterdb
@@ -89,11 +97,87 @@ RedHat:
   pkg_client: postgresql
 
 {% endif %}
+  pkg_libpq_dev: libpqxx-devel
 
 Suse:
+  pkg_repo:
+    name: pgdg-sles-{{ release }}
+    humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
+    #Using sles-12 upstream repo for opensuse
+    baseurl: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch'
+    key_url: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-12-$basearch/repodata/repomd.xml.key'
+    gpgcheck: 1
+    gpgautoimport: True
+
+{% if repo.use_upstream_repo == true %}
+  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+
+  pkg: postgresql{{ release }}-server
+  pkg_client: postgresql{{ release }}
+  pkg_dev: postgresql{{ release }}-devel
+  pkg_libs: postgresql{{ release }}-libs
+  conf_dir: {{ lib_dir }}
+  service: postgresql-{{ repo.version }}
+
+  prepare_cluster:
+    command: /usr/pgsql-{{ repo.version }}/bin/initdb --pgdata='{{ lib_dir }}'
+    test: test -f '{{ lib_dir }}/PG_VERSION'
+
+  # Alternatives system
+  linux:
+    altpriority: 30
+
+  # directory containing PostgreSQL client executables
+  bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  client_bins:
+    - pg_archivecleanup
+    - pg_config
+    - pg_isready
+    - pg_receivexlog
+    - pg_rewind
+    - pg_test_fsync
+    - pg_test_timing
+    - pg_upgrade
+    - pg_xlogdump
+    - pgbench
+  server_bins:
+    - initdb
+    - pg_controldata
+    - pg_ctl
+    - pg_resetxlog
+    - postgres
+    - postgresql{{ release }}-check-db-dir
+    - postgresql{{ release }}-setup
+    - postmaster
+
+{% else %}
+
   pkg: postgresql-server
   pkg_client: postgresql
-  pkg_libpq_dev: postgresql
 
+{% endif %}
+  pkg_libpq_dev: libqpxx
+
+{%- if grains.os == 'MacOS' %}
+## jinja check avoids rendering noise/failure on Linux
+MacOS:
+   {%- if repo.use_upstream_repo == 'homebrew' %}
+  service: homebrew.mxcl.postgresql
+   {%- elif repo.use_upstream_repo == 'postgresapp' %}
+  service: com.postgresapp.Postgres2
+   {%- endif %}
+  pkg: postgresql
+  pkg_client:
+  pkg_libpq_dev:
+  userhomes: /Users
+  user: {{ repo.user }}
+  group: {{ repo.group }}
+  conf_dir: /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
+  prepare_cluster:
+    command: initdb -D /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
+    test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
+    user: {{ repo.user }}
+    group: {{ repo.group }}
+{%- endif %}
 
 # vim: ft=sls

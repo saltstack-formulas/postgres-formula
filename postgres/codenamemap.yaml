@@ -81,8 +81,7 @@
 
 ## Fedora
 # `oscodename` grain has long distro name
-{{ fedora_codename('Fedora-25', '9.5', 'Fedora 25 (Twenty Five)') }}
-{{ fedora_codename('Fedora-24', '9.5', 'Fedora 24 (Twenty Four)') }}
-{{ fedora_codename('Fedora-23', '9.4', 'Fedora 23 (Twenty Three)') }}
+{{ fedora_codename('Fedora-27', '9.6', 'Fedora 27 (Twenty Seven)') }}
+{{ fedora_codename('Fedora-26', '9.6', 'Fedora 26 (Twenty Six)') }}
 
 # vim: ft=sls

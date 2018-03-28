@@ -1,0 +1,7 @@
+{% import_yaml "postgres/repo.yaml" as repo %}
+
+Fedora:
+  pkg_repo:
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/fedora/fedora-$releasever-$basearch'
+
+# vim: ft=sls

@@ -14,10 +14,23 @@ install-postgres-libpq-dev:
     - name: {{ postgres.pkg_libpq_dev }}
   {% endif %}
 
-{% endif %}
+# Alternatives system. Make devclient binaries available in $PATH
+  {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
+    {%- for bin in postgres.dev_bins %}
+      {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
+postgresql-{{ bin }}-altinstall:
+  alternatives.install:
+    - name: {{ bin }}
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: {{ postgres.linux.altpriority }}
+    - onlyif: test -f {{ path }}
 
-{% if grains.os == 'MacOS' %}
+    {%- endfor %}
+  {%- endif %}
+
+{% elif grains.os == 'MacOS' %}
 
   # Darwin maxfiles limits
   {% if postgres.limits.soft or postgres.limits.hard %}

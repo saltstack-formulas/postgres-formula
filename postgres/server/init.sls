@@ -40,8 +40,9 @@ postgresql-server:
       {%- for bin in postgres.server_bins %}
         {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
-{{ bin }}:
+postgresql-{{ bin }}-altinstall:
   alternatives.install:
+    - name: {{ bin }}
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}

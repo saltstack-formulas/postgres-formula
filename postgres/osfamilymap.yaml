@@ -56,6 +56,8 @@ RedHat:
 
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - clusterdb
     - createdb
@@ -129,6 +131,8 @@ Suse:
 
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - pg_archivecleanup
     - pg_config

@@ -117,7 +117,7 @@ postgresql-pg_hba:
     - source: {{ postgres['pg_hba.conf'] }}
     - template: jinja
     - defaults:
-        acls: {{ postgres.acls }}
+        acls: {{ postgres.acls|yaml() }}
   {%- if postgres.config_backup %}
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_hba_path }} || touch {{ pg_hba_path }}
@@ -144,7 +144,7 @@ postgresql-pg_ident:
     - source: {{ postgres['pg_ident.conf'] }}
     - template: jinja
     - defaults:
-        mappings: {{ postgres.identity_map }}
+        mappings: {{ postgres.identity_map|yaml() }}
   {%- if postgres.config_backup %}
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_ident_path }} || touch {{ pg_ident_path }}

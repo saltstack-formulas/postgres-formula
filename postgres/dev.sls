@@ -1,4 +1,4 @@
-{% from "postgres/map.jinja" import postgres with context %}
+{% from tpldir + "/map.jinja" import postgres with context %}
 
 {% if grains.os not in ('Windows', 'MacOS',) %}
 
@@ -44,7 +44,7 @@ postgresql-{{ bin }}-altinstall:
 postgres_maxfiles_limits_conf:
   file.managed:
     - name: /Library/LaunchDaemons/limit.maxfiles.plist
-    - source: salt://postgres/templates/limit.maxfiles.plist
+    - source: salt://{{ tpldir }}/templates/limit.maxfiles.plist
     - context:
       soft_limit: {{ postgres.limits.soft or postgres.limits.hard }}
       hard_limit: {{ postgres.limits.hard or postgres.limits.soft }}
@@ -62,7 +62,7 @@ postgres-desktop-shortcut-clean:
 postgres-desktop-shortcut-add:
   file.managed:
     - name: /tmp/mac_shortcut.sh
-    - source: salt://postgres/templates/mac_shortcut.sh
+    - source: salt://{{ tpldir }}/templates/mac_shortcut.sh
     - mode: 755
     - template: jinja
     - context:

@@ -1,5 +1,5 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
-{%- from "postgres/macros.jinja" import format_state with context -%}
+{%- from tpldir + "/map.jinja" import postgres with context -%}
+{%- from tpldir + "/macros.jinja" import format_state with context -%}
 
 {%- if salt['postgres.user_create']|default(none) is not callable %}
 

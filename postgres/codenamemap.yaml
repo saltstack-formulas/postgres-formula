@@ -19,10 +19,8 @@
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
     {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
-    {% set pkg_dev = '' %}
   {% else %}
     {% set fromrepo = name %}
-    {% set pkg_dev = 'postgresql-server-dev-all' %}
   {% endif %}
 
 {{ codename|default(name, true) }}:

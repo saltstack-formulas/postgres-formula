@@ -23,6 +23,9 @@ postgresql-server:
     - require:
       - pkgrepo: postgresql-repo
 {%- endif %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
   {%- if grains.os == 'MacOS' %}
      #Register as Launchd LaunchAgent for system users
     - require_in:

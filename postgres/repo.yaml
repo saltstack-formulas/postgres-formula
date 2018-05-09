@@ -3,10 +3,9 @@
 
 {% import_yaml "postgres/defaults.yaml" as defaults %}
 
-use_upstream_repo: {{ salt['pillar.get']('postgres:use_upstream_repo',
-                                         defaults.postgres.use_upstream_repo) }}
-version: {{ salt['pillar.get']('postgres:version',
-                               defaults.postgres.version) }}
+use_upstream_repo: {{ salt['pillar.get']('postgres:use_upstream_repo', defaults.postgres.use_upstream_repo) }}
+version: {{ salt['pillar.get']('postgres:version', defaults.postgres.version) }}
+fromrepo: {{ salt['pillar.get']('postgres:fromrepo', defaults.postgres.fromrepo) }}
 
 #Early lookup for system user on MacOS
 {% if grains.os == 'MacOS' %}

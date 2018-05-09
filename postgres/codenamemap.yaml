@@ -18,12 +18,16 @@
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
+    {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
+  {% else %}
+    {% set fromrepo = name %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
+  fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ repo.version }}'
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ version }}'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main
@@ -55,6 +59,7 @@
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
+  fromrepo: {{ name }}
   pkg_repo:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
 

@@ -1,4 +1,4 @@
-{% from "postgres/map.jinja" import postgres with context %}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 include:
 {% if postgres.use_upstream_repo == 'postgresapp' %}

@@ -1,4 +1,4 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set pkgs = [] %}
 {%- for pkg in (postgres.pkg_client, postgres.pkg_libpq_dev) %}

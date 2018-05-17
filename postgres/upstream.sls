@@ -1,5 +1,5 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
-{%- from "postgres/macros.jinja" import format_kwargs with context -%}
+{%- from tpldir + "/map.jinja" import postgres with context -%}
+{%- from tpldir + "/macros.jinja" import format_kwargs with context -%}
 
 {%- if 'pkg_repo' in postgres -%}
 
@@ -22,14 +22,11 @@ postgresql-repo:
 
   {%- endif -%}
 
-{%- else -%}
+{%- elif grains.os not in ('Windows', 'MacOS',) %}
 
-# Notify that we don't manage this distro
-  {% if grains.os not in ('Windows', 'MacOS',) %}
 postgresql-repo:
   test.show_notification:
     - text: |
         PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
-  {% endif %}
 
 {%- endif %}

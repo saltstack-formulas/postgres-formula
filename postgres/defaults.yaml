@@ -21,6 +21,7 @@ postgres:
     env: []
 
   conf_dir: /var/lib/pgsql/data
+  conf_dir_mode: '0700'
   postgresconf: ""
 
   macos:
@@ -55,6 +56,8 @@ postgres:
   service: postgresql
 
   bake_image: False
+
+  fromrepo:
 
   users: {}
   tablespaces: {}

@@ -1,4 +1,4 @@
-{% from "postgres/map.jinja" import postgres with context %}
+{% from tpldir + "/map.jinja" import postgres with context %}
 
 {% if grains.os not in ('Windows', 'MacOS',) %}
 
@@ -6,18 +6,37 @@
 install-postgres-dev-package:
   pkg.installed:
     - name: {{ postgres.pkg_dev }}
+    {% if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+    {% endif %}
   {% endif %}
 
   {% if postgres.pkg_libpq_dev %}
 install-postgres-libpq-dev:
   pkg.installed:
     - name: {{ postgres.pkg_libpq_dev }}
+    {% if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+    {% endif %}
   {% endif %}
 
-{% endif %}
+# Alternatives system. Make devclient binaries available in $PATH
+  {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
+    {%- for bin in postgres.dev_bins %}
+      {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
+postgresql-{{ bin }}-altinstall:
+  alternatives.install:
+    - name: {{ bin }}
+    - link: {{ salt['file.join']('/usr/bin', bin) }}
+    - path: {{ path }}
+    - priority: {{ postgres.linux.altpriority }}
+    - onlyif: test -f {{ path }}
 
-{% if grains.os == 'MacOS' %}
+    {%- endfor %}
+  {%- endif %}
+
+{% elif grains.os == 'MacOS' %}
 
   # Darwin maxfiles limits
   {% if postgres.limits.soft or postgres.limits.hard %}
@@ -25,7 +44,7 @@ install-postgres-libpq-dev:
 postgres_maxfiles_limits_conf:
   file.managed:
     - name: /Library/LaunchDaemons/limit.maxfiles.plist
-    - source: salt://postgres/templates/limit.maxfiles.plist
+    - source: salt://{{ tpldir }}/templates/limit.maxfiles.plist
     - context:
       soft_limit: {{ postgres.limits.soft or postgres.limits.hard }}
       hard_limit: {{ postgres.limits.hard or postgres.limits.soft }}
@@ -43,7 +62,7 @@ postgres-desktop-shortcut-clean:
 postgres-desktop-shortcut-add:
   file.managed:
     - name: /tmp/mac_shortcut.sh
-    - source: salt://postgres/templates/mac_shortcut.sh
+    - source: salt://{{ tpldir }}/templates/mac_shortcut.sh
     - mode: 755
     - template: jinja
     - context:

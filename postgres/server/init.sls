@@ -1,4 +1,4 @@
-{%- from "postgres/map.jinja" import postgres with context %}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set includes = [] %}
 {%- if postgres.bake_image %}
@@ -23,6 +23,9 @@ postgresql-server:
     - require:
       - pkgrepo: postgresql-repo
 {%- endif %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
   {%- if grains.os == 'MacOS' %}
      #Register as Launchd LaunchAgent for system users
     - require_in:
@@ -40,8 +43,9 @@ postgresql-server:
       {%- for bin in postgres.server_bins %}
         {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
-{{ bin }}:
+postgresql-{{ bin }}-altinstall:
   alternatives.install:
+    - name: {{ bin }}
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}
@@ -72,7 +76,7 @@ postgresql-config-dir:
     - name: {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
-    - dir_mode: 775
+    - dir_mode: {{ postgres.conf_dir_mode }}
     - force: True
     - file_mode: 644
     - recurse:
@@ -114,7 +118,7 @@ postgresql-pg_hba:
     - source: {{ postgres['pg_hba.conf'] }}
     - template: jinja
     - defaults:
-        acls: {{ postgres.acls }}
+        acls: {{ postgres.acls|yaml() }}
   {%- if postgres.config_backup %}
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_hba_path }} || touch {{ pg_hba_path }}
@@ -141,7 +145,7 @@ postgresql-pg_ident:
     - source: {{ postgres['pg_ident.conf'] }}
     - template: jinja
     - defaults:
-        mappings: {{ postgres.identity_map }}
+        mappings: {{ postgres.identity_map|yaml() }}
   {%- if postgres.config_backup %}
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_ident_path }} || touch {{ pg_ident_path }}

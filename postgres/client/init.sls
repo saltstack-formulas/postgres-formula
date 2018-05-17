@@ -1,4 +1,4 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set pkgs = [] %}
 {%- for pkg in (postgres.pkg_client, postgres.pkg_libpq_dev) %}
@@ -27,8 +27,9 @@ postgresql-client-libs:
     {%- for bin in postgres.client_bins %}
       {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
-{{ bin }}:
+postgresql-{{ bin }}-altinstall:
   alternatives.install:
+    - name: {{ bin }}
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}

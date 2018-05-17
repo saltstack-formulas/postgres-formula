@@ -39,6 +39,7 @@ RedHat:
 {% if repo.use_upstream_repo == true %}
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
+  fromrepo: pgdg{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_libs: postgresql{{ release }}-libs
@@ -56,6 +57,8 @@ RedHat:
 
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - clusterdb
     - createdb
@@ -112,6 +115,7 @@ Suse:
 {% if repo.use_upstream_repo == true %}
   {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
+  fromrepo: pgdg-sles-{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_dev: postgresql{{ release }}-devel
@@ -129,6 +133,8 @@ Suse:
 
   # directory containing PostgreSQL client executables
   bin_dir: /usr/pgsql-{{ repo.version }}/bin
+  dev_bins:
+    - ecg
   client_bins:
     - pg_archivecleanup
     - pg_config

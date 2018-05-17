@@ -1,4 +1,4 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 # This state is used to launch PostgreSQL with ``pg_ctl`` command and enable it
 # on "boot" during an image (Docker, Virtual Appliance, AMI) preparation

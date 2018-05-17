@@ -2,28 +2,27 @@
 
 {% import_yaml "postgres/repo.yaml" as repo %}
 
-{% macro debian_codename(name, version, codename=none) %}
-  {#
-  Generate lookup dictionary map for Debian and derivative distributions
-
-    name:
-      distro codename
-    version:
-      PostgreSQL release version
-    codename:
-      optional grain value if `name` does not match the one returned by
-      `oscodename` grain
+  {# Generate lookup dictionary map for OS and derivative distributions
+    name: distro codename
+    version: PostgreSQL release version
+    codename: optional grain value if `name` does not match the one returned by `oscodename` grain
   #}
+
+{% macro debian_codename(name, version, codename=none) %}
 
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
+    {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
+  {% else %}
+    {% set fromrepo = name %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
+  fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ repo.version }}'
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ version }}'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main
@@ -36,25 +35,18 @@
 
 
 {% macro fedora_codename(name, version, codename=none) %}
-  {#
-  Generate lookup dictionary map for Fedora distributions
-
-    name:
-      distro codename
-    version:
-      PostgreSQL release version
-    codename:
-      optional grain value if `name` does not match the one returned by
-      `oscodename` grain
-  #}
 
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
+    {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
     {% set version = repo.version %}
+  {% else %}
+    {% set fromrepo = name %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
+  fromrepo: {{ name }}
   pkg_repo:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
 

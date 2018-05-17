@@ -1,4 +1,4 @@
-{% from "postgres/map.jinja" import postgres as pg with context %}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres as pg with context -%}
 
 # Cleanup first
 pg-remove-prev-archive:

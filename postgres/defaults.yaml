@@ -57,6 +57,8 @@ postgres:
 
   bake_image: False
 
+  manage_force_reload_modules: True
+
   fromrepo:
 
   users: {}

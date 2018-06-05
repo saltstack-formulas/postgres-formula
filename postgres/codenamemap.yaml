@@ -70,6 +70,7 @@
 {{ debian_codename('vivid', '9.4') }}
 {{ debian_codename('wily', '9.4') }}
 {{ debian_codename('xenial', '9.5') }}
+{{ debian_codename('bionic', '10') }}
 
 ## Fedora
 # `oscodename` grain has long distro name

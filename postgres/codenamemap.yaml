@@ -65,11 +65,10 @@
 
 ## Ubuntu
 {{ debian_codename('trusty', '9.3') }}
-{{ debian_codename('precise', '9.4') }}
-{{ debian_codename('utopic', '9.4') }}
-{{ debian_codename('vivid', '9.4') }}
-{{ debian_codename('wily', '9.4') }}
 {{ debian_codename('xenial', '9.5') }}
+{{ debian_codename('artful', '9.6') }}
+{{ debian_codename('bionic', '10') }}
+{{ debian_codename('cosmic', '10') }}
 
 ## Fedora
 # `oscodename` grain has long distro name

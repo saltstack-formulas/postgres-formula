@@ -4,6 +4,9 @@ postgres:
   use_upstream_repo: False
   # Version to install from upstream repository (if upstream_repo: True)
   version: '9.6'
+  # If automatic package installation fails, use `fromrepo` to specify the
+  # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
+  fromrepo: 'jessie-pgdg'
 
   ### MACOS
   # Set to 'postgresapp' OR 'homebrew' for MacOS

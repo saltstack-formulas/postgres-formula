@@ -17,7 +17,6 @@ include:
 
 {%- endif %}
 
-
 # Ensure that Salt is able to use postgres modules
 
 postgres-reload-modules:

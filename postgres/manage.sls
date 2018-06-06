@@ -17,15 +17,16 @@ include:
 
 {%- endif %}
 
-{%- if needs_client_binaries or postgres.manage_force_reload_modules %}
 
 # Ensure that Salt is able to use postgres modules
 
 postgres-reload-modules:
+{%- if needs_client_binaries or postgres.manage_force_reload_modules %}
   test.succeed_with_changes:
-    - reload_modules: True
-
+{%- else %}
+  test.succeed_without_changes:
 {%- endif %}
+    - reload_modules: True
 
 # User states
 

@@ -13,7 +13,7 @@
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
-    {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
+    {% set fromrepo = repo.fromrepo|default(name ~ '-pgdg', true) %}
   {% else %}
     {% set fromrepo = name %}
   {% endif %}
@@ -38,7 +38,7 @@
 
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
-    {% set fromrepo = repo.fromrepo or name + '-pgdg' %}
+    {% set fromrepo = repo.fromrepo|default(name ~ '-pgdg', true) %}
     {% set version = repo.version %}
   {% else %}
     {% set fromrepo = name %}

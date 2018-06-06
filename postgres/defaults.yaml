@@ -57,7 +57,7 @@ postgres:
 
   bake_image: False
 
-  fromrepo:
+  fromrepo: ''
 
   users: {}
   tablespaces: {}

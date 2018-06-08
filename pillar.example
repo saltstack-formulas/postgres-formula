@@ -3,7 +3,7 @@ postgres:
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
   # Version to install from upstream repository (if upstream_repo: True)
-  version: '9.6'
+  version: '10'
   # If automatic package installation fails, use `fromrepo` to specify the
   # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
   fromrepo: 'jessie-pgdg'

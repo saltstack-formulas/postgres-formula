@@ -3,6 +3,7 @@
 postgres:
   use_upstream_repo: True
   version: '9.5'
+  default_port: 5432
   pkg: postgresql
   pkgs_extra: []
   pkg_client: postgresql-client

@@ -192,3 +192,24 @@ postgresql-running:
       - file: postgresql-pg_ident
 
 {%- endif %}
+
+{%- if postgres.port|default(false) %}
+
+postgresql-port:
+  file.replace:
+    - name: {{ postgres.conf_dir }}/postgresql.conf
+    - pattern: ^#*\s*(port)\s*=\s*\d{4,5}(.*)$
+    - repl: \1 = {{ postgres.port }}\2
+    - flags: 8  # ['MULTILINE']
+    - show_changes: True
+    - append_if_not_found: True
+    - backup: {{ postgres.config_backup|default(false, true) }}
+    - require:
+      - file: postgresql-config-dir
+    - watch_in:
+       - service: postgresql-port
+
+  service.running:
+    - name: {{ postgres.service }}
+
+{%- endif %}

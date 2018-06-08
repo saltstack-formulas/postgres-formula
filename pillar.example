@@ -32,6 +32,10 @@ postgres:
     hard: 64000
 
   # POSTGRES
+  # Non-standard port to use for the cluster
+  # Only set if port `5432` is not appropriate
+  port: 5433
+
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |

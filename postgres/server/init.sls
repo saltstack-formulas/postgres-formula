@@ -198,8 +198,9 @@ postgresql-running:
 postgresql-port:
   file.replace:
     - name: {{ postgres.conf_dir }}/postgresql.conf
-    - pattern: ^#*\s*(port)\s*=\s*\d{4,5}(.*)$
-    - repl: \1 = {{ postgres.port }}\2
+    - pattern: ^#*\s*(port)\s*=\s*\d{4,5}(\s*).*$
+    - repl: >-
+        \1 = {{ postgres.port }}\2# Managed by SaltStack: please do not edit
     - flags: 8  # ['MULTILINE']
     - show_changes: True
     - append_if_not_found: True

@@ -184,6 +184,10 @@ MacOS:
     test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
     user: {{ repo.user }}
     group: {{ repo.group }}
+  # macos limits
+  limits:
+    soft: 64000
+    hard: 64000
 {%- endif %}
 
 # vim: ft=sls

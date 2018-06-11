@@ -1,26 +1,18 @@
 {% from tpldir + "/map.jinja" import postgres with context %}
 
 {% if grains.os not in ('Windows', 'MacOS',) %}
+  {%- set pkgs = [postgres.pkg_dev, postgres.pkg_libpq_dev] + postgres.pkg_dev_deps %}
 
-  {% if postgres.pkg_dev %}
-install-postgres-dev-package:
+  {% if pkgs %}
+install-postgres-dev-packages:
   pkg.installed:
-    - name: {{ postgres.pkg_dev }}
+    - pkgs: {{ pkgs }}
     {% if postgres.fromrepo %}
     - fromrepo: {{ postgres.fromrepo }}
     {% endif %}
   {% endif %}
 
-  {% if postgres.pkg_libpq_dev %}
-install-postgres-libpq-dev:
-  pkg.installed:
-    - name: {{ postgres.pkg_libpq_dev }}
-    {% if postgres.fromrepo %}
-    - fromrepo: {{ postgres.fromrepo }}
-    {% endif %}
-  {% endif %}
-
-# Alternatives system. Make devclient binaries available in $PATH
+  # Alternatives system. Make devclient binaries available in $PATH
   {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
     {%- for bin in postgres.dev_bins %}
       {%- set path = salt['file.join'](postgres.bin_dir, bin) %}

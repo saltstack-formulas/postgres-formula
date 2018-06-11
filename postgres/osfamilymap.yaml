@@ -101,6 +101,11 @@ RedHat:
 
 {% endif %}
   pkg_libpq_dev: libpqxx-devel
+  pkg_dev_deps:
+    - perl-Time-HiRes
+    - libicu-devel
+    - perl-IPC-Run
+    - perl-Test-Simple
 
 Suse:
   pkg_repo:

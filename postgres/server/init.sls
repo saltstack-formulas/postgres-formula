@@ -86,7 +86,19 @@ postgresql-config-dir:
     - require:
       - cmd: postgresql-cluster-prepared
 
-{%- if postgres.postgresconf %}
+{%- set db_port = salt['config.option']('postgres.port') %}
+{%- if db_port %}
+
+postgresql-conf-comment-port:
+  file.comment:
+    - name: {{ postgres.conf_dir }}/postgresql.conf
+    - regex: ^port\s*=.+
+    - require:
+      - file: postgresql-config-dir
+
+{%- endif %}
+
+{%- if postgres.postgresconf or db_port %}
 
 postgresql-conf:
   file.blockreplace:
@@ -94,15 +106,23 @@ postgresql-conf:
     - marker_start: "# Managed by SaltStack: listen_addresses: please do not edit"
     - marker_end: "# Managed by SaltStack: end of salt managed zone --"
     - content: |
+        {%- if postgres.postgresconf %}
         {{ postgres.postgresconf|indent(8) }}
+        {%- endif %}
+        {%- if db_port %}
+        port = {{ db_port }}
+        {%- endif %}
     - show_changes: True
     - append_if_not_found: True
     {#- Detect empty values (none, '') in the config_backup #}
     - backup: {{ postgres.config_backup|default(false, true) }}
     - require:
       - file: postgresql-config-dir
+      {%- if db_port %}
+      - file: postgresql-conf-comment-port
+      {%- endif %}
     - watch_in:
-       - service: postgresql-running
+      - service: postgresql-running
 
 {%- endif %}
 
@@ -184,33 +204,11 @@ postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
-   {% if grains.os not in ('MacOS',) %}
+   {% if grains.os not in ('MacOS',) and not db_port %}
     - reload: True
    {% endif %}
     - watch:
       - file: postgresql-pg_hba
       - file: postgresql-pg_ident
-
-{%- endif %}
-
-{%- if postgres.port|default(false) %}
-
-postgresql-port:
-  file.replace:
-    - name: {{ postgres.conf_dir }}/postgresql.conf
-    - pattern: ^#*\s*(port)\s*=\s*\d{4,5}(\s*).*$
-    - repl: >-
-        \1 = {{ postgres.port }}\2# Managed by SaltStack: please do not edit
-    - flags: 8  # ['MULTILINE']
-    - show_changes: True
-    - append_if_not_found: True
-    - backup: {{ postgres.config_backup|default(false, true) }}
-    - require:
-      - file: postgresql-config-dir
-    - watch_in:
-       - service: postgresql-port
-
-  service.running:
-    - name: {{ postgres.service }}
 
 {%- endif %}

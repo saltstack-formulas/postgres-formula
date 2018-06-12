@@ -23,7 +23,6 @@
 {{ state }}-{{ name }}:
   {{ state }}.{{ ensure|default('present') }}:
     {{- format_kwargs(kwarg) }}
-    - db_port: {{ postgres.port|default(postgres.default_port) }}
     - onchanges:
       - test: postgres-reload-modules
 

@@ -122,7 +122,7 @@ postgresql-conf:
       - file: postgresql-conf-comment-port
       {%- endif %}
     - watch_in:
-      - service: postgresql-running
+      - service: postgresql-service-restart
 
 {%- endif %}
 
@@ -204,11 +204,19 @@ postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
-   {% if grains.os not in ('MacOS',) and not db_port %}
+   {% if grains.os not in ('MacOS',) %}
     - reload: True
    {% endif %}
     - watch:
       - file: postgresql-pg_hba
       - file: postgresql-pg_ident
+
+# Restart the service where reloading is not sufficient
+# Currently when changes are made to `postgresql.conf`
+{%- if postgres.postgresconf or db_port %}
+postgresql-service-restart:
+  service.running:
+    - name: {{ postgres.service }}
+{%- endif %}
 
 {%- endif %}

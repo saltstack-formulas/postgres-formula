@@ -81,7 +81,7 @@ postgres-reload-modules:
 
 {{ format_state(name, 'postgres_schema', schema) }}
     - require:
-      - postgres_database-{{ dbname }}
+      - postgres_database-{{ schema.dbname }}
   {%- if 'owner' in schema %}
       - postgres_user: postgres_user-{{ schema.owner }}
   {%- endif %}

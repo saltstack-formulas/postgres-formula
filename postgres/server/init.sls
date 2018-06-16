@@ -122,7 +122,14 @@ postgresql-conf:
       - file: postgresql-conf-comment-port
       {%- endif %}
     - watch_in:
-      - service: postgresql-service-restart
+      - module: postgresql-service-restart
+
+# Restart the service where reloading is not sufficient
+# Currently only when changes are made to `postgresql.conf`
+postgresql-service-restart:
+  module.wait:
+    - name: service.restart
+    - m_name: {{ postgres.service }}
 
 {%- endif %}
 
@@ -210,13 +217,5 @@ postgresql-running:
     - watch:
       - file: postgresql-pg_hba
       - file: postgresql-pg_ident
-
-# Restart the service where reloading is not sufficient
-# Currently when changes are made to `postgresql.conf`
-{%- if postgres.postgresconf or db_port %}
-postgresql-service-restart:
-  service.running:
-    - name: {{ postgres.service }}
-{%- endif %}
 
 {%- endif %}

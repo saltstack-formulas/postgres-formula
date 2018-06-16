@@ -16,11 +16,14 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo == true %}
+  {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
 
 # Alternatives system. Make client binaries available in $PATH
 {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}

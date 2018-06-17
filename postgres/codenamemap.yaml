@@ -22,7 +22,7 @@
   # PostgreSQL packages are mostly downloaded from `main` repo component
   fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ version }}'
+    name: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ name }}-pgdg main'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   conf_dir: /etc/postgresql/{{ version }}/main

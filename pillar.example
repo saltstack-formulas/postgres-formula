@@ -1,3 +1,7 @@
+# Port to use for the cluster -- can be used to provide a non-standard port
+# NOTE: If already set in the minion config, that value takes priority
+postgres.port: '5432'
+
 postgres:
   # UPSTREAM REPO
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
@@ -34,7 +38,7 @@ postgres:
   # POSTGRES
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
-  postgresconf: |
+  postgresconf: |-
     listen_addresses = '*'  # listen on all interfaces
 
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver

@@ -162,7 +162,7 @@ Suse:
   pkg_client: postgresql
 
 {% endif %}
-  pkg_libpq_dev: libqpxx
+  pkg_libpq_dev: libpqxx
 
 {%- if grains.os == 'MacOS' %}
 ## jinja check avoids rendering noise/failure on Linux

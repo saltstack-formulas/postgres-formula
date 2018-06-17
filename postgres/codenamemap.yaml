@@ -46,7 +46,7 @@
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
-  fromrepo: {{ name }}
+  fromrepo: {{ fromrepo }}
   pkg_repo:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
 

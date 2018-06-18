@@ -4,9 +4,7 @@
 
 Arch:
   conf_dir: /var/lib/postgres/data
-  prepare_cluster:
-    command: initdb -D /var/lib/postgres/data
-    test: test -f /var/lib/postgres/data/PG_VERSION
+  data_dir: /var/lib/postgres/data
   pkg_client: postgresql-libs
   pkg_dev: postgresql
 
@@ -26,6 +24,8 @@ FreeBSD:
   user: pgsql
 
 OpenBSD:
+  conf_dir: /var/postgresql/data
+  data_dir: /var/postgresql/data
   user: _postgresql
 
 RedHat:
@@ -44,12 +44,9 @@ RedHat:
   pkg_client: postgresql{{ release }}
   pkg_libs: postgresql{{ release }}-libs
   pkg_dev: postgresql{{ release }}-devel
-  conf_dir: /var/lib/pgsql/{{ repo.version }}/data
+  conf_dir: {{ data_dir }}
+  data_dir: {{ data_dir }}
   service: postgresql-{{ repo.version }}
-
-  prepare_cluster:
-    command: initdb --pgdata='{{ data_dir }}'
-    test: test -f '{{ data_dir }}/PG_VERSION'
 
   # Alternatives system
   linux:
@@ -118,19 +115,16 @@ Suse:
     gpgautoimport: True
 
 {% if repo.use_upstream_repo == true %}
-  {% set lib_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
+  {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}
 
   fromrepo: pgdg-sles-{{ release }}
   pkg: postgresql{{ release }}-server
   pkg_client: postgresql{{ release }}
   pkg_dev: postgresql{{ release }}-devel
   pkg_libs: postgresql{{ release }}-libs
-  conf_dir: {{ lib_dir }}
+  conf_dir: {{ data_dir }}
+  data_dir: {{ data_dir }}
   service: postgresql-{{ repo.version }}
-
-  prepare_cluster:
-    command: /usr/pgsql-{{ repo.version }}/bin/initdb --pgdata='{{ lib_dir }}'
-    test: test -f '{{ lib_dir }}/PG_VERSION'
 
   # Alternatives system
   linux:
@@ -184,9 +178,8 @@ MacOS:
   user: {{ repo.user }}
   group: {{ repo.group }}
   conf_dir: /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
+  data_dir: /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
   prepare_cluster:
-    command: initdb -D /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}
-    test: test -f /Users/{{ repo.user }}/Library/AppSupport/postgres_{{ repo.use_upstream_repo }}/PG_VERSION
     user: {{ repo.user }}
     group: {{ repo.group }}
 {%- endif %}

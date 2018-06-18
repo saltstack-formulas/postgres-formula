@@ -27,4 +27,6 @@ postgresql-removed:
 
 postgres-dir-absent:
   file.absent:
-    - name: {{ postgres.conf_dir }}
+    - names:
+      - {{ postgres.conf_dir }}
+      - {{ postgres.data_dir }}

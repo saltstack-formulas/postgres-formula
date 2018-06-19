@@ -37,9 +37,10 @@ postgres_maxfiles_limits_conf:
   file.managed:
     - name: /Library/LaunchDaemons/limit.maxfiles.plist
     - source: salt://{{ tpldir }}/templates/limit.maxfiles.plist
+    - template: jinja
     - context:
-      soft_limit: {{ postgres.limits.soft or postgres.limits.hard }}
-      hard_limit: {{ postgres.limits.hard or postgres.limits.soft }}
+      soft_limit: {{ postgres.limits.soft }}
+      hard_limit: {{ postgres.limits.hard }}
     - group: {{ postgres.group }}
   {% endif %}
 

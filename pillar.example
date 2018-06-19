@@ -33,7 +33,7 @@ postgres:
   # macos limits
   limits:
     soft: 64000
-    hard: 64000
+    hard: 128000
 
   # POSTGRES
   # Append the lines under this item to your postgresql.conf file.

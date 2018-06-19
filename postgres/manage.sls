@@ -47,22 +47,27 @@ postgres-reload-modules:
   {%- if 'extensions' in db %}
     {%- for ext_name, extension in db.pop('extensions')|dictsort() %}
       {%- do extension.update({'maintenance_db': name }) %}
+
 {{ format_state( name + '-' + ext_name, 'postgres_extension', extension) }}
     - require:
       - postgres_database: postgres_database-{{ name }}
       {%- if 'schema' in extension %}
       - postgres_schema: postgres_schema-{{ extension.schema }}
       {%- endif %}
+    
     {%- endfor %}
   {%- endif %}
   {%- if 'schemas' in db %}
     {%- for schema_name, schema in db.pop('schemas')|dictsort() %}
       {%- do schema.update({'dbname': name }) %}
+
 {{ format_state( schema_name, 'postgres_schema', schema) }}
     - require:
       - postgres_database: postgres_database-{{ name }}
+    
     {%- endfor %}
   {%- endif %}
+
 {{ format_state(name, 'postgres_database', db) }}
   {%- if 'owner' in db or 'tablespace' in db %}
     - require:
@@ -73,6 +78,7 @@ postgres-reload-modules:
   {%- if 'tablespace' in db %}
       - postgres_tablespace: postgres_tablespace-{{ db.tablespace }}
   {%- endif %}
+
 {%- endfor %}
 
 # Schema states

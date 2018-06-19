@@ -46,7 +46,7 @@ postgres-reload-modules:
 {%- for name, db in postgres.databases|dictsort() %}
   {%- if 'extensions' in db %}
     {%- for ext_name, extension in db.pop('extensions')|dictsort() %}
-      {%- do extension.update({'maintenance_db': name }) %}
+      {%- do extension.update({'name': ext_name, 'maintenance_db': name}) %}
 
 {{ format_state( name + '-' + ext_name, 'postgres_extension', extension) }}
     - require:
@@ -59,9 +59,9 @@ postgres-reload-modules:
   {%- endif %}
   {%- if 'schemas' in db %}
     {%- for schema_name, schema in db.pop('schemas')|dictsort() %}
-      {%- do schema.update({'dbname': name }) %}
+      {%- do schema.update({'name': schema_name, 'dbname': name }) %}
 
-{{ format_state( schema_name, 'postgres_schema', schema) }}
+{{ format_state( name + '-' + schema_name, 'postgres_schema', schema) }}
     - require:
       - postgres_database: postgres_database-{{ name }}
     

@@ -16,12 +16,13 @@ postgres:
   group: postgres
 
   prepare_cluster:
-    command: initdb --pgdata=/var/lib/pgsql/data
-    test: test -f /var/lib/pgsql/data/PG_VERSION
+    pgcommand: initdb -D
+    pgtestfile: PG_VERSION
     user: postgres
     env: []
 
   conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   conf_dir_mode: '0700'
   postgresconf: ""
 

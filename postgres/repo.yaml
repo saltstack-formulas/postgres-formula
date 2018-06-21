@@ -6,6 +6,7 @@
 use_upstream_repo: {{ salt['pillar.get']('postgres:use_upstream_repo', defaults.postgres.use_upstream_repo) }}
 version: {{ salt['pillar.get']('postgres:version', defaults.postgres.version) }}
 fromrepo: {{ salt['pillar.get']('postgres:fromrepo', defaults.postgres.fromrepo) }}
+cluster_name: {{ salt['pillar.get']('postgres:cluster:name', defaults.postgres.cluster.name) }}
 
 #Early lookup for system user on MacOS
 {% if grains.os == 'MacOS' %}

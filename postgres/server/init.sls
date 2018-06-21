@@ -76,7 +76,14 @@ postgresql-cluster-prepared:
     - name: {{ postgres.prepare_cluster.command }}
     - unless: {{ postgres.prepare_cluster.test }}
  {%- else %}
-    - name: {{ postgres.prepare_cluster.pgcommand }} {{ postgres.data_dir }}
+    {%- set cc_cmd = '{0} {1}'.format(postgres.prepare_cluster.pgcommand, postgres.data_dir) %}
+    {%- if postgres.cluster.locale %}
+      {%- set cc_cmd = '{0} --locale={1}'.format(cc_cmd, postgres.cluster.locale) %}
+    {%- endif %}
+    {%- if postgres.cluster.encoding %}
+      {%- set cc_cmd = '{0} --encoding={1}'.format(cc_cmd, postgres.cluster.encoding) %}
+    {%- endif %}
+    - name: {{ cc_cmd }}
     - unless: test -f {{ postgres.data_dir }}/{{ postgres.prepare_cluster.pgtestfile }}
  {%- endif %}
     - cwd: /

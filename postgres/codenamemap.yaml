@@ -16,8 +16,9 @@
   {% else %}
     {% set fromrepo = name %}
   {% endif %}
-  {% set conf_dir = '/etc/postgresql/' ~ version ~ '/main' %}
-  {% set data_dir = '/var/lib/postgresql/' ~ version ~ '/main' %}
+  {% set cluster_name = repo.cluster_name %}
+  {% set conf_dir = '/etc/postgresql/{0}/{1}'.format(version, cluster_name) %}
+  {% set data_dir = '/var/lib/postgresql/{0}/{1}'.format(version, cluster_name) %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
@@ -29,7 +30,7 @@
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   prepare_cluster:
-    pgcommand: pg_createcluster {{ version }} main -d
+    pgcommand: pg_createcluster {{ version }} {{ cluster_name }} -d
     user: root
 
 {% endmacro %}

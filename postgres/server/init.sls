@@ -85,6 +85,8 @@ postgresql-cluster-prepared:
     - require:
       - pkg: postgresql-server
       - file: postgresql-cluster-prepared
+    - watch_in:
+      - module: postgresql-service-restart
 
 postgresql-config-dir:
   file.directory:
@@ -140,14 +142,14 @@ postgresql-conf:
     - watch_in:
       - module: postgresql-service-restart
 
+{%- endif %}
+
 # Restart the service where reloading is not sufficient
-# Currently only when changes are made to `postgresql.conf`
+# Currently when the cluster is created or changes made to `postgresql.conf`
 postgresql-service-restart:
   module.wait:
     - name: service.restart
     - m_name: {{ postgres.service }}
-
-{%- endif %}
 
 {%- set pg_hba_path = salt['file.join'](postgres.conf_dir, 'pg_hba.conf') %}
 

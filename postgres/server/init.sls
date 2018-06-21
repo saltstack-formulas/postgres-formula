@@ -62,7 +62,7 @@ postgresql-{{ bin }}-altinstall:
 
 postgresql-cluster-prepared:
   file.directory:
-    - name: {{ postgres.conf_dir }}
+    - name: {{ postgres.data_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - makedirs: True
@@ -81,7 +81,7 @@ postgresql-cluster-prepared:
  {%- endif %}
     - cwd: /
     - env: {{ postgres.prepare_cluster.env }}
-    - runas: {{ postgres.user }}
+    - runas: {{ postgres.prepare_cluster.user }}
     - require:
       - pkg: postgresql-server
       - file: postgresql-cluster-prepared

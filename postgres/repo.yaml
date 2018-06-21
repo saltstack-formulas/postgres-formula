@@ -10,8 +10,8 @@ cluster_name: {{ salt['pillar.get']('postgres:cluster:name', defaults.postgres.c
 
 #Early lookup for system user on MacOS
 {% if grains.os == 'MacOS' %}
-  {% set sysuser = salt['pillar.get']('postgres.user', salt['cmd.run']("stat -f '%Su' /dev/console")) %}
-  {% set sysgroup = salt['pillar.get']('postgres.group', salt['cmd.run']("stat -f '%Sg' /dev/console")) %}
+  {% set sysuser = salt['pillar.get']('postgres:user', salt['cmd.run']("stat -f '%Su' /dev/console")) %}
+  {% set sysgroup = salt['pillar.get']('postgres:group', salt['cmd.run']("stat -f '%Sg' /dev/console")) %}
 user: {{ sysuser }}
 group: {{ sysgroup }}
 {% endif %}

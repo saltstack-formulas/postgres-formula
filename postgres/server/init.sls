@@ -69,7 +69,6 @@ postgresql-cluster-prepared:
     - recurse:
       - user
       - group
-    - dir_mode: 755
   cmd.run:
  {%- if postgres.prepare_cluster.command is defined %}
       {# support for depreciated 'prepare_cluster.command' pillar #}
@@ -97,9 +96,9 @@ postgresql-config-dir:
     - group: {{ postgres.group }}
     - dir_mode: {{ postgres.conf_dir_mode }}
     - force: True
-    - file_mode: 644
     - recurse:
       - mode
+      - ignore_files
     - makedirs: True
     - require:
       - cmd: postgresql-cluster-prepared

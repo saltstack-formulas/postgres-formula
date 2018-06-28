@@ -75,7 +75,7 @@ postgresql-cluster-prepared:
     - name: {{ postgres.prepare_cluster.command }}
     - unless: {{ postgres.prepare_cluster.test }}
  {%- else %}
-    - name: {{ postgres.prepare_cluster.pgcommand }} {{ postgres.data_dir }}
+    - name: {{ postgres.prepare_cluster_cmd }}
     - unless: test -f {{ postgres.data_dir }}/{{ postgres.prepare_cluster.pgtestfile }}
  {%- endif %}
     - cwd: /

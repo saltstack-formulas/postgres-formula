@@ -21,6 +21,11 @@ postgres:
     user: postgres
     env: []
 
+  cluster:
+    name: main    # Debian-based only
+    locale: ''    # Defaults to `C`
+    encoding: ''  # Defaults to `SQL_ASCII` if `locale` not provided
+
   conf_dir: /var/lib/pgsql/data
   data_dir: /var/lib/pgsql/data
   conf_dir_mode: '0700'

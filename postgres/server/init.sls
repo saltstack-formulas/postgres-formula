@@ -101,8 +101,6 @@ postgresql-conf:
     - backup: {{ postgres.config_backup|default(false, true) }}
     - require:
       - file: postgresql-config-dir
-    - require_in:
-       - service: postgresql-running
     - watch_in:
        - service: postgresql-running
 
@@ -186,9 +184,6 @@ postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
-   {% if grains.os not in ('MacOS',) %}
-    - reload: True
-   {% endif %}
     - watch:
       - file: postgresql-pg_hba
       - file: postgresql-pg_ident

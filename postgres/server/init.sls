@@ -101,6 +101,8 @@ postgresql-conf:
     - backup: {{ postgres.config_backup|default(false, true) }}
     - require:
       - file: postgresql-config-dir
+    - require_in:
+       - service: postgresql-running
     - watch_in:
        - service: postgresql-running
 

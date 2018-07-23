@@ -10,25 +10,27 @@
 
 {% macro debian_codename(name, version, codename=none) %}
 
-  {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
     {% set fromrepo = repo.fromrepo|default(name ~ '-pgdg', true) %}
   {% else %}
     {% set fromrepo = name %}
   {% endif %}
+  {% set cluster_name = repo.cluster_name %}
+  {% set conf_dir = '/etc/postgresql/{0}/{1}'.format(version, cluster_name) %}
+  {% set data_dir = '/var/lib/postgresql/{0}/{1}'.format(version, cluster_name) %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
+  conf_dir: {{ conf_dir }}
+  data_dir: {{ data_dir }}
   fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ version }}'
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
-  conf_dir: /etc/postgresql/{{ version }}/main
   prepare_cluster:
-    command: pg_createcluster {{ version }} main
-    test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf
+    pgcommand: pg_createcluster {{ version }} {{ cluster_name }} -d
     user: root
 
 {% endmacro %}
@@ -38,15 +40,11 @@
 
   {# use upstream version if configured #}
   {% if repo.use_upstream_repo == true %}
-    {% set fromrepo = repo.fromrepo|default(name ~ '-pgdg', true) %}
     {% set version = repo.version %}
-  {% else %}
-    {% set fromrepo = name %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
-  fromrepo: {{ name }}
   pkg_repo:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
 

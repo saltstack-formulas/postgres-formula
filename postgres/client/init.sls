@@ -1,7 +1,7 @@
 {%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set pkgs = [] %}
-{%- for pkg in (postgres.pkg_client, postgres.pkg_libpq_dev) %}
+{%- for pkg in (postgres.pkg_client,) %}
   {%- if pkg %}
     {%- do pkgs.append(pkg) %}
   {%- endif %}
@@ -16,11 +16,14 @@ include:
 postgresql-client-libs:
   pkg.installed:
     - pkgs: {{ pkgs }}
-{%- if postgres.use_upstream_repo == true %}
+  {%- if postgres.use_upstream_repo == true %}
     - refresh: True
     - require:
       - pkgrepo: postgresql-repo
-{%- endif %}
+  {%- endif %}
+  {%- if postgres.fromrepo %}
+    - fromrepo: {{ postgres.fromrepo }}
+  {%- endif %}
 
 # Alternatives system. Make client binaries available in $PATH
 {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}

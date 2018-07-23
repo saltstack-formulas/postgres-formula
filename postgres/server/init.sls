@@ -61,32 +61,61 @@ postgresql-{{ bin }}-altinstall:
 {%- endif %}
 
 postgresql-cluster-prepared:
+  file.directory:
+    - name: {{ postgres.data_dir }}
+    - user: {{ postgres.user }}
+    - group: {{ postgres.group }}
+    - makedirs: True
+    - recurse:
+      - user
+      - group
   cmd.run:
+ {%- if postgres.prepare_cluster.command is defined %}
+      {# support for depreciated 'prepare_cluster.command' pillar #}
     - name: {{ postgres.prepare_cluster.command }}
+    - unless: {{ postgres.prepare_cluster.test }}
+ {%- else %}
+    - name: {{ postgres.prepare_cluster_cmd }}
+    - unless: test -f {{ postgres.data_dir }}/{{ postgres.prepare_cluster.pgtestfile }}
+ {%- endif %}
     - cwd: /
-    - runas: {{ postgres.prepare_cluster.user }}
     - env: {{ postgres.prepare_cluster.env }}
-    - unless:
-      - {{ postgres.prepare_cluster.test }}
+    - runas: {{ postgres.prepare_cluster.user }}
     - require:
       - pkg: postgresql-server
+      - file: postgresql-cluster-prepared
+    - watch_in:
+      - module: postgresql-service-restart
 
 postgresql-config-dir:
   file.directory:
-    - name: {{ postgres.conf_dir }}
+    - names:
+      - {{ postgres.data_dir }}
+      - {{ postgres.conf_dir }}
     - user: {{ postgres.user }}
     - group: {{ postgres.group }}
     - dir_mode: {{ postgres.conf_dir_mode }}
     - force: True
-    - file_mode: 644
     - recurse:
-      - user
-      - group
+      - mode
+      - ignore_files
     - makedirs: True
     - require:
       - cmd: postgresql-cluster-prepared
 
-{%- if postgres.postgresconf %}
+{%- set db_port = salt['config.option']('postgres.port') %}
+{%- if db_port %}
+
+postgresql-conf-comment-port:
+  file.comment:
+    - name: {{ postgres.conf_dir }}/postgresql.conf
+    - regex: ^port\s*=.+
+    - require:
+      - file: postgresql-config-dir
+
+{%- endif %}
+
+{%- if postgres.postgresconf or db_port %}
 
 postgresql-conf:
   file.blockreplace:
@@ -94,17 +123,32 @@ postgresql-conf:
     - marker_start: "# Managed by SaltStack: listen_addresses: please do not edit"
     - marker_end: "# Managed by SaltStack: end of salt managed zone --"
     - content: |
+        {%- if postgres.postgresconf %}
         {{ postgres.postgresconf|indent(8) }}
+        {%- endif %}
+        {%- if db_port %}
+        port = {{ db_port }}
+        {%- endif %}
     - show_changes: True
     - append_if_not_found: True
     {#- Detect empty values (none, '') in the config_backup #}
     - backup: {{ postgres.config_backup|default(false, true) }}
     - require:
       - file: postgresql-config-dir
+      {%- if db_port %}
+      - file: postgresql-conf-comment-port
+      {%- endif %}
     - watch_in:
-       - service: postgresql-running
+      - module: postgresql-service-restart
 
 {%- endif %}
+
+# Restart the service where reloading is not sufficient
+# Currently when the cluster is created or changes made to `postgresql.conf`
+postgresql-service-restart:
+  module.wait:
+    - name: service.restart
+    - m_name: {{ postgres.service }}
 
 {%- set pg_hba_path = salt['file.join'](postgres.conf_dir, 'pg_hba.conf') %}
 

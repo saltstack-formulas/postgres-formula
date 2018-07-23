@@ -2,11 +2,12 @@
 
 postgres:
   use_upstream_repo: True
-  version: '9.5'
+  version: '10'
   pkg: postgresql
   pkgs_extra: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
+  pkg_dev_deps: []
   pkg_libpq_dev: libpq-dev
   pkg_libs: postgresql-libs
   pkg_python: python-psycopg2
@@ -15,12 +16,18 @@ postgres:
   group: postgres
 
   prepare_cluster:
-    command: initdb --pgdata=/var/lib/pgsql/data
-    test: test -f /var/lib/pgsql/data/PG_VERSION
+    pgcommand: initdb -D
+    pgtestfile: PG_VERSION
     user: postgres
     env: []
 
+  cluster:
+    name: main    # Debian-based only
+    locale: ''    # Defaults to `C`
+    encoding: ''  # Defaults to `SQL_ASCII` if `locale` not provided
+
   conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
   conf_dir_mode: '0700'
   postgresconf: ""
 
@@ -47,6 +54,11 @@ postgres:
     - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
     # IPv6 local connections:
     - ['host', 'all', 'all', '::1/128', 'md5']
+    # Allow replication connections from localhost, by a user with the
+    # replication privilege.
+    - ['local', 'replication', 'all', 'peer']
+    - ['host', 'replication', 'all', '127.0.0.1/32', 'md5']
+    - ['host', 'replication', 'all', '::1/128', 'md5']
 
   pg_ident.conf: salt://postgres/templates/pg_ident.conf.j2
   identity_map: []

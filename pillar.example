@@ -1,9 +1,13 @@
+# Port to use for the cluster -- can be used to provide a non-standard port
+# NOTE: If already set in the minion config, that value takes priority
+postgres.port: '5432'
+
 postgres:
   # UPSTREAM REPO
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: False
   # Version to install from upstream repository (if upstream_repo: True)
-  version: '9.6'
+  version: '10'
   # If automatic package installation fails, use `fromrepo` to specify the
   # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
   fromrepo: 'jessie-pgdg'
@@ -22,6 +26,13 @@ postgres:
     - postgresql-contrib
     - postgresql-plpython
 
+  # CLUSTER
+  # The default `encoding` is derived from the `locale` so not recommended
+  # to provide a value for it unless necessary
+  cluster:
+    locale: en_GB.UTF-8
+    # encoding: UTF8
+
   #'Alternatives system' priority incremental. 0 disables feature.
   linux:
     altpriority: 30
@@ -29,12 +40,12 @@ postgres:
   # macos limits
   limits:
     soft: 64000
-    hard: 64000
+    hard: 128000
 
   # POSTGRES
   # Append the lines under this item to your postgresql.conf file.
   # Pay attention to indent exactly with 4 spaces for all lines.
-  postgresconf: |
+  postgresconf: |-
     listen_addresses = '*'  # listen on all interfaces
 
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver

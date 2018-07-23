@@ -228,6 +228,9 @@ postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
+   {% if grains.os not in ('MacOS',) %}
+    - reload: True
+   {% endif %}
     - watch:
       - file: postgresql-pg_hba
       - file: postgresql-pg_ident

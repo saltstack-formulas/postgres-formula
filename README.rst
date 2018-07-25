@@ -90,7 +90,7 @@ Removal states
 ``postgres.dropped``
 --------------------
 
-Meta state to remove Postgres software. By default the release specified, or installed by, the formula is targeted only. To target multiple releases, set pillar ``postgres.removal.multiple_releases: True``.
+Meta state to remove Postgres software. By default the release installed by formula is targeted only. To target multiple releases, set pillar ``postgres.remove.multiple_releases: True``.
 
 ``postgres.server.remove``
 ------------------------

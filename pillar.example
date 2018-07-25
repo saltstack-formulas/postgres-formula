@@ -184,4 +184,9 @@ postgres:
       maintenance_db: db1
     #postgis: {}
 
+  remove:
+    data: True
+    multiple_releases: True
+    releases: ['9.6', '10',]
+
 # vim: ft=yaml ts=2 sts=2 sw=2 et

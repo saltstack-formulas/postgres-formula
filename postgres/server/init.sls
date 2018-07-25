@@ -36,10 +36,10 @@ postgresql-server:
     - group: wheel
     - require_in:
       - service: postgresql-running
-  {%- else %}
+
 
 # Alternatives system. Make server binaries available in $PATH
-    {%- if 'bin_dir' in postgres and postgres.linux.altpriority %}
+  {%- elif 'bin_dir' in postgres and postgres.linux.altpriority %}
       {%- for bin in postgres.server_bins %}
         {%- set path = salt['file.join'](postgres.bin_dir, bin) %}
 
@@ -56,9 +56,7 @@ postgresql-{{ bin }}-altinstall:
       - cmd: postgresql-cluster-prepared
 
       {%- endfor %}
-    {%- endif %}
-
-{%- endif %}
+  {%- endif %}
 
 postgresql-cluster-prepared:
   file.directory:

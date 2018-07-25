@@ -31,7 +31,7 @@ Creates such DB objects as: users, tablespaces, databases, schemas and extension
 See ``pillar.example`` file for details.
 
 ``postgres.python``
--------------------
+----------------------
 
 Installs the PostgreSQL adapter for Python on Linux.
 
@@ -83,11 +83,36 @@ The state relies on the ``postgres:use_upstream_repo`` Pillar value which could 
 The ``postgres:version`` Pillar controls which version of the PostgreSQL packages should be
 installed from the upstream Linux repository. Defaults to ``9.5``.
 
+
+Removal states
+===============
+
+``postgres.dropped``
+--------------------
+
+Meta state to remove Postgres software. By default the release specified, or installed by, the formula is targeted only. To target multiple releases, set pillar ``postgres.removal.multiple_releases: True``.
+
+``postgres.server.remove``
+------------------------
+
+Remove server, lib, and contrib packages. The ``postgres.server.remove`` will retain data by default (no data loss) - set pillar ``postgres.remove.data: True`` to remove data and configuration directories also.
+
+``postgres.client.remove``
+------------------------
+
+Remove client package.
+
+``postgres.dev.remove``
+----------------------
+
+Remove development and python packages.
+
+
 Testing
 =======
-The postgres state was tested on MacOS (El Capitan 10.11.6)
+The ``postgres`` state was tested on MacOS (El Capitan 10.11.6), and ``remove`` states on Ubuntu, Centos, and Fedora.
 
-Testing is done with the ``kitchen-salt``.
+Linux testing is done with the ``kitchen-salt``.
 
 ``kitchen converge``
 --------------------

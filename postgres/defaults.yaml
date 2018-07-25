@@ -80,3 +80,8 @@ postgres:
   linux:
     #Alternatives system are disabled by a 'altpriority=0' pillar.
     altpriority: 0
+
+  remove:
+    data: False
+    multiple_releases: False
+    releases: ['9.2', '9.3', '9.4', '9.5', '9.6', '10',]

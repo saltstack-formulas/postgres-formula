@@ -12,7 +12,9 @@
 
 {%- macro format_state(name, state, kwarg) %}
 
-  {%- do kwarg.update({'name': name}) %}
+  {%- if 'name' not in kwarg %}
+    {%- do kwarg.update({'name': name}) %}
+  {%- endif %}
   {%- if 'ensure' in kwarg %}
     {%- set ensure = kwarg.pop('ensure') %}
   {%- endif %}

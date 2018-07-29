@@ -39,8 +39,6 @@ postgresql{{ release }}-client-pkgs-removed:
       - postgresql-{{ release|replace('.', '') }}
       - postgresql{{ release }}-common
       - postgresql{{ release }}-jdbc
-      - postgresql{{ release }}
-      - postgresql{{ release|replace('.', '') }}
 
   {% endfor %}
 

@@ -25,7 +25,7 @@
 {{ state }}-{{ name }}:
   {{ state }}.{{ ensure|default('present') }}:
     {{- format_kwargs(kwarg) }}
-    - onchanges:
+    - watch:
       - test: postgres-reload-modules
 
 {%- endmacro %}

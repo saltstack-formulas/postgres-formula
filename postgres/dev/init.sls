@@ -1,4 +1,4 @@
-{% from tpldir + "/map.jinja" import postgres with context %}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {% if grains.os not in ('Windows', 'MacOS',) %}
   {%- set pkgs = [postgres.pkg_dev, postgres.pkg_libpq_dev] + postgres.pkg_dev_deps %}

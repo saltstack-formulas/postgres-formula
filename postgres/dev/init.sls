@@ -40,7 +40,7 @@ postgresql-{{ bin }}-altinstall:
 postgres_maxfiles_limits_conf:
   file.managed:
     - name: /Library/LaunchDaemons/limit.maxfiles.plist
-    - source: salt://{{ tpldir }}/templates/limit.maxfiles.plist
+    - source: salt://{{ tpldir }}/../templates/limit.maxfiles.plist
     - template: jinja
     - context:
       soft_limit: {{ postgres.limits.soft }}

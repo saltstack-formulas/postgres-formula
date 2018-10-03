@@ -22,6 +22,7 @@ Debian:
 
 FreeBSD:
   user: pgsql
+  pkg_client: postgresql{{ release }}-client
 
 OpenBSD:
   conf_dir: /var/postgresql/data

@@ -101,7 +101,11 @@ postgresql-config-dir:
       - ignore_files
     - makedirs: True
     - require:
+      {%- if postgres.prepare_cluster.run %}
       - cmd: postgresql-cluster-prepared
+      {%- else %}
+      - file: postgresql-cluster-prepared
+      {%- endif %}
 
 {%- set db_port = salt['config.option']('postgres.port') %}
 {%- if db_port %}

@@ -1,0 +1,3 @@
+if ! echo $PATH | grep -q {{ bin_dir }} ; then
+  export PATH=$PATH:{{ bin_dir }}
+fi

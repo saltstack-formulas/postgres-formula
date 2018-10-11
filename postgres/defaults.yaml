@@ -2,6 +2,7 @@
 
 postgres:
   use_upstream_repo: True
+  add_profile: False # add bin_dir to $PATH, if installed from repos
   version: '10'
   pkg: postgresql
   pkgs_extra: []

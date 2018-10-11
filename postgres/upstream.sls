@@ -5,6 +5,18 @@
 
   {%- if postgres.use_upstream_repo == true -%}
 
+    {%- if postgres.add_profile -%}
+postgresql-profile:
+  file.managed:
+    - name: /etc/profile.d/postgres.sh
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - source: salt://postgres/templates/postgres.sh.j2
+    - defaults:
+        bin_dir: {{ postgres.bin_dir }}
+    {%- endif %}
 # Add upstream repository for your distro
 postgresql-repo:
   pkgrepo.managed:

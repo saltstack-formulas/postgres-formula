@@ -5,7 +5,7 @@
 
   {%- if postgres.use_upstream_repo == true -%}
 
-    {%- if postgres.add_path -%}
+    {%- if postgres.add_profile -%}
 postgresql-profile:
   file.managed:
     - name: /etc/profile.d/postgres.sh

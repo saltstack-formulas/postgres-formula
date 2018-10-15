@@ -67,6 +67,7 @@ postgresql-cluster-prepared:
     - recurse:
       - user
       - group
+{%- if postgres.prepare_cluster.run %}
   cmd.run:
  {%- if postgres.prepare_cluster.command is defined %}
       {# support for depreciated 'prepare_cluster.command' pillar #}
@@ -84,6 +85,7 @@ postgresql-cluster-prepared:
       - file: postgresql-cluster-prepared
     - watch_in:
       - module: postgresql-service-restart
+{%- endif %}
 
 postgresql-config-dir:
   file.directory:
@@ -99,7 +101,11 @@ postgresql-config-dir:
       - ignore_files
     - makedirs: True
     - require:
+      {%- if postgres.prepare_cluster.run %}
       - cmd: postgresql-cluster-prepared
+      {%- else %}
+      - file: postgresql-cluster-prepared
+      {%- endif %}
 
 {%- set db_port = salt['config.option']('postgres.port') %}
 {%- if db_port %}

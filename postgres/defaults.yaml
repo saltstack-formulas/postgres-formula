@@ -17,6 +17,7 @@ postgres:
   group: postgres
 
   prepare_cluster:
+    run: True
     pgcommand: initdb -D
     pgtestfile: PG_VERSION
     user: postgres

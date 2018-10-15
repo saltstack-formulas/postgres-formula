@@ -51,8 +51,8 @@ postgres-reload-modules:
 {{ format_state( name + '-' + ext_name, 'postgres_extension', extension) }}
     - require:
       - postgres_database: postgres_database-{{ name }}
-      {%- if 'schema' in extension %}
-      - postgres_schema: postgres_schema-{{ extension.schema }}
+      {%- if 'schema' in extension and 'schemas' in postgres %}
+      - postgres_schema: postgres_schema-{{ name }}-{{ extension.schema }}
       {%- endif %}
     
     {%- endfor %}

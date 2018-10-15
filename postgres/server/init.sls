@@ -223,6 +223,29 @@ postgresql-tablespace-dir-{{ name }}:
     - require:
       - pkg: postgresql-server
 
+    {%- if "selinux" in grains and grains.selinux.enabled %}
+
+  pkg.installed:
+    - names:
+      - policycoreutils-python
+      - selinux-policy-targeted
+    - refresh: True
+  selinux.fcontext_policy_present:
+    - name: '{{ tblspace.directory }}(/.*)?'
+    - sel_type: postgresql_db_t
+    - require:
+      - file: postgresql-tablespace-dir-{{ name }}
+      - pkg: postgresql-tablespace-dir-{{ name }}
+
+postgresql-tablespace-dir-{{ name }}-fcontext:
+  selinux.fcontext_policy_applied:
+    - name: {{ tblspace.directory }}
+    - recursive: True
+    - require:
+      - selinux: postgresql-tablespace-dir-{{ name }}
+
+    {%- endif %}
+
 {%- endfor %}
 
 {%- if not postgres.bake_image %}

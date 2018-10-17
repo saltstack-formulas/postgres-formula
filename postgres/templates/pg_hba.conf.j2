@@ -20,7 +20,7 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{%- for acl in acls %}
+{% for acl in acls %}
   {%- if acl|first() == 'local' %}
 
     {%- if acl|length() == 3 %}
@@ -36,5 +36,5 @@ local   all             postgres                                peer
     {%- endif %}
 
   {%- endif %}
-{{ '{0:<7} {1:<15} {2:<15} {3:<23} {4}'.format(*acl) -}}
+{{ '{0:<7} {1:<15} {2:<15} {3:<23} {4}'.format(*acl) }}
 {% endfor %}

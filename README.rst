@@ -41,6 +41,16 @@ Installs the PostgreSQL adapter for Python on Linux.
 Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server using
 packaged init script, job or unit.
 
+
+.. note::
+
+    For PostgreSQL server before version 10 to work inside a **FreeBSD Jail**
+    set ``sysvshm=new`` and ``sysvsem=new``.
+    DO NOT SET ``allow.sysvipc=1``. It defeats the purpose of using Jails.
+
+    Further information: https://blog.tyk.nu/blog/freebsd-jails-and-sysv-ipc/
+
+
 ``postgres.server.image``
 -------------------------
 

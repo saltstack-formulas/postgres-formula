@@ -21,6 +21,8 @@ Debian:
     {% endif %}
 
 FreeBSD:
+  conf_dir: /usr/local/pgsql/data
+  data_dir: /usr/local/pgsql/data
   user: &freebsd-user pgsql
   group: &freebsd-group pgsql
   pkg_client: postgresql{{ release }}-client

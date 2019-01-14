@@ -207,6 +207,11 @@ postgresql-pg_ident:
 {%- endif %}
     - require:
       - file: postgresql-config-dir
+      {%- if postgres.prepare_cluster.run %}
+      - cmd: postgresql-cluster-prepared
+      {%- else %}
+      - file: postgresql-cluster-prepared
+      {%- endif %}
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 

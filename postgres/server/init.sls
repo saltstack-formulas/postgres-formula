@@ -84,7 +84,7 @@ postgresql-cluster-prepared:
       - pkg: postgresql-server
       - file: postgresql-cluster-prepared
     - watch_in:
-      - module: postgresql-service-restart
+      - service: postgresql-running
 {%- endif %}
 
 postgresql-config-dir:
@@ -143,7 +143,7 @@ postgresql-conf:
       - file: postgresql-conf-comment-port
       {%- endif %}
     - watch_in:
-      - module: postgresql-service-restart
+      - service: postgresql-running
 
 {%- endif %}
 
@@ -174,14 +174,7 @@ postgresql-pg_hba:
     - require:
       - file: postgresql-config-dir
     - watch_in:
-      - module: postgresql-service-restart
-
-# Restart the service where reloading is not sufficient
-# Currently when the cluster is created or changes made to `postgresql.conf`
-postgresql-service-restart:
-  module.wait:
-    - name: service.restart
-    - m_name: {{ postgres.service }}
+      - service: postgresql-running
 
 {%- set pg_ident_path = salt['file.join'](postgres.conf_dir, 'pg_ident.conf') %}
 
@@ -213,6 +206,12 @@ postgresql-pg_ident:
       - cmd: postgresql-cluster-prepared
       {%- else %}
       - file: postgresql-cluster-prepared
+      {%- endif %}
+    - watch_in:
+      {%- if grains.os not in ('MacOS',) %}
+      - module: postgresql-service-reload
+      {%- else %}
+      - service: postgresql-running
       {%- endif %}
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
@@ -258,15 +257,22 @@ postgresql-tablespace-dir-{{ name }}-fcontext:
 {%- if not postgres.bake_image %}
 
 # Start PostgreSQL server using OS init
+# Note: This is also the target for numerous `watch_in` requisites above, used
+# for the necessary service restart after changing the relevant configuration files
 postgresql-running:
   service.running:
     - name: {{ postgres.service }}
     - enable: True
-   {% if grains.os not in ('MacOS',) %}
-    - reload: True
-   {% endif %}
-    - watch:
-      - file: postgresql-pg_hba
-      - file: postgresql-pg_ident
+
+# Reload the service for changes made to `pg_ident.conf`, except for `MacOS`
+# which is handled by `postgresql-running` above.
+{%- if grains.os not in ('MacOS',) %}
+postgresql-service-reload:
+  module.wait:
+    - name: service.reload
+    - m_name: {{ postgres.service }}
+    - require:
+      - service: postgresql-running
+{%- endif %}
 
 {%- endif %}

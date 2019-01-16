@@ -147,13 +147,6 @@ postgresql-conf:
 
 {%- endif %}
 
-# Restart the service where reloading is not sufficient
-# Currently when the cluster is created or changes made to `postgresql.conf`
-postgresql-service-restart:
-  module.wait:
-    - name: service.restart
-    - m_name: {{ postgres.service }}
-
 {%- set pg_hba_path = salt['file.join'](postgres.conf_dir, 'pg_hba.conf') %}
 
 postgresql-pg_hba:
@@ -180,6 +173,15 @@ postgresql-pg_hba:
 {%- endif %}
     - require:
       - file: postgresql-config-dir
+    - watch_in:
+      - module: postgresql-service-restart
+
+# Restart the service where reloading is not sufficient
+# Currently when the cluster is created or changes made to `postgresql.conf`
+postgresql-service-restart:
+  module.wait:
+    - name: service.restart
+    - m_name: {{ postgres.service }}
 
 {%- set pg_ident_path = salt['file.join'](postgres.conf_dir, 'pg_ident.conf') %}
 

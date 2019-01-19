@@ -47,5 +47,5 @@
 # MAPNAME       SYSTEM-USERNAME         PG-USERNAME
 
 {%- for mapping in mappings %}
-{{ '{0:<15} {1:<22} {2}'.format(mapping) -}}
+{{ '{0:<15} {1:<22} {2}'.format(*mapping) -}}
 {% endfor %}

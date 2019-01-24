@@ -1,4 +1,4 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
+{%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 #remove release installed by formula
 postgresql-client-removed:

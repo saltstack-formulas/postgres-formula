@@ -6,7 +6,7 @@
   {% if pkgs %}
 install-postgres-dev-packages:
   pkg.installed:
-    - pkgs: {{ pkgs }}
+    - pkgs: {{ pkgs | json }}
     {% if postgres.fromrepo %}
     - fromrepo: {{ postgres.fromrepo }}
     {% endif %}

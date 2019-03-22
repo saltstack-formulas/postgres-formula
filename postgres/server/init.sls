@@ -164,14 +164,12 @@ postgresql-pg_hba:
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_hba_path }} || touch {{ pg_hba_path }}
     # Make a local backup before the file modification
-    - check_cmd: >-
-        salt-call --local file.copy
-        {{ pg_hba_path }} {{ pg_hba_path ~ postgres.config_backup }} remove_existing=true
   {%- endif %}
 {%- else %}
     - replace: False
 {%- endif %}
     - require:
+      - file: backup_pg_hba
       - file: postgresql-config-dir
     - watch_in:
       - service: postgresql-running
@@ -192,15 +190,12 @@ postgresql-pg_ident:
   {%- if postgres.config_backup %}
     # Create the empty file before managing to overcome the limitation of check_cmd
     - onlyif: test -f {{ pg_ident_path }} || touch {{ pg_ident_path }}
-    # Make a local backup before the file modification
-    - check_cmd: >-
-        salt-call --local file.copy
-        {{ pg_ident_path }} {{ pg_ident_path ~ postgres.config_backup }} remove_existing=true
   {%- endif %}
 {%- else %}
     - replace: False
 {%- endif %}
     - require:
+      - file: backup_pg_ident
       - file: postgresql-config-dir
       {%- if postgres.prepare_cluster.run %}
       - cmd: postgresql-cluster-prepared
@@ -213,6 +208,18 @@ postgresql-pg_ident:
       {%- else %}
       - service: postgresql-running
       {%- endif %}
+
+backup_pg_ident:
+  file.copy:
+    - name: {{ pg_ident_path ~ postgres.config_backup }}
+    - source: {{ pg_ident_path }}
+    - force: true
+
+backup_pg_hba:
+  file.copy:
+    - name: {{ pg_hba_path ~ postgres.config_backup }}
+    - source: {{ pg_hba_path }}
+    - force: true
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 

@@ -168,8 +168,9 @@ postgresql-pg_hba:
 {%- else %}
     - replace: False
 {%- endif %}
-    - require:
+    - prereq:
       - file: backup_pg_hba
+    - require:
       - file: postgresql-config-dir
     - watch_in:
       - service: postgresql-running
@@ -194,8 +195,9 @@ postgresql-pg_ident:
 {%- else %}
     - replace: False
 {%- endif %}
-    - require:
+    - prereq:
       - file: backup_pg_ident
+    - require:
       - file: postgresql-config-dir
       {%- if postgres.prepare_cluster.run %}
       - cmd: postgresql-cluster-prepared

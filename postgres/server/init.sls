@@ -54,6 +54,9 @@ postgresql-{{ bin }}-altinstall:
       - pkg: postgresql-server
     - require_in:
       - cmd: postgresql-cluster-prepared
+    - retry:
+        attempts: 2
+        until: True
 
       {%- endfor %}
   {%- endif %}

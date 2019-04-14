@@ -27,6 +27,9 @@ postgresql-{{ bin }}-altinstall:
     - onlyif: alternatives --display {{ bin }}
       {% else %}
     - onlyif: test -f {{ path }}
+    - retry:
+        attempts: 2
+        until: True
       {% endif %}
 
     {%- endfor %}

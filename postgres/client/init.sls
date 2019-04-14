@@ -39,6 +39,9 @@ postgresql-{{ bin }}-altinstall:
     - onlyif: test -f {{ path }}
     - require:
       - pkg: postgresql-client-libs
+    - retry:
+        attempts: 2
+        until: True
 
     {%- endfor %}
 {%- endif %}

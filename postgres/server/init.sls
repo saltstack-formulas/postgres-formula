@@ -54,9 +54,11 @@ postgresql-{{ bin }}-altinstall:
       - pkg: postgresql-server
     - require_in:
       - cmd: postgresql-cluster-prepared
+        {%- if grains['saltversioninfo'] < [2018, 11, 0, 0] %}
     - retry:
         attempts: 2
         until: True
+        {%- endif %}
 
       {%- endfor %}
   {%- endif %}

@@ -23,11 +23,12 @@ postgresql-{{ bin }}-altinstall:
     - link: {{ salt['file.join']('/usr/bin', bin) }}
     - path: {{ path }}
     - priority: {{ postgres.linux.altpriority }}
-      {% if grains.os in ('Fedora', 'CentOS',) %} {# bypass bug #}
-    - onlyif: alternatives --display {{ bin }}
-      {% else %}
     - onlyif: test -f {{ path }}
-      {% endif %}
+      {%- if grains['saltversioninfo'] < [2018, 11, 0, 0] %}
+    - retry:
+        attempts: 2
+        until: True
+      {%- endif %}
 
     {%- endfor %}
   {%- endif %}

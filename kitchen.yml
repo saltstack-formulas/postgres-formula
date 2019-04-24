@@ -79,7 +79,7 @@ provisioner:
         '*':
           - postgres
   pillars_from_files:
-    postgres.sls: pillar.example
+    postgres.sls: test/salt/pillar/postgres.sls
 
 verifier:
   # https://www.inspec.io/

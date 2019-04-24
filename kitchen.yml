@@ -1,26 +1,95 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
 ---
+# For help on this file's format, see https://kitchen.ci/
 driver:
-  name: vagrant
-  network:
-    - ["private_network", { ip: "192.168.33.33" }]
+  name: docker
+  use_sudo: false
+  privileged: true
+  run_command: /lib/systemd/systemd
+
+# Make sure the platforms listed below match up with
+# the `env.matrix` instances defined in `.travis.yml`
+platforms:
+  ## SALT 2019.2
+  - name: debian-9-2019-2-py3
+    driver:
+      image: netmanagers/salt-2019.2-py3:debian-9
+  - name: ubuntu-1804-2019-2-py3
+    driver:
+      image: netmanagers/salt-2019.2-py3:ubuntu-1804
+  - name: centos-7-2019-2-py2
+    driver:
+      image: netmanagers/salt-2019.2-py2:centos-7
+  - name: fedora-29-2019-2-py2
+    driver:
+      image: netmanagers/salt-2019.2-py2:fedora-29
+
+  ## SALT 2018.3
+  - name: opensuse-423-2018-3-py2
+    driver:
+      image: netmanagers/salt-2018.3-py2:opensuse-423
+      run_command: /usr/lib/systemd/systemd
+  - name: debian-8-2018-3-py2
+    driver:
+      image: netmanagers/salt-2018.3-py2:debian-8
+  - name: ubuntu-1604-2018-3-py2
+    driver:
+      image: netmanagers/salt-2018.3-py2:ubuntu-1604
+  - name: fedora-28-2018-3-py2
+    driver:
+      image: netmanagers/salt-2018.3-py2:fedora-28
+
+  # centos-6 guest fails on Debian hosts due to vsyscall issues, see
+  # https://hub.docker.com/_/centos, "A note about vsyscall"
+  # Disabled for `template-formula` because not `systemd` based
+  # - name: centos-6-2018-3
+  #   driver:
+  #     image: netmanagers/salt-2018.3-py2:centos-6
+  #     run_command: /sbin/init
+
+  ##S SALT 2017.7
+  - name: debian-8-2017-7-py2
+    driver:
+      image: netmanagers/salt-2017.7-py2:debian-8
+  - name: ubuntu-1604-2017-7-py2
+    driver:
+      image: netmanagers/salt-2017.7-py2:ubuntu-1604
+  # - name: centos-6-2017-7
+  #   driver:
+  #     image: netmanagers/salt-2017.7-py2:centos-6
+  #     run_command: /sbin/init
 
 provisioner:
   name: salt_solo
+  log_level: info
+  salt_install: none
+  require_chef: false
   formula: postgres
-  pillars-from-files:
-    postgres.sls: pillar.example
+  salt_copy_filter:
+    - .kitchen
+    - .git
+  state_top:
+    base:
+      '*':
+        - postgres
   pillars:
     top.sls:
       base:
-        "*":
+        '*':
           - postgres
-  state_top:
-    base:
-      "*":
-        - postgres
+  pillars_from_files:
+    postgres.sls: pillar.example
 
-platforms:
-  - name: ubuntu-14.04
+verifier:
+  # https://www.inspec.io/
+  name: inspec
+  sudo: true
+  # cli, documentation, html, progress, json, json-min, json-rspec, junit
+  reporter:
+    - cli
+  inspec_tests:
+    - path: test/integration/default
 
 suites:
   - name: default

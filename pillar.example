@@ -174,14 +174,14 @@ postgres:
 
   # optional schemas to enable on database
   schemas:
-    uuid_ossp:
+    uuid-ossp:
       dbname: db1
       owner: localUser
 
   # optional extensions to install in schema
   extensions:
     uuid-ossp:
-      schema: uuid_ossp
+      schema: uuid-ossp
       maintenance_db: db1
     #postgis: {}
 

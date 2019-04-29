@@ -31,8 +31,8 @@ postgresql-server:
     - require_in:
       - file: postgresql-server
   file.managed:
-    - name: /Library/LaunchAgents/{{ postgres.service }}.plist
-    - source: /usr/local/opt/postgres/{{ postgres.service }}.plist
+    - name: /Library/LaunchAgents/{{ postgres.service.name }}.plist
+    - source: /usr/local/opt/postgres/{{ postgres.service.name }}.plist
     - group: wheel
     - require_in:
       - service: postgresql-running
@@ -261,12 +261,23 @@ postgresql-tablespace-dir-{{ name }}-fcontext:
 
 {%- if not postgres.bake_image %}
 
+# Workaround for FreeBSD minion undefinitely hanging on service start
+# cf. https://github.com/saltstack/salt/issues/44848
+{% if postgres.service.sysrc %}
+posgresql-rc-flags:
+  sysrc.managed:
+    - name: {{ postgres.service.name }}_flags
+    - value: "{{ postgres.service.flags }} > /dev/null 2>&1"
+    - watch_in:
+      - service: postgresql-running
+{% endif %}
+
 # Start PostgreSQL server using OS init
 # Note: This is also the target for numerous `watch_in` requisites above, used
 # for the necessary service restart after changing the relevant configuration files
 postgresql-running:
   service.running:
-    - name: {{ postgres.service }}
+    - name: {{ postgres.service.name }}
     - enable: True
 
 # Reload the service for changes made to `pg_ident.conf`, except for `MacOS`
@@ -275,7 +286,7 @@ postgresql-running:
 postgresql-service-reload:
   module.wait:
     - name: service.reload
-    - m_name: {{ postgres.service }}
+    - m_name: {{ postgres.service.name }}
     - require:
       - service: postgresql-running
 {%- endif %}

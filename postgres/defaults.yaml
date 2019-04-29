@@ -67,7 +67,9 @@ postgres:
 
   config_backup: '.bak'
 
-  service: postgresql
+  service:
+    name:  postgresql
+    sysrc: False
 
   bake_image: False
 

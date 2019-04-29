@@ -24,7 +24,10 @@ postgres:
   # These pillars are typically never required.
   # pkg: 'postgresql'
   # pkg_client: 'postgresql-client'
-  # service: postgresql
+  # service:
+  #   name: 'postgresql'
+  #   flags: -w -s -m fast
+  #   sysrc: True
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython

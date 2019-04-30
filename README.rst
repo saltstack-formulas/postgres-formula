@@ -120,28 +120,32 @@ Remove development and python packages.
 
 Testing
 =======
-The ``postgres`` state was tested on MacOS (El Capitan 10.11.6), and ``remove`` states on Ubuntu, Centos, and Fedora.
 
-Linux testing is done with the ``kitchen-salt``.
+Linux testing is done with ``kitchen-salt``.
 
 ``kitchen converge``
 --------------------
 
-Runs the ``postgres`` main state.
+Creates the docker instance and runs the ``postgres`` main state, ready for testing.
 
 ``kitchen verify``
 ------------------
 
-Runs ``serverspec`` tests on the actual instance.
+Runs the ``inspec`` tests on the actual instance.
+
+``kitchen destroy``
+----------------
+
+Removes the docker instance.
 
 ``kitchen test``
 ----------------
 
-Builds and runs tests from scratch.
+Runs all of the stages above in one go: i.e. ``destroy`` + ``converge`` + ``verify`` + ``destroy``.
 
 ``kitchen login``
 -----------------
 
-Gives you ssh to the vagrant machine for manual testing.
+Gives you SSH access to the instance for manual testing.
 
 .. vim: fenc=utf-8 spell spl=en cc=100 tw=99 fo=want sts=2 sw=2 et

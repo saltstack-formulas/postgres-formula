@@ -5,15 +5,19 @@ postgres.port: '5432'
 postgres:
   # UPSTREAM REPO
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
+  {%- if not (grains.os_family == 'Debian' or grains.osfinger == 'CentOS-6') %}
   use_upstream_repo: False
-  # # Version to install from upstream repository (if upstream_repo: True)
-  # version: '10'
+  {%- else %}
+  use_upstream_repo: True
+  # Version to install from upstream repository (if upstream_repo: True)
+  version: '9.6'
   # # Set True to add a file in /etc/profile.d adding the bin dir in $PATH
   # # as packages from upstream put them somewhere like /usr/pgsql-10/bin
   # add_profile: False
   # # If automatic package installation fails, use `fromrepo` to specify the
   # # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
   # fromrepo: 'jessie-pgdg'
+  {%- endif %}
 
   # ### MACOS
   # # Set to 'postgresapp' OR 'homebrew' for MacOS

@@ -1,6 +1,11 @@
 # Port to use for the cluster -- can be used to provide a non-standard port
 # NOTE: If already set in the minion config, that value takes priority
+
+{%- if not (grains.os_family == 'Debian' or grains.osfinger == 'Leap-15') %}
 postgres.port: '5432'
+{%- else %}
+postgres.port: '5433'
+{%- endif %}
 
 postgres:
   # UPSTREAM REPO
@@ -10,7 +15,11 @@ postgres:
   {%- else %}
   use_upstream_repo: True
   # Version to install from upstream repository (if upstream_repo: True)
+  {%- if not (grains.os_family == 'Debian') %}
   version: '9.6'
+  {%- else %}
+  version: '10'
+  {%- endif %}
   # # Set True to add a file in /etc/profile.d adding the bin dir in $PATH
   # # as packages from upstream put them somewhere like /usr/pgsql-10/bin
   # add_profile: False

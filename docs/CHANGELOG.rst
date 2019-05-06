@@ -2,6 +2,15 @@
 Changelog
 =========
 
+`0.37.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.0...v0.37.1>`_ (2019-05-06)
+-------------------------------------------------------------------------------------------------------------
+
+Documentation
+^^^^^^^^^^^^^
+
+
+* **readme:** fix link for Travis badge (\ `850ca6a <https://github.com/saltstack-formulas/postgres-formula/commit/850ca6a>`_\ )
+
 `0.37.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.36.0...v0.37.0>`_ (2019-05-06)
 -------------------------------------------------------------------------------------------------------------
 

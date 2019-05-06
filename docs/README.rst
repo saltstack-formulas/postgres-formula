@@ -1,42 +1,74 @@
-========
-postgres
-========
+.. _readme:
 
-.. note::
-
-    See the full `Salt Formulas installation and usage instructions
-    <http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
-
-Available states
+postgres-formula
 ================
 
+|img_travis| |img_sr|
+
+.. |img_travis| image:: https://travis-ci.com/saltstack-formulas/template-formula.svg?branch=master
+   :alt: Travis CI Build Status
+   :scale: 100%
+   :target: https://travis-ci.com/saltstack-formulas/template-formula
+.. |img_sr| image:: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+   :alt: Semantic Release
+   :scale: 100%
+   :target: https://github.com/semantic-release/semantic-release
+
+A formula to install and configure PostgreSQL server.
+
+.. contents:: **Table of Contents**
+
+General notes
+-------------
+
+See the full `SaltStack Formulas installation and usage instructions
+<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
+
+If you are interested in writing or contributing to formulas, please pay attention to the `Writing Formula Section
+<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#writing-formulas>`_.
+
+If you want to use this formula, please pay attention to the ``FORMULA`` file and/or ``git tag``,
+which contains the currently released version. This formula is versioned according to `Semantic Versioning <http://semver.org/>`_.
+
+See `Formula Versioning Section <https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#versioning>`_ for more details.
+
+Contributing to this repo
+-------------------------
+
+**Commit message formatting is significant!!**
+
+Please see :ref:`How to contribute <CONTRIBUTING>` for more details.
+
+Available states
+----------------
+
 .. contents::
-    :local:
+   :local:
 
 ``postgres``
-------------
+^^^^^^^^^^^^
 
 Installs and configures both PostgreSQL server and client with creation of various DB objects in
 the cluster. This state applies to both Linux and MacOS.
 
 ``postgres.client``
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 Installs the PostgreSQL client binaries and libraries on Linux.
 
 ``postgres.manage``
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 Creates such DB objects as: users, tablespaces, databases, schemas and extensions.
 See ``pillar.example`` file for details.
 
 ``postgres.python``
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 Installs the PostgreSQL adapter for Python on Linux.
 
 ``postgres.server``
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server using
 packaged init script, job or unit.
@@ -52,7 +84,7 @@ packaged init script, job or unit.
 
 
 ``postgres.server.image``
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server by issuing
 raw ``pg_ctl`` command. The ``postgres:bake_image`` Pillar toggles this behaviour. For example:
@@ -78,7 +110,7 @@ If a lookup dictionary or Pillar has ``postgres:bake_image`` set ``False`` (this
 equivalent of applying ``postgres.server`` state.
 
 ``postgres.upstream``
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 Configures the PostgreSQL Official (upstream) repository on target system if
 applicable.
@@ -95,53 +127,57 @@ installed from the upstream Linux repository. Defaults to ``9.5``.
 
 
 Removal states
-===============
+--------------
 
 ``postgres.dropped``
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 Meta state to remove Postgres software. By default the release installed by formula is targeted only. To target multiple releases, set pillar ``postgres.remove.multiple_releases: True``.
 
 ``postgres.server.remove``
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove server, lib, and contrib packages. The ``postgres.server.remove`` will retain data by default (no data loss) - set pillar ``postgres.remove.data: True`` to remove data and configuration directories also.
 
 ``postgres.client.remove``
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove client package.
 
 ``postgres.dev.remove``
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 Remove development and python packages.
 
 
 Testing
-=======
-The ``postgres`` state was tested on MacOS (El Capitan 10.11.6), and ``remove`` states on Ubuntu, Centos, and Fedora.
+-------
 
-Linux testing is done with the ``kitchen-salt``.
+Linux testing is done with ``kitchen-salt``.
 
 ``kitchen converge``
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
-Runs the ``postgres`` main state.
+Creates the docker instance and runs the ``postgres`` main state, ready for testing.
 
 ``kitchen verify``
-------------------
+^^^^^^^^^^^^^^^^^^
 
-Runs ``serverspec`` tests on the actual instance.
+Runs the ``inspec`` tests on the actual instance.
+
+``kitchen destroy``
+^^^^^^^^^^^^^^^^
+
+Removes the docker instance.
 
 ``kitchen test``
-----------------
+^^^^^^^^^^^^^^^^
 
-Builds and runs tests from scratch.
+Runs all of the stages above in one go: i.e. ``destroy`` + ``converge`` + ``verify`` + ``destroy``.
 
 ``kitchen login``
------------------
+^^^^^^^^^^^^^^^^^
 
-Gives you ssh to the vagrant machine for manual testing.
+Gives you SSH access to the instance for manual testing.
 
 .. vim: fenc=utf-8 spell spl=en cc=100 tw=99 fo=want sts=2 sw=2 et

@@ -2,7 +2,7 @@
 
 postgresql-dead:
   service.dead:
-    - name: {{ postgres.service }}
+    - name: {{ postgres.service.name }}
     - enable: False
 
 postgresql-repo-removed:
@@ -81,7 +81,7 @@ postgresql{{ release }}-tablespace-dir-{{ name }}-removed:
   file.absent:
     - name: {{ tblspace.directory }}
     - require:
-      - file: postgresql{{ release }}-dataconf-removed 
+      - file: postgresql{{ release }}-dataconf-removed
       {% endfor %}
     {% endif %}
 

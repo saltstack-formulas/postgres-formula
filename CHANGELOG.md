@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.2](https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.1...v0.37.2) (2019-05-12)
+
+
+### Bug Fixes
+
+* **sysrc-svc:** workaround *BSD minion indefinitely hanging on start ([0aa8b4a](https://github.com/saltstack-formulas/postgres-formula/commit/0aa8b4a))
+
 ## [0.37.1](https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.0...v0.37.1) (2019-05-06)
 
 

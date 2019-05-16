@@ -21,10 +21,17 @@ Debian:
     {% endif %}
 
 FreeBSD:
-  conf_dir: /usr/local/pgsql/data
-  data_dir: /usr/local/pgsql/data
+    {% if repo.version|float >= 9.6 %}
+  user: &freebsd-user postgres
+  group: &freebsd-group postgres
+  conf_dir: {{ '/var/db/postgres/data' ~ release  }}
+  data_dir: {{ '/var/db/postgres/data' ~ release }}
+    {% else %}
   user: &freebsd-user pgsql
   group: &freebsd-group pgsql
+  conf_dir: /usr/local/pgsql/data
+  data_dir: /usr/local/pgsql/data
+    {% endif %}
   pkg_client: postgresql{{ release }}-client
   pkg: postgresql{{ release }}-server
   prepare_cluster:

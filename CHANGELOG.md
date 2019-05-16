@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.3](https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.2...v0.37.3) (2019-05-16)
+
+
+### Bug Fixes
+
+* **freebsd-user:** fix FreeBSD daemon's user for PostgreSQL >= 9.6 ([8745365](https://github.com/saltstack-formulas/postgres-formula/commit/8745365)), closes [#263](https://github.com/saltstack-formulas/postgres-formula/issues/263)
+
 ## [0.37.2](https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.1...v0.37.2) (2019-05-12)
 
 

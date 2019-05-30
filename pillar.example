@@ -36,7 +36,7 @@ postgres:
   # The default `encoding` is derived from the `locale` so not recommended
   # to provide a value for it unless necessary
   cluster:
-    locale: en_GB.UTF-8
+    locale: en_US.UTF-8
     # encoding: UTF8
 
   #'Alternatives system' priority incremental. 0 disables feature.

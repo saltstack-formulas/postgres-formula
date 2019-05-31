@@ -2,6 +2,23 @@
 Changelog
 =========
 
+`0.37.4 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.3...v0.37.4>`_ (2019-05-31)
+-------------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **travis:** reduce matrix down to 6 instances (\ `2ff919f <https://github.com/saltstack-formulas/postgres-formula/commit/2ff919f>`_\ )
+
+Tests
+^^^^^
+
+
+* **\ ``services_spec``\ :** remove temporary ``suse`` conditional (\ `81165fc <https://github.com/saltstack-formulas/postgres-formula/commit/81165fc>`_\ )
+* **command_spec:** use cleaner ``match`` string using ``%r`` (\ `a054cea <https://github.com/saltstack-formulas/postgres-formula/commit/a054cea>`_\ )
+* **locale:** improve test using locale ``en_US.UTF-8`` (\ `7796064 <https://github.com/saltstack-formulas/postgres-formula/commit/7796064>`_\ )
+
 `0.37.3 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.2...v0.37.3>`_ (2019-05-16)
 -------------------------------------------------------------------------------------------------------------
 

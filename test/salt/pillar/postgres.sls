@@ -42,13 +42,13 @@ postgres:
   #   - postgresql-contrib
   #   - postgresql-plpython
 
-  # # CLUSTER
-  # # The default `encoding` is derived from the `locale` so not recommended
-  # # to provide a value for it unless necessary
-  # cluster:
-  #   locale: en_GB.UTF-8
-  #   # encoding: UTF8
-  #
+  # CLUSTER
+  # The default `encoding` is derived from the `locale` so not recommended
+  # to provide a value for it unless necessary
+  cluster:
+    locale: en_US.UTF-8
+    # encoding: UTF8
+
   # #'Alternatives system' priority incremental. 0 disables feature.
   # linux:
   #   altpriority: 30
@@ -166,20 +166,20 @@ postgres:
   # databases to be created
   databases:
     db1:
-      owner: 'localUser'
-      # template: 'template0'
-      # lc_ctype: 'en_US.UTF-8'
-      # lc_collate: 'en_US.UTF-8'
+      owner: localUser
+      template: template0
+      lc_ctype: en_US.UTF-8
+      lc_collate: en_US.UTF-8
     db2:
-      owner: 'remoteUser'
-      # template: 'template0'
-      # lc_ctype: 'en_US.UTF-8'
-      # lc_collate: 'en_US.UTF-8'
-      tablespace: 'my_space'
+      owner: remoteUser
+      template: template0
+      lc_ctype: en_US.UTF-8
+      lc_collate: en_US.UTF-8
+      tablespace: my_space
       # set custom schema
       schemas:
         public:
-          owner: 'localUser'
+          owner: localUser
       # enable per-db extension
       {%- if grains.os_family == 'Debian' and grains.osfinger != 'Debian-8' %}
       extensions:

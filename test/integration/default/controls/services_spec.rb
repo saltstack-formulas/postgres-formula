@@ -7,11 +7,6 @@ elsif os[:family] == 'debian' or os[:name] == 'suse'
   pg_port = 5433
 end
 
-# Temporary `if` due to `opensuse-leap-15` bug re: `service`
-if os[:name] == 'suse'
-  puts "[Skip `service`-based tests due to `opensuse-leap-15` detection bug (see https://github.com/inspec/train/issues/377)]"
-  puts "[Skip `service`-based tests due to `opensuse-leap-15` bug]"
-else
 control 'Postgres service' do
   impact 0.5
   title 'should be running and enabled'
@@ -24,5 +19,4 @@ control 'Postgres service' do
   describe port(pg_port) do
     it { should be_listening }
   end
-end
 end

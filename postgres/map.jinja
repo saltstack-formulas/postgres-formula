@@ -1,17 +1,32 @@
 {% import_yaml "postgres/defaults.yaml" as defaults %}
+{% import_yaml "postgres/osfamilymap.yaml" as osfamilymap %}
 {% import_yaml "postgres/osmap.yaml" as osmap %}
 {% import_yaml "postgres/codenamemap.yaml" as oscodenamemap %}
 
 {% set postgres = salt['grains.filter_by'](
     defaults,
     merge=salt['grains.filter_by'](
-        osmap,
+        osfamilymap,
         grain='os_family',
         merge=salt['grains.filter_by'](
-            oscodenamemap,
-            grain='oscodename',
-            merge=salt['pillar.get']('postgres', {}),
+            osmap,
+            grain='os',
+            merge=salt['grains.filter_by'](
+                oscodenamemap,
+                grain='oscodename',
+                merge=salt['pillar.get']('postgres', {}),
+            ),
         ),
     ),
     base='postgres',
 ) %}
+
+{# Concatenate the cluster preparation command and then append it to the `postgres` dict #}
+{% set pc_cmd = '{0} {1}'.format(postgres.prepare_cluster.pgcommand, postgres.data_dir) %}
+{% if postgres.cluster.locale %}
+  {% set pc_cmd = '{0} --locale={1}'.format(pc_cmd, postgres.cluster.locale) %}
+{% endif %}
+{% if postgres.cluster.encoding %}
+  {% set pc_cmd = '{0} --encoding={1}'.format(pc_cmd, postgres.cluster.encoding) %}
+{% endif %}
+{% do postgres.update({'prepare_cluster_cmd': pc_cmd}) %}

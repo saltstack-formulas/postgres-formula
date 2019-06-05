@@ -2,53 +2,75 @@
 
 {% import_yaml "postgres/repo.yaml" as repo %}
 
-{% macro debian_codename(name, version, codename=none) %}
-  {#
-  Generate lookup dictionary map for Debian and derivative distributions
-
-    name:
-      distro codename
-    version:
-      PostgreSQL release version
-    codename:
-      optional grain value if `name` does not match the one returned by
-      `oscodename` grain
+  {# Generate lookup dictionary map for OS and derivative distributions
+    name: distro codename
+    version: PostgreSQL release version
+    codename: optional grain value if `name` does not match the one returned by `oscodename` grain
   #}
 
+{% macro debian_codename(name, version, codename=none) %}
+
+  {% if repo.use_upstream_repo == true %}
+    {% set version = repo.version %}
+    {% set fromrepo = repo.fromrepo|default(name ~ '-pgdg', true) %}
+  {% else %}
+    {% set fromrepo = name %}
+  {% endif %}
+  {% set cluster_name = repo.cluster_name %}
+  {% set conf_dir = '/etc/postgresql/{0}/{1}'.format(version, cluster_name) %}
+  {% set data_dir = '/var/lib/postgresql/{0}/{1}'.format(version, cluster_name) %}
+
+{{ codename|default(name, true) }}:
+  # PostgreSQL packages are mostly downloaded from `main` repo component
+  conf_dir: {{ conf_dir }}
+  data_dir: {{ data_dir }}
+  fromrepo: {{ fromrepo }}
+  pkg_repo:
+    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
+  pkg: postgresql-{{ version }}
+  pkg_client: postgresql-client-{{ version }}
+  prepare_cluster:
+    pgcommand: pg_createcluster {{ version }} {{ cluster_name }} -d
+    user: root
+
+{% endmacro %}
+
+
+{% macro fedora_codename(name, version, codename=none) %}
+
   {# use upstream version if configured #}
-  {% if repo.use_upstream_repo %}
+  {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
   {% endif %}
 
 {{ codename|default(name, true) }}:
   # PostgreSQL packages are mostly downloaded from `main` repo component
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main {{ repo.version }}'
-  pkg: postgresql-{{ version }}
-  pkg_client: postgresql-client-{{ version }}
-  conf_dir: /etc/postgresql/{{ version }}/main
-  prepare_cluster:
-    command: pg_createcluster {{ version }} main
-    test: test -f /var/lib/postgresql/{{ version }}/main/PG_VERSION && test -f /etc/postgresql/{{ version }}/main/postgresql.conf
-    user: root
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ version }}/fedora/fedora-$releasever-$basearch'
 
 {% endmacro %}
 
 ## Debian GNU/Linux
 {{ debian_codename('wheezy', '9.1') }}
 {{ debian_codename('jessie', '9.4') }}
+{{ debian_codename('stretch', '9.6') }}
 
 # `oscodename` grain has long distro name
 # if `lsb-release` package not installed
 {{ debian_codename('wheezy', '9.1', 'Debian GNU/Linux 7 (wheezy)') }}
 {{ debian_codename('jessie', '9.4', 'Debian GNU/Linux 8 (jessie)') }}
+{{ debian_codename('stretch', '9.6', 'Debian GNU/Linux 9 (stretch)') }}
 
 ## Ubuntu
 {{ debian_codename('trusty', '9.3') }}
-{{ debian_codename('precise', '9.4') }}
-{{ debian_codename('utopic', '9.4') }}
-{{ debian_codename('vivid', '9.4') }}
-{{ debian_codename('wily', '9.4') }}
 {{ debian_codename('xenial', '9.5') }}
+{{ debian_codename('artful', '9.6') }}
+{{ debian_codename('bionic', '10') }}
+{{ debian_codename('cosmic', '10') }}
+
+## Fedora
+# `oscodename` grain has long distro name
+{{ fedora_codename('Fedora-27', '9.6', 'Fedora 27 (Twenty Seven)') }}
+{{ fedora_codename('Fedora-26', '9.6', 'Fedora 26 (Twenty Six)') }}
 
 # vim: ft=sls

@@ -1,10 +1,22 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
-{%- from "postgres/macros.jinja" import format_kwargs with context -%}
+{%- from tpldir + "/map.jinja" import postgres with context -%}
+{%- from tpldir + "/macros.jinja" import format_kwargs with context -%}
 
 {%- if 'pkg_repo' in postgres -%}
 
-  {%- if postgres.use_upstream_repo -%}
+  {%- if postgres.use_upstream_repo == true -%}
 
+    {%- if postgres.add_profile -%}
+postgresql-profile:
+  file.managed:
+    - name: /etc/profile.d/postgres.sh
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - source: salt://postgres/templates/postgres.sh.j2
+    - defaults:
+        bin_dir: {{ postgres.bin_dir }}
+    {%- endif %}
 # Add upstream repository for your distro
 postgresql-repo:
   pkgrepo.managed:
@@ -22,9 +34,8 @@ postgresql-repo:
 
   {%- endif -%}
 
-{%- else -%}
+{%- elif grains.os not in ('Windows', 'MacOS',) %}
 
-# Notify that we don't manage this distro
 postgresql-repo:
   test.show_notification:
     - text: |

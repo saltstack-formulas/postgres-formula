@@ -2,25 +2,51 @@
 
 postgres:
   use_upstream_repo: True
-  version: '9.5'
+  add_profile: False # add bin_dir to $PATH, if installed from repos
+  version: '10'
   pkg: postgresql
   pkgs_extra: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
-  pkg_libpq_dev: postgresql-libs
-  python: python-psycopg2
+  pkg_dev_deps: []
+  pkg_libpq_dev: libpq-dev
+  pkg_libs: postgresql-libs
+  pkg_python: python-psycopg2
+  userhomes: /home
   user: postgres
   group: postgres
 
   prepare_cluster:
-    command: initdb --pgdata=/var/lib/pgsql/data
-    test: test -f /var/lib/pgsql/data/PG_VERSION
+    run: True
+    pgcommand: initdb -D
+    pgtestfile: PG_VERSION
     user: postgres
-    env: {}
+    env: []
+
+  cluster:
+    name: main    # Debian-based only
+    locale: ''    # Defaults to `C`
+    encoding: ''  # Defaults to `SQL_ASCII` if `locale` not provided
 
   conf_dir: /var/lib/pgsql/data
+  data_dir: /var/lib/pgsql/data
+  conf_dir_mode: '0700'
   postgresconf: ""
-  postgresconf_backup: '.bak'
+
+  macos:
+    archive: postgres.dmg
+    tmpdir: /tmp/postgrestmp
+    postgresapp:
+      #See: https://github.com/PostgresApp/PostgresApp/releases/
+      url: https://github.com/PostgresApp/PostgresApp/releases/download/v2.1.1/Postgres-2.1.1.dmg
+      sum: sha256=ac0656b522a58fd337931313f09509c09610c4a6078fe0b8e469e69af1e1750b
+    homebrew:
+      url: ''
+      sum: ''
+    dl:
+      opts: -s -L
+      interval: 60
+      retries: 2
 
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
   acls:
@@ -30,13 +56,36 @@ postgres:
     - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
     # IPv6 local connections:
     - ['host', 'all', 'all', '::1/128', 'md5']
+    # Allow replication connections from localhost, by a user with the
+    # replication privilege.
+    - ['local', 'replication', 'all', 'peer']
+    - ['host', 'replication', 'all', '127.0.0.1/32', 'md5']
+    - ['host', 'replication', 'all', '::1/128', 'md5']
 
-  service: postgresql
+  pg_ident.conf: salt://postgres/templates/pg_ident.conf.j2
+  identity_map: []
+
+  config_backup: '.bak'
+
+  service:
+    name:  postgresql
+    sysrc: False
 
   bake_image: False
+
+  fromrepo: ''
 
   users: {}
   tablespaces: {}
   databases: {}
   schemas: {}
   extensions: {}
+
+  linux:
+    #Alternatives system are disabled by a 'altpriority=0' pillar.
+    altpriority: 0
+
+  remove:
+    data: False
+    multiple_releases: False
+    releases: ['9.2', '9.3', '9.4', '9.5', '9.6', '10',]

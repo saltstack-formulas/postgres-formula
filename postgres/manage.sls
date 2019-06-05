@@ -1,7 +1,7 @@
-{%- from "postgres/map.jinja" import postgres with context -%}
-{%- from "postgres/macros.jinja" import format_state with context -%}
+{%- from tpldir + "/map.jinja" import postgres with context -%}
+{%- from tpldir + "/macros.jinja" import format_state with context -%}
 
-{%- if not salt.get('postgres.user_create') %}
+{%- if salt['postgres.user_create']|default(none) is not callable %}
 
 # Salt states for managing PostgreSQL is not available,
 # need to provision client binaries first
@@ -18,7 +18,7 @@ include:
 # Ensure that Salt is able to use postgres modules
 
 postgres-reload-modules:
-  test.nop:
+  test.succeed_with_changes:
     - reload_modules: True
 
 # User states
@@ -26,8 +26,6 @@ postgres-reload-modules:
 {%- for name, user in postgres.users|dictsort() %}
 
 {{ format_state(name, 'postgres_user', user) }}
-    - require:
-      - test: postgres-reload-modules
 
 {%- endfor %}
 
@@ -36,9 +34,8 @@ postgres-reload-modules:
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
 
 {{ format_state(name, 'postgres_tablespace', tblspace) }}
-    - require:
-      - test: postgres-reload-modules
   {%- if 'owner' in tblspace %}
+    - require:
       - postgres_user: postgres_user-{{ tblspace.owner }}
   {%- endif %}
 
@@ -47,10 +44,34 @@ postgres-reload-modules:
 # Database states
 
 {%- for name, db in postgres.databases|dictsort() %}
+  {%- if 'extensions' in db %}
+    {%- for ext_name, extension in db.pop('extensions')|dictsort() %}
+      {%- do extension.update({'name': ext_name, 'maintenance_db': name}) %}
+
+{{ format_state( name + '-' + ext_name, 'postgres_extension', extension) }}
+    - require:
+      - postgres_database: postgres_database-{{ name }}
+      {%- if 'schema' in extension and 'schemas' in postgres %}
+      - postgres_schema: postgres_schema-{{ name }}-{{ extension.schema }}
+      {%- endif %}
+    
+    {%- endfor %}
+  {%- endif %}
+  {%- if 'schemas' in db %}
+    {%- for schema_name, schema in db.pop('schemas')|dictsort() %}
+      {%- do schema.update({'name': schema_name, 'dbname': name }) %}
+
+{{ format_state( name + '-' + schema_name, 'postgres_schema', schema) }}
+    - require:
+      - postgres_database: postgres_database-{{ name }}
+    
+    {%- endfor %}
+  {%- endif %}
 
 {{ format_state(name, 'postgres_database', db) }}
+  {%- if 'owner' in db or 'tablespace' in db %}
     - require:
-      - test: postgres-reload-modules
+  {%- endif %}
   {%- if 'owner' in db %}
       - postgres_user: postgres_user-{{ db.owner }}
   {%- endif %}
@@ -66,7 +87,7 @@ postgres-reload-modules:
 
 {{ format_state(name, 'postgres_schema', schema) }}
     - require:
-      - test: postgres-reload-modules
+      - postgres_database-{{ schema.dbname }}
   {%- if 'owner' in schema %}
       - postgres_user: postgres_user-{{ schema.owner }}
   {%- endif %}
@@ -78,8 +99,9 @@ postgres-reload-modules:
 {%- for name, extension in postgres.extensions|dictsort() %}
 
 {{ format_state(name, 'postgres_extension', extension) }}
+  {%- if 'maintenance_db' in extension or 'schema' in extension %}
     - require:
-      - test: postgres-reload-modules
+  {%- endif %}
   {%- if 'maintenance_db' in extension %}
       - postgres_database: postgres_database-{{ extension.maintenance_db }}
   {%- endif %}

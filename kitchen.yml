@@ -118,13 +118,6 @@ provisioner:
     base:
       '*':
         - postgres
-  pillars:
-    top.sls:
-      base:
-        '*':
-          - postgres
-  pillars_from_files:
-    postgres.sls: test/salt/pillar/postgres.sls
 
 verifier:
   # https://www.inspec.io/
@@ -133,8 +126,17 @@ verifier:
   # cli, documentation, html, progress, json, json-min, json-rspec, junit
   reporter:
     - cli
-  inspec_tests:
-    - path: test/integration/default
 
 suites:
   - name: default
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    provisioner:
+      pillars-from-files:
+        postgres.sls: test/salt/pillar/postgres.sls
+      pillars:
+        top.sls:
+          base:
+            '*':
+              - postgres

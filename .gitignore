@@ -48,6 +48,7 @@ coverage.xml
 .kitchen
 .kitchen.local.yml
 kitchen.local.yml
+junit-*.xml
 
 # Translations
 *.mo
@@ -103,8 +104,19 @@ ENV/
 # mypy
 .mypy_cache/
 
+# Bundler
+Gemfile.lock
+
 # copied `.md` files used for conversion to `.rst` using `m2r`
 docs/*.md
 
 # Vim
-*.sw[nop]
+*.sw?
+
+## Collected when centralising formulas (check and sort)
+# `collectd-formula`
+.pytest_cache/
+/.idea/
+Dockerfile.*_*
+ignore/
+tmp/

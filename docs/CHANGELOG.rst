@@ -2,6 +2,22 @@
 Changelog
 =========
 
+`0.38.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.4...v0.38.0>`_ (2019-07-24)
+-------------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **kitchen:** remove ``python*-pip`` installation (\ `d999597 <https://github.com/saltstack-formulas/postgres-formula/commit/d999597>`_\ )
+* **kitchen+travis:** modify matrix to include ``develop`` platform (\ `3f81439 <https://github.com/saltstack-formulas/postgres-formula/commit/3f81439>`_\ )
+
+Features
+^^^^^^^^
+
+
+* **debian:** add buster support (\ `904ba27 <https://github.com/saltstack-formulas/postgres-formula/commit/904ba27>`_\ )
+
 `0.37.4 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.3...v0.37.4>`_ (2019-05-31)
 -------------------------------------------------------------------------------------------------------------
 

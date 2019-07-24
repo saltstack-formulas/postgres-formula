@@ -50,7 +50,7 @@
 
 {% endmacro %}
 
-## Debian GNU/Linux
+## Debian GNU/Linux (the second parameter refers to the postgresql package version, not the distro)
 {{ debian_codename('wheezy', '9.1') }}
 {{ debian_codename('jessie', '9.4') }}
 {{ debian_codename('stretch', '9.6') }}

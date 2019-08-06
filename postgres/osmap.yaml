@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 {% import_yaml "postgres/repo.yaml" as repo %}
 
 Fedora:
   pkg_repo:
+    # yamllint disable-line rule:line-length
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/fedora/fedora-$releasever-$basearch'
   remove:
-    releases: ['9.4', '9.5', '9.6', '10',]
-
-# vim: ft=sls
+    releases: ['9.4', '9.5', '9.6', '10']

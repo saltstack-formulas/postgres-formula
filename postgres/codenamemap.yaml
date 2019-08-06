@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 ### Set parameters based on PostgreSQL version supplied with particular distro
 
 {% import_yaml "postgres/repo.yaml" as repo %}

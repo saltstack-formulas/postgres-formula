@@ -2,6 +2,15 @@
 Changelog
 =========
 
+`0.39.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.38.0...v0.39.0>`_ (2019-08-17)
+-------------------------------------------------------------------------------------------------------------
+
+Features
+^^^^^^^^
+
+
+* **yamllint:** include for this repo and apply rules throughout (\ `1f0fd92 <https://github.com/saltstack-formulas/postgres-formula/commit/1f0fd92>`_\ )
+
 `0.38.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.37.4...v0.38.0>`_ (2019-07-24)
 -------------------------------------------------------------------------------------------------------------
 

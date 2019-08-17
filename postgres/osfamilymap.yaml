@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 {% import_yaml "postgres/repo.yaml" as repo %}
 
 {% set release = repo.version|replace('.', '') %}

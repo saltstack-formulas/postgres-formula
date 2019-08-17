@@ -1,24 +1,27 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 # Port to use for the cluster -- can be used to provide a non-standard port
 # NOTE: If already set in the minion config, that value takes priority
 postgres.port: '5432'
 
 postgres:
   # UPSTREAM REPO
-  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
-  use_upstream_repo: False
-  # Version to install from upstream repository (if upstream_repo: True)
+  # Set true to configure upstream postgresql.org repository for YUM/APT/ZYPP
+  use_upstream_repo: false
+  # Version to install from upstream repository (if upstream_repo: true)
   version: '10'
-  # Set True to add a file in /etc/profile.d adding the bin dir in $PATH
+  # Set true to add a file in /etc/profile.d adding the bin dir in $PATH
   # as packages from upstream put them somewhere like /usr/pgsql-10/bin
-  add_profile: False
+  add_profile: false
   # If automatic package installation fails, use `fromrepo` to specify the
-  # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
+  # upstream repo to install packages from [#133, #185] (if upstream_repo: true)
   fromrepo: 'jessie-pgdg'
 
   ### MACOS
   # Set to 'postgresapp' OR 'homebrew' for MacOS
-  #use_upstream_repo: 'postgresapp'
-  #use_upstream_repo: 'homebrew'
+  # use_upstream_repo: 'postgresapp'
+  # use_upstream_repo: 'homebrew'
 
   # PACKAGE
   # These pillars are typically never required.
@@ -27,7 +30,7 @@ postgres:
   # service:
   #   name: 'postgresql'
   #   flags: -w -s -m fast
-  #   sysrc: True
+  #   sysrc: true
   pkgs_extra:
     - postgresql-contrib
     - postgresql-plpython
@@ -39,7 +42,7 @@ postgres:
     locale: en_US.UTF-8
     # encoding: UTF8
 
-  #'Alternatives system' priority incremental. 0 disables feature.
+  # 'Alternatives system' priority incremental. 0 disables feature.
   linux:
     altpriority: 30
 
@@ -62,7 +65,7 @@ postgres:
   # are authenticated, which PostgreSQL user names they can use, which
   # databases they can access. Records take one of these forms:
   #
-  #acls:
+  # acls:
   #  - ['local', 'DATABASE',  'USER',  'METHOD']
   #  - ['host', 'DATABASE',  'USER',  'ADDRESS', 'METHOD']
   #  - ['hostssl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
@@ -83,7 +86,7 @@ postgres:
     - ['users_as_appuser', 'jsmith', 'connuser']
 
   # Backup extension for configuration files, defaults to ``.bak``.
-  # Set ``False`` to stop creation of backups when config files change.
+  # Set ``false`` to stop creation of backups when config files change.
   {%- if salt['status.time']|default(none) is callable %}
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
   {%- endif %}
@@ -93,9 +96,9 @@ postgres:
   # If Salt is unable to detect init system running in the scope of state run,
   # probably we are trying to bake a container/VM image with PostgreSQL.
   # Use ``bake_image`` setting to control how PostgreSQL will be started: if set
-  # to ``True`` the raw ``pg_ctl`` will be utilized instead of packaged init
+  # to ``true`` the raw ``pg_ctl`` will be utilized instead of packaged init
   # script, job or unit run with Salt ``service`` state.
-  bake_image: True
+  bake_image: true
 
   {%- endif %}
 
@@ -106,7 +109,7 @@ postgres:
   #
   # Format is the following:
   #
-  #<users|tablespaces|databases|schemas|extensions>:
+  # <users|tablespaces|databases|schemas|extensions>:
   #  NAME:
   #    ensure: <present|absent>  # 'present' is the default
   #    ARGUMENT: VALUE
@@ -117,13 +120,13 @@ postgres:
   #
   # For example, the Pillar:
   #
-  #users:
+  # users:
   #  testUser:
   #    password: test
   #
   # will render such state:
   #
-  #postgres_user-testUser:
+  # postgres_user-testUser:
   #  postgres_user.present:
   #    - name: testUser
   #    - password: test
@@ -131,18 +134,18 @@ postgres:
     localUser:
       ensure: present
       password: '98ruj923h4rf'
-      createdb: False
-      createroles: False
-      inherit: True
-      replication: False
+      createdb: false
+      createroles: false
+      inherit: true
+      replication: false
 
     remoteUser:
       ensure: present
       password: '98ruj923h4rf'
-      createdb: False
-      createroles: False
-      inherit: True
-      replication: False
+      createdb: false
+      createroles: false
+      inherit: true
+      replication: false
 
     absentUser:
       ensure: absent
@@ -183,14 +186,14 @@ postgres:
 
   # optional extensions to install in schema
   extensions:
+    # postgis: {}
     uuid-ossp:
       schema: uuid-ossp
       maintenance_db: db1
-    #postgis: {}
 
   remove:
-    data: True
-    multiple_releases: True
-    releases: ['9.6', '10',]
+    data: true
+    multiple_releases: true
+    releases: ['9.6', '10']
 
 # vim: ft=yaml ts=2 sts=2 sw=2 et

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 # This file allows to get PostgreSQL version and upstream repo settings
 # early from Pillar to set correct lookup dictionaty items
 

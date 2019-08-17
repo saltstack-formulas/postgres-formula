@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 # Default lookup dictionary
 
 postgres:
-  use_upstream_repo: True
-  add_profile: False # add bin_dir to $PATH, if installed from repos
+  use_upstream_repo: true
+  add_profile: false  # add bin_dir to $PATH, if installed from repos
   version: '10'
   pkg: postgresql
   pkgs_extra: []
@@ -17,7 +20,7 @@ postgres:
   group: postgres
 
   prepare_cluster:
-    run: True
+    run: true
     pgcommand: initdb -D
     pgtestfile: PG_VERSION
     user: postgres
@@ -37,7 +40,8 @@ postgres:
     archive: postgres.dmg
     tmpdir: /tmp/postgrestmp
     postgresapp:
-      #See: https://github.com/PostgresApp/PostgresApp/releases/
+      # See: https://github.com/PostgresApp/PostgresApp/releases/
+      # yamllint disable-line rule:line-length
       url: https://github.com/PostgresApp/PostgresApp/releases/download/v2.1.1/Postgres-2.1.1.dmg
       sum: sha256=ac0656b522a58fd337931313f09509c09610c4a6078fe0b8e469e69af1e1750b
     homebrew:
@@ -68,10 +72,10 @@ postgres:
   config_backup: '.bak'
 
   service:
-    name:  postgresql
-    sysrc: False
+    name: postgresql
+    sysrc: false
 
-  bake_image: False
+  bake_image: false
 
   fromrepo: ''
 
@@ -82,10 +86,10 @@ postgres:
   extensions: {}
 
   linux:
-    #Alternatives system are disabled by a 'altpriority=0' pillar.
+    # Alternatives system are disabled by a 'altpriority=0' pillar.
     altpriority: 0
 
   remove:
-    data: False
-    multiple_releases: False
-    releases: ['9.2', '9.3', '9.4', '9.5', '9.6', '10',]
+    data: false
+    multiple_releases: false
+    releases: ['9.2', '9.3', '9.4', '9.5', '9.6', '10']

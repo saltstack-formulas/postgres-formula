@@ -2,6 +2,21 @@
 Changelog
 =========
 
+`0.39.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.39.0...v0.39.1>`_ (2019-09-01)
+-------------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **kitchen+travis:** replace EOL pre-salted images (\ `140928b <https://github.com/saltstack-formulas/postgres-formula/commit/140928b>`_\ )
+
+Tests
+^^^^^
+
+
+* **inspec:** fix reference to ``suse`` after gem ``train`` update (\ `677adba <https://github.com/saltstack-formulas/postgres-formula/commit/677adba>`_\ )
+
 `0.39.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.38.0...v0.39.0>`_ (2019-08-17)
 -------------------------------------------------------------------------------------------------------------
 

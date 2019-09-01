@@ -1,9 +1,9 @@
-# Overide by OS
+# Overide by Platform
 service_name = 'postgresql'
 pg_port = 5432
-if os[:name] == 'centos' and os[:release].start_with?('6')
+if platform[:name] == 'centos' and platform[:release].start_with?('6')
   service_name = 'postgresql-9.6'
-elsif os[:family] == 'debian' or os[:name] == 'suse'
+elsif platform[:family] == 'debian' or platform[:family] == 'suse'
   pg_port = 5433
 end
 

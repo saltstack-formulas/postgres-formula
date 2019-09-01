@@ -1,6 +1,6 @@
-# Overide by OS
+# Overide by Platform
 pg_port = '5432'
-if os[:family] == 'debian' or os[:name] == 'suse'
+if platform[:family] == 'debian' or platform[:family] == 'suse'
   pg_port = '5433'
 end
 

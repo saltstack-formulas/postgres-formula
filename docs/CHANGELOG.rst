@@ -2,6 +2,15 @@
 Changelog
 =========
 
+`0.40.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.39.1...v0.40.0>`_ (2019-09-03)
+-------------------------------------------------------------------------------------------------------------
+
+Features
+^^^^^^^^
+
+
+* **archlinux:** add support, fixing rendering errors (\ `e970925 <https://github.com/saltstack-formulas/postgres-formula/commit/e970925>`_\ )
+
 `0.39.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.39.0...v0.39.1>`_ (2019-09-01)
 -------------------------------------------------------------------------------------------------------------
 

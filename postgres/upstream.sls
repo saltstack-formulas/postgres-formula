@@ -39,6 +39,6 @@ postgresql-repo:
 postgresql-repo:
   test.show_notification:
     - text: |
-        PostgreSQL does not provide package repository for {{ grains['osfinger'] }}
+        PostgreSQL does not provide package repository for {{ salt['grains.get']('osfinger', grains.os) }}
 
 {%- endif %}

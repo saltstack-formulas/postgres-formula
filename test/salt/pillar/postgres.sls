@@ -1,7 +1,7 @@
 # Port to use for the cluster -- can be used to provide a non-standard port
 # NOTE: If already set in the minion config, that value takes priority
 
-{%- if not (grains.os_family == 'Debian' or grains.osfinger == 'Leap-15') %}
+{%- if grains.os_family != 'Debian' and salt['grains.get']('osfinger') != 'Leap-15' %}
 postgres.port: '5432'
 {%- else %}
 postgres.port: '5433'
@@ -10,7 +10,7 @@ postgres.port: '5433'
 postgres:
   # UPSTREAM REPO
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
-  {%- if not (grains.os_family == 'Debian' or grains.osfinger == 'CentOS-6') %}
+  {%- if grains.os_family != 'Debian' and salt['grains.get']('osfinger') != 'CentOS-6' %}
   use_upstream_repo: False
   {%- else %}
   use_upstream_repo: True
@@ -181,7 +181,7 @@ postgres:
         public:
           owner: localUser
       # enable per-db extension
-      {%- if grains.os_family == 'Debian' and grains.osfinger != 'Debian-8' %}
+      {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-8' %}
       extensions:
         uuid-ossp:
           schema: 'public'
@@ -194,7 +194,7 @@ postgres:
       owner: localUser
 
   # optional extensions to install in schema
-  {%- if grains.os_family == 'Debian' and grains.osfinger != 'Debian-8' %}
+  {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-8' %}
   extensions:
     uuid-ossp:
       schema: uuid-ossp

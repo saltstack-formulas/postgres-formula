@@ -35,6 +35,7 @@ FreeBSD:
   conf_dir: /usr/local/pgsql/data
   data_dir: /usr/local/pgsql/data
     {% endif %}
+  pkg_libpq_dev: null  #not in freebsd
   pkg_client: postgresql{{ release }}-client
   pkg: postgresql{{ release }}-server
   prepare_cluster:

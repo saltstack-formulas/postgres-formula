@@ -2,6 +2,21 @@
 Changelog
 =========
 
+`0.40.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.0...v0.40.1>`_ (2019-09-11)
+-------------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* use ``dist: bionic`` & apply ``opensuse-leap-15`` SCP error workaround (\ `fc6cbe0 <https://github.com/saltstack-formulas/postgres-formula/commit/fc6cbe0>`_\ )
+
+Documentation
+^^^^^^^^^^^^^
+
+
+* **pillar.example:** update examples for freebsd (\ `a799214 <https://github.com/saltstack-formulas/postgres-formula/commit/a799214>`_\ )
+
 `0.40.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.39.1...v0.40.0>`_ (2019-09-03)
 -------------------------------------------------------------------------------------------------------------
 

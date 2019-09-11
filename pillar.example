@@ -32,7 +32,9 @@ postgres:
   #   flags: -w -s -m fast
   #   sysrc: true
   pkgs_extra:
+       {%- if grains.os_family not in ('FreeBSD',) %}
     - postgresql-contrib
+       {%- endif %}
     - postgresql-plpython
 
   # CLUSTER
@@ -91,7 +93,7 @@ postgres:
   config_backup: ".backup@{{ salt['status.time']('%y-%m-%d_%H:%M:%S') }}"
   {%- endif %}
 
-  {%- if grains['init'] == 'unknown' %}
+  {%- if 'init' in grains and grains['init'] == 'unknown' %}
 
   # If Salt is unable to detect init system running in the scope of state run,
   # probably we are trying to bake a container/VM image with PostgreSQL.

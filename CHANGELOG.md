@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.40.2](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.1...v0.40.2) (2019-09-13)
+
+
+### Bug Fixes
+
+* **freebsd:** no libpqdev freebsd package ([eca6d97](https://github.com/saltstack-formulas/postgres-formula/commit/eca6d97))
+
+
+### Continuous Integration
+
+* **yamllint:** add rule `empty-values` & use new `yaml-files` setting ([9796319](https://github.com/saltstack-formulas/postgres-formula/commit/9796319))
+
 ## [0.40.1](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.0...v0.40.1) (2019-09-11)
 
 

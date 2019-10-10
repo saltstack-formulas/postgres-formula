@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.40.3](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.2...v0.40.3) (2019-10-10)
+
+
+### Bug Fixes
+
+* **manage.sls:** fix `salt-lint` errors ([](https://github.com/saltstack-formulas/postgres-formula/commit/bf5b4d6))
+* **python.sls:** fix `salt-lint` errors ([](https://github.com/saltstack-formulas/postgres-formula/commit/1f3cfcc))
+
+
+### Continuous Integration
+
+* **kitchen:** change `log_level` to `debug` instead of `info` ([](https://github.com/saltstack-formulas/postgres-formula/commit/7ca61f3))
+* **kitchen:** install required packages to bootstrapped `opensuse` [skip ci] ([](https://github.com/saltstack-formulas/postgres-formula/commit/76e3e39))
+* **kitchen:** use bootstrapped `opensuse` images until `2019.2.2` [skip ci] ([](https://github.com/saltstack-formulas/postgres-formula/commit/3a27978))
+* **platform:** add `arch-base-latest` (commented out for now) [skip ci] ([](https://github.com/saltstack-formulas/postgres-formula/commit/89e4a34))
+* merge travis matrix, add `salt-lint` & `rubocop` to `lint` job ([](https://github.com/saltstack-formulas/postgres-formula/commit/a0fdd48))
+
 ## [0.40.2](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.1...v0.40.2) (2019-09-13)
 
 

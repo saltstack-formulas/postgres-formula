@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 control 'Postgres configuration' do
   title 'should include the directory'
 

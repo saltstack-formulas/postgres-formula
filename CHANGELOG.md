@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.40.4](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.3...v0.40.4) (2019-10-11)
+
+
+### Bug Fixes
+
+* **rubocop:** add fixes using `rubocop --safe-auto-correct` ([](https://github.com/saltstack-formulas/postgres-formula/commit/37b0c43))
+* **rubocop:** fix remaining errors manually ([](https://github.com/saltstack-formulas/postgres-formula/commit/b369aa9))
+
+
+### Continuous Integration
+
+* merge travis matrix, add `salt-lint` & `rubocop` to `lint` job ([](https://github.com/saltstack-formulas/postgres-formula/commit/7822200))
+* **travis:** merge `rubocop` linter into main `lint` job ([](https://github.com/saltstack-formulas/postgres-formula/commit/2c82872))
+
 ## [0.40.3](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.2...v0.40.3) (2019-10-10)
 
 

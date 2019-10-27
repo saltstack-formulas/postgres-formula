@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
+driver:
+  name: vagrant
+
+platforms:
+  - name: freebsd-120-2019-2-py3
+    driver:
+      box_url: https://freebsd.z.vstack.com/FreeBSD-12.0.box
+      cache_directory: false
+      customize:
+        usbxhci: 'off'
+      gui: false
+      linked_clone: true
+      ssh:
+        shell: '/bin/sh'

@@ -2,6 +2,31 @@
 Changelog
 =========
 
+`0.40.5 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.4...v0.40.5>`_ (2019-10-28)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **macros.jinja:** apply suggestion from PR (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/d606b28>`_\ )
+* **macros.jinja:** use ``user`` kwarg for schemas (required on FreeBSD) (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/7ff798a>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **kitchen:** add pre-salted ``FreeBSD-12.0`` box for local testing (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/eefb89e>`_\ )
+* **kitchen:** use ``debian-10-master-py3`` instead of ``develop`` [skip ci] (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/81b2c2e>`_\ )
+* **travis:** update ``salt-lint`` config for ``v0.0.10`` [skip ci] (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/62baac2>`_\ )
+
+Documentation
+^^^^^^^^^^^^^
+
+
+* **contributing:** remove to use org-level file instead [skip ci] (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/5a291ab>`_\ )
+* **readme:** update link to ``CONTRIBUTING`` [skip ci] (\ ` <https://github.com/saltstack-formulas/postgres-formula/commit/e568f28>`_\ )
+
 `0.40.4 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.3...v0.40.4>`_ (2019-10-11)
 -------------------------------------------------------------------------------------------------------------
 

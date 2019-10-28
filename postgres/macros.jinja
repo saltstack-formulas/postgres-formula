@@ -18,7 +18,7 @@
   {%- if 'ensure' in kwarg %}
     {%- set ensure = kwarg.pop('ensure') %}
   {%- endif %}
-  {%- set user_available = False if (state == 'postgres_schema' and grains.saltversioninfo < [2018, 3]) else True %}
+  {%- set user_available = not (state == 'postgres_schema' and grains.saltversioninfo < [2018, 3]) %}
   {%- if 'user' not in kwarg and user_available %}
     {%- do kwarg.update({'user': postgres.user}) %}
   {%- endif -%}

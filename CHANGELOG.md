@@ -1,5 +1,36 @@
 # Changelog
 
+# [0.41.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.5...v0.41.0) (2019-12-27)
+
+
+### Bug Fixes
+
+* **mac_shortcut.sh:** fix `shellcheck` error ([d538798](https://github.com/saltstack-formulas/postgres-formula/commit/d538798ee4423ecb72b29bd39e4f35437412ce43))
+* **release.config.js:** use full commit hash in commit link [skip ci] ([f3ec66d](https://github.com/saltstack-formulas/postgres-formula/commit/f3ec66d5ed90bc9a458fdff2233c9a707f0c9c72))
+
+
+### Continuous Integration
+
+* **gemfile:** restrict `train` gem version until upstream fix [skip ci] ([a77bb06](https://github.com/saltstack-formulas/postgres-formula/commit/a77bb06b18823c7db0debd2c4ff135a367f76d04))
+* **kitchen:** use `develop` image until `master` is ready (`amazonlinux`) [skip ci] ([20e5e46](https://github.com/saltstack-formulas/postgres-formula/commit/20e5e46e1011641714a11756617530b898e3d689))
+* **kitchen+travis:** upgrade matrix after `2019.2.2` release [skip ci] ([8080be6](https://github.com/saltstack-formulas/postgres-formula/commit/8080be6be3dd0c8799fa102b1235fb151514bced))
+* **travis:** apply changes from build config validation [skip ci] ([8ce1ee4](https://github.com/saltstack-formulas/postgres-formula/commit/8ce1ee4ecc5dd6a6a14118eda75b3446b6f58d82))
+* **travis:** opt-in to `dpl v2` to complete build config validation [skip ci] ([bd5959c](https://github.com/saltstack-formulas/postgres-formula/commit/bd5959c60a93e65ea0658f5cb7fd1609bdd3399c))
+* **travis:** quote pathspecs used with `git ls-files` [skip ci] ([0a2b63a](https://github.com/saltstack-formulas/postgres-formula/commit/0a2b63aba85b09c8983d066cbad7e344de791db1))
+* **travis:** run `shellcheck` during lint job [skip ci] ([f0d12ca](https://github.com/saltstack-formulas/postgres-formula/commit/f0d12caac67bf7f2049ca7f1b7185912e876cb02))
+* **travis:** use `major.minor` for `semantic-release` version [skip ci] ([1392538](https://github.com/saltstack-formulas/postgres-formula/commit/1392538665bea2a699836a87a6b749e07276a94d))
+* **travis:** use build config validation (beta) [skip ci] ([c9a57aa](https://github.com/saltstack-formulas/postgres-formula/commit/c9a57aa96bb80dc27c4722e0f8dc45c77460c03a))
+
+
+### Features
+
+* **codenamemap:** update for current versions ([9cc95c0](https://github.com/saltstack-formulas/postgres-formula/commit/9cc95c020909563486f404b186e15ed71dd8a83a))
+
+
+### Performance Improvements
+
+* **travis:** improve `salt-lint` invocation [skip ci] ([ccaf4e5](https://github.com/saltstack-formulas/postgres-formula/commit/ccaf4e5e3729c75c3a5eccbf482e7fca09415fea))
+
 ## [0.40.5](https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.4...v0.40.5) (2019-10-28)
 
 

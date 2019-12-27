@@ -54,28 +54,31 @@
 {% endmacro %}
 
 ## Debian GNU/Linux (the second parameter refers to the postgresql package version, not the distro)
-{{ debian_codename('wheezy', '9.1') }}
+# http://apt.postgresql.org/pub/repos/apt/dists/
+# https://packages.debian.org/search?keywords=postgresql&searchon=names
 {{ debian_codename('jessie', '9.4') }}
 {{ debian_codename('stretch', '9.6') }}
 {{ debian_codename('buster', '11') }}
 
 # `oscodename` grain has long distro name
 # if `lsb-release` package not installed
-{{ debian_codename('wheezy', '9.1', 'Debian GNU/Linux 7 (wheezy)') }}
 {{ debian_codename('jessie', '9.4', 'Debian GNU/Linux 8 (jessie)') }}
 {{ debian_codename('stretch', '9.6', 'Debian GNU/Linux 9 (stretch)') }}
 {{ debian_codename('buster', '11', 'Debian GNU/Linux 10 (buster)') }}
 
 ## Ubuntu
-{{ debian_codename('trusty', '9.3') }}
+# http://apt.postgresql.org/pub/repos/apt/dists/
+# https://packages.ubuntu.com/search?keywords=postgresql&searchon=names
 {{ debian_codename('xenial', '9.5') }}
-{{ debian_codename('artful', '9.6') }}
 {{ debian_codename('bionic', '10') }}
-{{ debian_codename('cosmic', '10') }}
+{{ debian_codename('eoan', '11') }}
+{{ debian_codename('focal', '12') }}
 
 ## Fedora
+# http://apt.postgresql.org/pub/repos/yum/reporpms/
+# https://apps.fedoraproject.org/packages/postgresql
 # `oscodename` grain has long distro name
-{{ fedora_codename('Fedora-27', '9.6', 'Fedora 27 (Twenty Seven)') }}
-{{ fedora_codename('Fedora-26', '9.6', 'Fedora 26 (Twenty Six)') }}
+{{ fedora_codename('Fedora-31', '11', 'Fedora 31 (Thirty One)') }}
+{{ fedora_codename('Fedora-30', '11', 'Fedora 30 (Thirty)') }}
 
 # vim: ft=sls

@@ -4,7 +4,7 @@
 
   {%- filter indent(4) %}
     {%- for k, v in kwarg|dictsort() %}
-- {{ k }}: {{ v }}
+- {{ k }}: {{ v|yaml_dquote if v is string else v }}
     {%- endfor %}
   {%- endfilter %}
 

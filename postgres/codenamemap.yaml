@@ -35,6 +35,7 @@
   prepare_cluster:
     pgcommand: pg_createcluster {{ version }} {{ cluster_name }} -d
     user: root
+  bake_image_run_cmd: pg_ctlcluster {{ version }} {{ cluster_name }} start
 
 {% endmacro %}
 

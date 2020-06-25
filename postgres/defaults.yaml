@@ -76,6 +76,7 @@ postgres:
     sysrc: false
 
   bake_image: false
+  bake_image_run_cmd: echo "do nothing by default"
 
   fromrepo: ''
 

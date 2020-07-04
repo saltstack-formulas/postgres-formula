@@ -12,6 +12,7 @@ Arch:
   pkg_dev: postgresql
 
 Debian:
+  pkgs_deps: ['python3-apt']
   pkg_repo:
     humanname: PostgreSQL Official Repository
     key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'

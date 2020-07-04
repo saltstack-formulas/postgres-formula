@@ -4,6 +4,7 @@ include:
   - postgres.macos
 {% else %}
   - postgres.server
+  - postgres.server.image
   - postgres.client
   - postgres.manage
 {% endif %}

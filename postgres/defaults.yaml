@@ -9,6 +9,7 @@ postgres:
   version: '10'
   pkg: postgresql
   pkgs_extra: []
+  pkgs_deps: []
   pkg_client: postgresql-client
   pkg_dev: postgresql-devel
   pkg_dev_deps: []
@@ -76,7 +77,7 @@ postgres:
     sysrc: false
 
   bake_image: false
-  bake_image_run_cmd: echo "do nothing by default"
+  bake_image_run_cmd: pg_ctl start
 
   fromrepo: ''
 

@@ -5,11 +5,7 @@
 
 {%- if postgres.bake_image %}
 
-include:
-  - postgres.server
-
 # An attempt to start PostgreSQL with `pg_ctl`
-
 postgresql-running:
   cmd.run:
     - name: {{ postgres.bake_image_run_cmd }}
@@ -39,11 +35,5 @@ postgresql-enable:
   {%- endif %}
     - require:
       - cmd: postgresql-running
-
-{%- else %}
-
-postgresql-running:
-  test.show_notification:
-    - text: The 'postgres:bake_image' Pillar is disabled (set to 'False').
 
 {%- endif %}

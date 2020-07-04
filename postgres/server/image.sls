@@ -16,8 +16,8 @@ postgresql-running:
       - file: postgresql-pg_hba
 
 postgresql-service-reload:
-  test.show_notification:
-    - text: Imitating reload while baking an image
+  module.run:
+    - name: test.true
 
 # Try to enable PostgreSQL in "manual" way
 

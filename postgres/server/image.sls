@@ -18,6 +18,8 @@ postgresql-running:
 postgresql-service-reload:
   module.run:
     - name: test.true
+    - require:
+      - cmd: postgresql-running
 
 # Try to enable PostgreSQL in "manual" way
 

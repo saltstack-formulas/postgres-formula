@@ -26,6 +26,8 @@ postgresql-pkg-deps:
 postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
+    - require:
+      - pkg: postgresql-pkg-deps
 
   {%- else -%}
 

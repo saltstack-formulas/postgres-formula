@@ -1,6 +1,9 @@
 {%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set includes = [] %}
+{%- if postgres.bake_image %}
+  {%- do includes.append('postgres.server.image') %}
+{%- endif %}
 {%- if postgres.use_upstream_repo == true -%}
   {%- do includes.append('postgres.upstream') %}
 {%- endif %}

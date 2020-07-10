@@ -2,6 +2,38 @@
 Changelog
 =========
 
+`0.41.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.0...v0.41.1>`_ (2020-07-10)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **contributing:** postgresql-repo state ID requires python3-apt package (\ `69b57e3 <https://github.com/saltstack-formulas/postgres-formula/commit/69b57e3b69062d0b66bd9fb28e3769a9ff579faa>`_\ )
+* **contributing:** postgresql-service-reload type (\ `278893c <https://github.com/saltstack-formulas/postgres-formula/commit/278893c2f0f3fa8db26b45b3874f7dd7177b714a>`_\ )
+* **contributing:** runnig formula inside container (\ `68a791e <https://github.com/saltstack-formulas/postgres-formula/commit/68a791ef091114b081f71631d94201a9f1ed07b6>`_\ )
+* **libtofs:** “files_switch” mess up the variable exported by “map.jinja” [skip ci] (\ `e6b1485 <https://github.com/saltstack-formulas/postgres-formula/commit/e6b14853d5ce2369ead22cabdfc48ae63f64e550>`_\ )
+* **postgres.server:** reverted how posrgre.server.image is included (\ `07044bf <https://github.com/saltstack-formulas/postgres-formula/commit/07044bf7c1d420855b43d6add30358ff39666702>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **gemfile:** remove unused ``rspec-retry`` gem [skip ci] (\ `85feac2 <https://github.com/saltstack-formulas/postgres-formula/commit/85feac2852ee399f37293b60008e3a17d19cd47f>`_\ )
+* **gemfile:** update for Vagrant testing [skip ci] (\ `061715e <https://github.com/saltstack-formulas/postgres-formula/commit/061715e560880a9a60720bbcbeda632c010d03a4>`_\ )
+* **gemfile.lock:** add to repo with updated ``Gemfile`` [skip ci] (\ `35850da <https://github.com/saltstack-formulas/postgres-formula/commit/35850da22cb4f61144a61098b9869603b6e0a682>`_\ )
+* **kitchen:** avoid using bootstrap for ``master`` instances [skip ci] (\ `86697d8 <https://github.com/saltstack-formulas/postgres-formula/commit/86697d8df48e24e37d6885f68ea8988d43b076aa>`_\ )
+* **kitchen:** use ``saltimages`` Docker Hub where available [skip ci] (\ `5e29999 <https://github.com/saltstack-formulas/postgres-formula/commit/5e29999495f36653aa1b51f2baf956533fdee7e4>`_\ )
+* **kitchen+travis:** remove ``master-py2-arch-base-latest`` [skip ci] (\ `c46053a <https://github.com/saltstack-formulas/postgres-formula/commit/c46053abd8019a4229daf19db1af86c5f8961353>`_\ )
+* **travis:** add notifications => zulip [skip ci] (\ `442cfec <https://github.com/saltstack-formulas/postgres-formula/commit/442cfec245fb6b22d7768c8436ba6c62ca2975fd>`_\ )
+* **workflows/commitlint:** add to repo [skip ci] (\ `0c766c8 <https://github.com/saltstack-formulas/postgres-formula/commit/0c766c8e2e336e31d44fdddf5f4c5e56faa9e40e>`_\ )
+
+Documentation
+^^^^^^^^^^^^^
+
+
+* **container:** "postgres:bake_image" specifics (\ `904a525 <https://github.com/saltstack-formulas/postgres-formula/commit/904a5258cd155f3b5a83ec8dc8e990a8ffc6b798>`_\ )
+
 `0.41.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.40.5...v0.41.0>`_ (2019-12-27)
 -------------------------------------------------------------------------------------------------------------
 

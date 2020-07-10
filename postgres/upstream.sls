@@ -17,10 +17,17 @@ postgresql-profile:
     - defaults:
         bin_dir: {{ postgres.bin_dir }}
     {%- endif %}
+
+postgresql-pkg-deps:
+  pkg.installed:
+    - pkgs: {{ postgres.pkgs_deps }}
+
 # Add upstream repository for your distro
 postgresql-repo:
   pkgrepo.managed:
     {{- format_kwargs(postgres.pkg_repo) }}
+    - require:
+      - pkg: postgresql-pkg-deps
 
   {%- else -%}
 

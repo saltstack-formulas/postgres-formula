@@ -5,19 +5,21 @@
 
 {%- if postgres.bake_image %}
 
-include:
-  - postgres.server
-
 # An attempt to start PostgreSQL with `pg_ctl`
-
-postgresql-start:
+postgresql-running:
   cmd.run:
-    - name: pg_ctl -D {{ postgres.data_dir }} -l logfile start
+    - name: {{ postgres.bake_image_run_cmd }}
     - runas: {{ postgres.user }}
     - unless:
       - ps -p $(head -n 1 {{ postgres.data_dir }}/postmaster.pid) 2>/dev/null
     - require:
       - file: postgresql-pg_hba
+
+postgresql-service-reload:
+  module.run:
+    - name: test.true
+    - require:
+      - cmd: postgresql-running
 
 # Try to enable PostgreSQL in "manual" way
 
@@ -34,12 +36,6 @@ postgresql-enable:
     - name: 'true'
   {%- endif %}
     - require:
-      - cmd: postgresql-start
-
-{%- else %}
-
-postgresql-start:
-  test.show_notification:
-    - text: The 'postgres:bake_image' Pillar is disabled (set to 'False').
+      - cmd: postgresql-running
 
 {%- endif %}

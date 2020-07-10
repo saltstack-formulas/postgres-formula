@@ -83,31 +83,15 @@ packaged init script, job or unit.
     Further information: https://blog.tyk.nu/blog/freebsd-jails-and-sysv-ipc/
 
 
-``postgres.server.image``
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Installs the PostgreSQL server package on Linux, prepares the DB cluster and starts the server by issuing
-raw ``pg_ctl`` command. The ``postgres:bake_image`` Pillar toggles this behaviour. For example:
+**Running inside a container** (using Packer, Docker or similar tools), when OS ``init`` process
+is not available to start the service and enable it on "boot", set pillar value:
 
 .. code:: yaml
 
   postgres:
     bake_image: True
 
-If set ``True``, then it becomes possible to fully provision PostgreSQL with all supported entities
-from ``postgres.manage`` state during the build ("baking") of AMI / VM / Container images (using
-Packer, Docker or similar tools), i.e. when OS ``init`` process is not available to start the
-service and enable it on "boot" of resulting appliance.
-
-Also it allows to make Docker images with PostgreSQL using functionality being available since Salt
-2016.11.0 release:
-
-.. code:: console
-
-  salt 'minion.with.docker' dockerng.sls_build my-postgres base=centos/systemd mods=postgres
-
-If a lookup dictionary or Pillar has ``postgres:bake_image`` set ``False`` (this is default), it is
-equivalent of applying ``postgres.server`` state.
+This toggles starting PostgreSQL daemon by issuing raw ``pg_ctl`` or ``pg_ctlcluster`` command.
 
 ``postgres.upstream``
 ^^^^^^^^^^^^^^^^^^^^^

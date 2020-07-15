@@ -15,6 +15,9 @@ platforms:
   - name: debian-10-master-py3
     driver:
       image: saltimages/salt-master-py3:debian-10
+  - name: ubuntu-2004-master-py3
+    driver:
+      image: saltimages/salt-master-py3:ubuntu-20.04
   - name: ubuntu-1804-master-py3
     driver:
       image: saltimages/salt-master-py3:ubuntu-18.04

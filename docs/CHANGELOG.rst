@@ -2,6 +2,29 @@
 Changelog
 =========
 
+`0.41.2 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.1...v0.41.2>`_ (2020-07-27)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **macros:** fix ``format_kwargs`` macro (\ `5e6511b <https://github.com/saltstack-formulas/postgres-formula/commit/5e6511b783388930010e6c0795b197728fb10b39>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **kitchen:** ubuntu-2004-master-py3 added (\ `7978976 <https://github.com/saltstack-formulas/postgres-formula/commit/79789765439bb0727521dc817fe9eaebba000a67>`_\ )
+* **kitchen+travis:** use latest pre-salted images [skip ci] (\ `702323c <https://github.com/saltstack-formulas/postgres-formula/commit/702323c24df1df6b11defd663b55cf38586bd3f3>`_\ )
+* **travis:** ubuntu upgrade from 16 to 18 & 20 (\ `44568a6 <https://github.com/saltstack-formulas/postgres-formula/commit/44568a680602fb61f157b74dc05f9af9b153e8e6>`_\ )
+
+Styles
+^^^^^^
+
+
+* **libtofs.jinja:** use Black-inspired Jinja formatting [skip ci] (\ `8735cf8 <https://github.com/saltstack-formulas/postgres-formula/commit/8735cf8ad1b9fc1eb816aecf3d363d4fc81fbe66>`_\ )
+
 `0.41.1 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.0...v0.41.1>`_ (2020-07-10)
 -------------------------------------------------------------------------------------------------------------
 

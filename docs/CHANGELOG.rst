@@ -2,6 +2,15 @@
 Changelog
 =========
 
+`0.41.3 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.2...v0.41.3>`_ (2020-09-29)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **upstream:** require_in/require use_upstream (\ `ab6b97e <https://github.com/saltstack-formulas/postgres-formula/commit/ab6b97e8c3ff40f9cb2e629c3c0faf09ca59ede9>`_\ )
+
 `0.41.2 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.1...v0.41.2>`_ (2020-07-27)
 -------------------------------------------------------------------------------------------------------------
 

@@ -20,8 +20,6 @@ postgresql-server:
     - pkgs: {{ pkgs | json }}
 {%- if postgres.use_upstream_repo == true %}
     - refresh: True
-    - require:
-      - pkgrepo: postgresql-repo
 {%- endif %}
   {%- if postgres.fromrepo %}
     - fromrepo: {{ postgres.fromrepo }}

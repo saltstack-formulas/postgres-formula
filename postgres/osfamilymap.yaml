@@ -6,6 +6,7 @@
 {% set release = repo.version|replace('.', '') %}
 
 Arch:
+  use_upstream_repo: false
   conf_dir: /var/lib/postgres/data
   data_dir: /var/lib/postgres/data
   pkg_client: postgresql-libs

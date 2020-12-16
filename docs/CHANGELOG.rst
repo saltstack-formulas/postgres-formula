@@ -2,6 +2,28 @@
 Changelog
 =========
 
+`0.41.4 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.3...v0.41.4>`_ (2020-12-16)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **archlinux:** avoid nonetype error (\ `0a6cf8f <https://github.com/saltstack-formulas/postgres-formula/commit/0a6cf8fefae1bbd5668a447ced911088ac965475>`_\ )
+* **archlinux:** use consistent jinja repo check (\ `3a955e0 <https://github.com/saltstack-formulas/postgres-formula/commit/3a955e02708b23929c93f879bcba0e3fe5ae5666>`_\ )
+* **jinja:** syntax correction (\ `8b44c06 <https://github.com/saltstack-formulas/postgres-formula/commit/8b44c068fcfd4199336596bdba095fc0e6c8fb2e>`_\ )
+* **python:** use python3 postres on cent7/8 (\ `d6d1068 <https://github.com/saltstack-formulas/postgres-formula/commit/d6d1068395131de08534e387d377389bd078d3ee>`_\ )
+* **suse:** version 11+ repo support on suse (\ `b3f381e <https://github.com/saltstack-formulas/postgres-formula/commit/b3f381e54750a00bb19a4aa50c6273c627dca16c>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **gitlab-ci:** use GitLab CI as Travis CI replacement (\ `a45673a <https://github.com/saltstack-formulas/postgres-formula/commit/a45673a87892deb973afee3689aea4bebd7a5739>`_\ )
+* **pre-commit:** add to formula [skip ci] (\ `db1794b <https://github.com/saltstack-formulas/postgres-formula/commit/db1794b6bbb6ce183e5231cb4b7e7193dcb80143>`_\ )
+* **pre-commit:** enable/disable ``rstcheck`` as relevant [skip ci] (\ `f04d60a <https://github.com/saltstack-formulas/postgres-formula/commit/f04d60a773461dce98b4f2a7c8abbbab268513a0>`_\ )
+* **pre-commit:** finalise ``rstcheck`` configuration [skip ci] (\ `7036f60 <https://github.com/saltstack-formulas/postgres-formula/commit/7036f60e8ca3857beeca18abe70a3c59b6a021ec>`_\ )
+
 `0.41.3 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.2...v0.41.3>`_ (2020-09-29)
 -------------------------------------------------------------------------------------------------------------
 

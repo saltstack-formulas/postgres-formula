@@ -64,6 +64,8 @@ RedHat:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
 
 {%- if grains.get('osmajorrelease', 0) >= 7 %}
+  pkgs_deps:
+    - libicu
   pkg_python: python3-psycopg2
 {%- endif %}
 

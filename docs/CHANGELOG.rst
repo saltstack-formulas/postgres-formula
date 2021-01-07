@@ -2,6 +2,22 @@
 Changelog
 =========
 
+`0.41.5 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.4...v0.41.5>`_ (2021-01-07)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **cent7:** postgres11 needs libicu installed (\ `4c0f796 <https://github.com/saltstack-formulas/postgres-formula/commit/4c0f796f00901b88e0ee9d778a5acb2115bf17cb>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **commitlint:** ensure ``upstream/master`` uses main repo URL [skip ci] (\ `e84389d <https://github.com/saltstack-formulas/postgres-formula/commit/e84389dbb31f04f3eeabfd3935ef193e09e5b562>`_\ )
+* **gitlab-ci:** add ``rubocop`` linter (with ``allow_failure``\ ) [skip ci] (\ `2615411 <https://github.com/saltstack-formulas/postgres-formula/commit/2615411ec019600328c330cb4e72de89472f8fc9>`_\ )
+
 `0.41.4 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.3...v0.41.4>`_ (2020-12-16)
 -------------------------------------------------------------------------------------------------------------
 

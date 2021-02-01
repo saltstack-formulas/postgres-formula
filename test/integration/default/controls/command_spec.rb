@@ -8,7 +8,7 @@ control 'Postgres command' do
   title 'should match desired lines'
 
   # Can't use `%Q` here due to the `\`
-  describe command("su - postgres -c 'psql -p" + pg_port + %q( -qtc "\l+ db2"')) do
+  describe command("su - postgres -c 'psql -p#{pg_port} -qtc \"\\l+ db2\"'") do
     its(:stdout) do
       should match(
         /db2.*remoteUser.*UTF8.*en_US.UTF-8.*en_US.UTF-8.*my_space/

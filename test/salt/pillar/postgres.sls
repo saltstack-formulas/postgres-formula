@@ -1,7 +1,7 @@
 # Port to use for the cluster -- can be used to provide a non-standard port
 # NOTE: If already set in the minion config, that value takes priority
 
-{%- if grains.os_family != 'Debian' and salt['grains.get']('osfinger') != 'Leap-15' %}
+{%- if grains.os_family not in ['Debian', 'Suse'] %}
 postgres.port: '5432'
 {%- else %}
 postgres.port: '5433'

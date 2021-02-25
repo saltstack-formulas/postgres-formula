@@ -28,8 +28,6 @@ postgresql-repo:
     {{- format_kwargs(postgres.pkg_repo) }}
     - require:
       - pkg: postgresql-pkg-deps
-    - require_in:
-      - pkg: postgresql-server
 
   {%- else -%}
 

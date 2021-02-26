@@ -2,6 +2,31 @@
 Changelog
 =========
 
+`0.41.6 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.5...v0.41.6>`_ (2021-02-26)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **repo:** check whether pkg_repo is set (\ `26b2233 <https://github.com/saltstack-formulas/postgres-formula/commit/26b223323fa65abee731af04ee9631062a78b308>`_\ )
+* **repo:** reorder dependencies to prevent errors (\ `750d8aa <https://github.com/saltstack-formulas/postgres-formula/commit/750d8aab7a7e386e5ca0a3d546bb5cf12aa4506c>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **gemfile+lock:** use ``ssf`` customised ``kitchen-docker`` repo [skip ci] (\ `476b15e <https://github.com/saltstack-formulas/postgres-formula/commit/476b15e326b72a6bbdb9635d612f30b7a51ce7fa>`_\ )
+* **kitchen+gitlab-ci:** use latest pre-salted images [skip ci] (\ `6f04b31 <https://github.com/saltstack-formulas/postgres-formula/commit/6f04b3191c6d1354d376473ff6e3ba213d614a4d>`_\ )
+* **pre-commit:** update hook for ``rubocop`` [skip ci] (\ `e964c26 <https://github.com/saltstack-formulas/postgres-formula/commit/e964c26a29e61c5455b880e00195d5a0f55de641>`_\ )
+
+Tests
+^^^^^
+
+
+* **command_spec:** fix ``rubocop`` violation [skip ci] (\ `73c39af <https://github.com/saltstack-formulas/postgres-formula/commit/73c39aff5ef9bf5808a251f70504e3b019087f01>`_\ )
+* **pillar:** update conditional to include Tumbleweed (\ `e976ee9 <https://github.com/saltstack-formulas/postgres-formula/commit/e976ee9c9924363db400b23cbde914112b6b4349>`_\ )
+
 `0.41.5 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.4...v0.41.5>`_ (2021-01-07)
 -------------------------------------------------------------------------------------------------------------
 

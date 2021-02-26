@@ -18,8 +18,10 @@ include:
 postgresql-server:
   pkg.installed:
     - pkgs: {{ pkgs | json }}
-{%- if postgres.use_upstream_repo == true %}
+{%- if 'pkg_repo' in postgres and postgres.use_upstream_repo == true %}
     - refresh: True
+    - require:
+      - pkgrepo: postgresql-repo
 {%- endif %}
   {%- if postgres.fromrepo %}
     - fromrepo: {{ postgres.fromrepo }}

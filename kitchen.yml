@@ -312,6 +312,7 @@ suites:
       state_top:
         base:
           '*':
+            - postgres._mapdata
             - postgres
       pillars:
         top.sls:

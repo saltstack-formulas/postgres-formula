@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.41.7](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.6...v0.41.7) (2021-03-26)
+
+
+### Continuous Integration
+
+* enable Vagrant-based testing using GitHub Actions ([2ebc9c1](https://github.com/saltstack-formulas/postgres-formula/commit/2ebc9c11da512c8bc2089e8ecb28f5d3e13261f1))
+* **kitchen+ci:** use latest pre-salted images (after CVE) [skip ci] ([cc43d1c](https://github.com/saltstack-formulas/postgres-formula/commit/cc43d1c90db36c232012bc80b66baa248ece3c42))
+
+
+### Documentation
+
+* **readme:** add `Testing with Vagrant` section ([ed2d688](https://github.com/saltstack-formulas/postgres-formula/commit/ed2d6884b10725fad55b83de4972e59710f1970f))
+
+
+### Tests
+
+* standardise use of `share` suite & `_mapdata` state [skip ci] ([fc53d97](https://github.com/saltstack-formulas/postgres-formula/commit/fc53d977b32290834dc5aa17fe461154b269d38c))
+
 ## [0.41.6](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.5...v0.41.6) (2021-02-26)
 
 

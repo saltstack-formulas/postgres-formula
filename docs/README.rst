@@ -1,5 +1,3 @@
-.. _readme:
-
 postgres-formula
 ================
 
@@ -63,7 +61,7 @@ Creates such DB objects as: users, tablespaces, databases, schemas and extension
 See ``pillar.example`` file for details.
 
 ``postgres.python``
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 Installs the PostgreSQL adapter for Python on Linux.
 
@@ -119,17 +117,17 @@ Removal states
 Meta state to remove Postgres software. By default the release installed by formula is targeted only. To target multiple releases, set pillar ``postgres.remove.multiple_releases: True``.
 
 ``postgres.server.remove``
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove server, lib, and contrib packages. The ``postgres.server.remove`` will retain data by default (no data loss) - set pillar ``postgres.remove.data: True`` to remove data and configuration directories also.
 
 ``postgres.client.remove``
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove client package.
 
 ``postgres.dev.remove``
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove development and python packages.
 
@@ -150,7 +148,7 @@ Creates the docker instance and runs the ``postgres`` main state, ready for test
 Runs the ``inspec`` tests on the actual instance.
 
 ``kitchen destroy``
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 Removes the docker instance.
 

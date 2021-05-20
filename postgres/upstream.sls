@@ -20,7 +20,7 @@ postgresql-profile:
 
 postgresql-pkg-deps:
   pkg.installed:
-    - pkgs: {{ postgres.pkgs_deps }}
+    - pkgs: {{ postgres.pkgs_deps | json }}
 
 # Add upstream repository for your distro
 postgresql-repo:

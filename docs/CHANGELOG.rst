@@ -2,6 +2,30 @@
 Changelog
 =========
 
+`0.41.8 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.7...v0.41.8>`_ (2021-05-25)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **jinja:** use json filter (\ `eb63ec8 <https://github.com/saltstack-formulas/postgres-formula/commit/eb63ec85e0f2d15f929ffbf1d483211b7bf4e595>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* add ``arch-master`` to matrix and update ``.travis.yml`` [skip ci] (\ `79feefa <https://github.com/saltstack-formulas/postgres-formula/commit/79feefa7519a5674496b8abfdc68e7baad75f950>`_\ )
+* **kitchen+gitlab:** adjust matrix to add ``3003`` [skip ci] (\ `fd8f0e5 <https://github.com/saltstack-formulas/postgres-formula/commit/fd8f0e5db5c67f21c16910ab3ed696d59a7eeee2>`_\ )
+* **vagrant:** add FreeBSD 13.0 [skip ci] (\ `93bb123 <https://github.com/saltstack-formulas/postgres-formula/commit/93bb123ea1a8e5037c8898777ba90338979e802f>`_\ )
+* **vagrant:** use pre-salted boxes & conditional local settings [skip ci] (\ `69812c1 <https://github.com/saltstack-formulas/postgres-formula/commit/69812c1f62b90ba9094c873930ac334edac9a0aa>`_\ )
+
+Documentation
+^^^^^^^^^^^^^
+
+
+* **readme:** fix headings [skip ci] (\ `c97317c <https://github.com/saltstack-formulas/postgres-formula/commit/c97317c39fe46375a78b478c08210d25461548ff>`_\ )
+
 `0.41.7 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.6...v0.41.7>`_ (2021-03-26)
 -------------------------------------------------------------------------------------------------------------
 

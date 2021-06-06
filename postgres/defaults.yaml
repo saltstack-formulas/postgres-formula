@@ -6,7 +6,7 @@
 postgres:
   use_upstream_repo: true
   add_profile: false  # add bin_dir to $PATH, if installed from repos
-  version: '11'
+  version: '13'
   pkg: postgresql
   pkgs_extra: []
   pkgs_deps: []

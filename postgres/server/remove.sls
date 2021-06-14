@@ -24,6 +24,9 @@ postgresql-server-removed:
       - {{ pkg }}
       {% endfor %}
       {% endif %}
+  file.absent:
+    - names:
+      - /var/run/postgresql
 
 {%- if postgres.remove.multiple_releases %}
     #search for and cleandown multiple releases

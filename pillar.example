@@ -10,7 +10,7 @@ postgres:
   # Set true to configure upstream postgresql.org repository for YUM/APT/ZYPP
   use_upstream_repo: false
   # Version to install from upstream repository (if upstream_repo: true)
-  version: '10'
+  version: '13'
   # Set true to add a file in /etc/profile.d adding the bin dir in $PATH
   # as packages from upstream put them somewhere like /usr/pgsql-10/bin
   add_profile: false
@@ -76,12 +76,15 @@ postgres:
   # The uppercase items must be replaced by actual values.
   # METHOD could be omitted, 'md5' will be appended by default.
   #
+  # Postgres expect a valid CIDR for ADDRESS (not ipaddress)
+  #
   # If ``acls`` item value is empty ('', [], null), then the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
     - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
 
   identity_map:
     - ['users_as_appuser', 'jdoe', 'connuser']

@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.41.9](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.8...v0.41.9) (2021-07-06)
+
+
+### Bug Fixes
+
+* **osmap.yaml:** fix PGDG repo file creation for Amazon Linux ([2de775b](https://github.com/saltstack-formulas/postgres-formula/commit/2de775be1e3e77b2bd71cb0a0a6fa587498c10e7))
+
+
+### Continuous Integration
+
+* **3003.1:** update inc. AlmaLinux, Rocky & `rst-lint` [skip ci] ([d16e91c](https://github.com/saltstack-formulas/postgres-formula/commit/d16e91ceb03411f58c98cbb919f65b3f3eb4abbb))
+* **kitchen+gitlab:** remove Ubuntu 16.04 & Fedora 32 (EOL) [skip ci] ([b690bab](https://github.com/saltstack-formulas/postgres-formula/commit/b690bab978901f9bea7c9b043ebce5a8f520f4b9))
+
 ## [0.41.8](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.7...v0.41.8) (2021-05-25)
 
 

@@ -9,7 +9,3 @@ Fedora:
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/fedora/fedora-$releasever-$basearch'
   remove:
     releases: ['9.4', '9.5', '9.6', '10']
-
-Amazon:
-  pkg_repo:
-    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-7-$basearch'

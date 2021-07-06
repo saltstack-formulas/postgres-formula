@@ -83,4 +83,12 @@
 {{ fedora_codename('Fedora-34', '13') }}
 {{ fedora_codename('Fedora-33', '13') }}
 
+## Amazon
+Amazon Linux 2:
+  pkgs_deps:
+    - libicu
+    - systemd-sysv
+  pkg_repo:
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-7-$basearch'
+
 # vim: ft=sls

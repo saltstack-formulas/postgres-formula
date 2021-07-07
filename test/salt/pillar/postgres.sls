@@ -75,14 +75,12 @@ postgres:
   #  - ['hostnossl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
   #
   # The uppercase items must be replaced by actual values.
-  # METHOD could be omitted, 'md5' will be appended by default.
-  #
   # If ``acls`` item value is empty ('', [], null), then the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
     - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
-    - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+    - ['host', 'db2', 'remoteUser', '192.168.33.0/24', 'scram-sha-256']
 
   identity_map:
     - ['users_as_appuser', 'jdoe', 'connuser']

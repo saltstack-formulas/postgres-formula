@@ -58,6 +58,8 @@ postgres:
   # Pay attention to indent exactly with 4 spaces for all lines.
   postgresconf: |-
     listen_addresses = '*'  # listen on all interfaces
+    # https://www.postgresql.org/docs/11/auth-password.html
+    password_encryption = 'scram-sha-256'
 
   # Path to the `pg_hba.conf` file Jinja template on Salt Fileserver
   pg_hba.conf: salt://postgres/templates/pg_hba.conf.j2
@@ -74,17 +76,14 @@ postgres:
   #  - ['hostnossl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
   #
   # The uppercase items must be replaced by actual values.
-  # METHOD could be omitted, 'md5' will be appended by default.
-  #
   # Postgres expect a valid CIDR for ADDRESS (not ipaddress)
-  #
-  # If ``acls`` item value is empty ('', [], null), then the contents of
+  # If ``acls`` item value is empty ('', [], null), the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
     - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
     - ['local', 'db1', 'localUser']
     - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
-    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
+    - ['host', 'all', 'all', '127.0.0.1/32', 'scram-sha-256']
 
   identity_map:
     - ['users_as_appuser', 'jdoe', 'connuser']

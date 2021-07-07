@@ -24,7 +24,7 @@ local   all             postgres                                peer
   {%- if acl|first() == 'local' %}
 
     {%- if acl|length() == 3 %}
-      {%- do acl.extend(['', 'md5']) %}
+      {%- do acl.extend(['', 'scram-sha-256']) %}
     {%- elif acl|length() == 4 %}
       {%- do acl.insert(3, '') %}
     {%- endif %}
@@ -32,7 +32,7 @@ local   all             postgres                                peer
   {%- else %}
 
     {%- if acl|length() == 4 %}
-      {%- do acl.append('md5') %}
+      {%- do acl.append('scram-sha-256') %}
     {%- endif %}
 
   {%- endif %}

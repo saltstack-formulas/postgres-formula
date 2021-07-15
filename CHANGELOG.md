@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.42.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.9...v0.42.0) (2021-07-15)
+
+
+### Features
+
+* **debian:** add bullseye support ([216192d](https://github.com/saltstack-formulas/postgres-formula/commit/216192dece7d275e189666c55d76456fbdde1b57))
+
 ## [0.41.9](https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.8...v0.41.9) (2021-07-06)
 
 

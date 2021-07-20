@@ -8,21 +8,7 @@ postgres.port: '5433'
 {%- endif %}
 
 postgres:
-  # UPSTREAM REPO
-  # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
-  {%- if grains.os_family != 'Debian' and salt['grains.get']('osfinger') != 'CentOS-6' %}
-  use_upstream_repo: False
-  {%- else %}
-  use_upstream_repo: True
-  # Version to install from upstream repository (if upstream_repo: True)
-  version: '13'
-  # # Set True to add a file in /etc/profile.d adding the bin dir in $PATH
-  # # as packages from upstream put them somewhere like /usr/pgsql-10/bin
-  # add_profile: False
-  # # If automatic package installation fails, use `fromrepo` to specify the
-  # # upstream repo to install packages from [#133, #185] (if upstream_repo: True)
-  # fromrepo: 'jessie-pgdg'
-  {%- endif %}
+  use_upstream_repo: false
 
   # ### MACOS
   # # Set to 'postgresapp' OR 'homebrew' for MacOS
@@ -177,7 +163,8 @@ postgres:
         public:
           owner: localUser
       # enable per-db extension
-      {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-8' %}
+      {#- TODO: Find a way to only disable this for the `default` suite, since it works with the `repo` suite #}
+      {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-9' %}
       extensions:
         uuid-ossp:
           schema: 'public'
@@ -190,7 +177,8 @@ postgres:
       owner: localUser
 
   # optional extensions to install in schema
-  {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-8' %}
+  {#- TODO: Find a way to only disable this for the `default` suite, since it works with the `repo` suite #}
+  {%- if grains.os_family == 'Debian' and salt['grains.get']('osfinger') != 'Debian-9' %}
   extensions:
     uuid-ossp:
       schema: uuid-ossp

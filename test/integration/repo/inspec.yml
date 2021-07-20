@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
+name: repo
+title: postgres formula
+maintainer: SaltStack Formulas
+license: Apache-2.0
+# yamllint disable-line rule:line-length
+summary: Verify that the postgres formula is setup and configured correctly (when installing from the upstream repo)
+depends:
+  - name: share
+    path: test/integration/share
+supports:
+  - platform-name: debian
+  - platform-name: ubuntu
+  - platform-name: centos
+  - platform-name: fedora
+  - platform-name: opensuse
+  - platform-name: suse
+  - platform-name: freebsd
+  - platform-name: openbsd
+  - platform-name: amazon
+  - platform-name: oracle
+  - platform-name: arch
+  - platform-name: gentoo
+  - platform-name: almalinux
+  - platform-name: rocky
+  - platform: windows

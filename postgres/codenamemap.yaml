@@ -78,10 +78,17 @@
 {{ debian_codename('focal', '12') }}
 
 ## Fedora
-# http://apt.postgresql.org/pub/repos/yum/reporpms/
+# https://download.postgresql.org/pub/repos/yum/13/fedora/
 # https://apps.fedoraproject.org/packages/postgresql
-# `oscodename` grain has long distro name
-{{ fedora_codename('Fedora-31', '11', 'Fedora 31 (Thirty One)') }}
-{{ fedora_codename('Fedora-30', '11', 'Fedora 30 (Thirty)') }}
+{{ fedora_codename('Fedora-34', '13') }}
+{{ fedora_codename('Fedora-33', '13') }}
+
+## Amazon
+Amazon Linux 2:
+  pkgs_deps:
+    - libicu
+    - systemd-sysv
+  pkg_repo:
+    baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-7-$basearch'
 
 # vim: ft=sls

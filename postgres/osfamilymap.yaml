@@ -63,11 +63,12 @@ RedHat:
     gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
 
-{%- if grains.get('osmajorrelease', 0) >= 7 %}
   pkgs_deps:
     - libicu
+    {%- if grains.get('osmajorrelease', 0) == 7 %}
+    - systemd-sysv
+    {%- endif %}
   pkg_python: python3-psycopg2
-{%- endif %}
 
 {% if repo.use_upstream_repo == true %}
   {% set data_dir = '/var/lib/pgsql/' ~ repo.version ~ '/data' %}

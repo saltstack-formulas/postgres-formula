@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
-service_name = 'postgresql'
+service_name =
+  case platform[:family]
+  when 'redhat', 'fedora', 'suse'
+    case system.platform[:release]
+    when 'tumbleweed'
+      'postgresql'
+    else
+      'postgresql-13'
+    end
+  else
+    'postgresql'
+  end
 
 pg_port =
   case platform[:family]

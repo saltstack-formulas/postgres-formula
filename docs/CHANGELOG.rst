@@ -2,6 +2,37 @@
 Changelog
 =========
 
+`0.43.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.42.0...v0.43.0>`_ (2021-07-20)
+-------------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **redhat:** fix ``pkg_deps`` to be able to install PostgreSQL 13 (\ `060c8df <https://github.com/saltstack-formulas/postgres-formula/commit/060c8df630ea4077a3d5a2b301fed56ed6ce1a45>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* add Debian 11 Bullseye & update ``yamllint`` configuration [skip ci] (\ `1fa7c66 <https://github.com/saltstack-formulas/postgres-formula/commit/1fa7c66b8361357fc5372552ec713fd2dca15883>`_\ )
+* use ``default`` & ``repo`` InSpec suites (\ `a6c8197 <https://github.com/saltstack-formulas/postgres-formula/commit/a6c81972a2c722d1dc3637acb412a8e1e513c998>`_\ )
+* **kitchen:** move ``provisioner`` block & update ``run_command`` [skip ci] (\ `e9da40b <https://github.com/saltstack-formulas/postgres-formula/commit/e9da40b5707d1e3d7f55f0b526e89c917418d4f5>`_\ )
+
+Features
+^^^^^^^^
+
+
+* **codenamemap:** update to current supported Fedora versions (\ `8a11bd6 <https://github.com/saltstack-formulas/postgres-formula/commit/8a11bd679a8a6175c796294dd0a5c759725de25d>`_\ )
+
+Tests
+^^^^^
+
+
+* **inspec:** move common controls to the ``share`` profile (\ `2214096 <https://github.com/saltstack-formulas/postgres-formula/commit/221409636290444aa06ef9e59fd324b94412a635>`_\ )
+* **inspec:** rename all files to avoid unnecessary ``_spec`` suffix (\ `a1837c2 <https://github.com/saltstack-formulas/postgres-formula/commit/a1837c24f1b5210964e74f576805470f6db1a0cf>`_\ )
+* **pillar:** use separate pillars to test ``default`` & ``repo`` suites (\ `27473b9 <https://github.com/saltstack-formulas/postgres-formula/commit/27473b9865e8d716aa991cd33e9e186815933483>`_\ )
+
 `0.42.0 <https://github.com/saltstack-formulas/postgres-formula/compare/v0.41.9...v0.42.0>`_ (2021-07-15)
 -------------------------------------------------------------------------------------------------------------
 

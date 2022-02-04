@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 case platform.family
-when 'redhat'
+when 'redhat', 'fedora'
   repo_file = '/etc/yum.repos.d/pgdg13.repo'
-  repo_url = 'https://download.postgresql.org/pub/repos/yum/13/redhat/rhel-$releasever-$basearch'
+  os_name_repo_url = {
+    'amazon' => 'https://download.postgresql.org/pub/repos/yum/13/redhat/rhel-7-$basearch',
+    'fedora' => 'https://download.postgresql.org/pub/repos/yum/13/fedora/fedora-$releasever-$basearch',
+    'default' => 'https://download.postgresql.org/pub/repos/yum/13/redhat/rhel-$releasever-$basearch'
+  }
+  repo_url = os_name_repo_url[platform.name]
+
 when 'debian'
   # Inspec does not provide a `codename` matcher, so we add ours
   finger_codename = {

@@ -145,7 +145,7 @@ Suse:
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
     # works for postgres 11 onwards
     baseurl: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-$releasever-$basearch'
-    key_url: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-$releasever-$basearch/repodata/repomd.xml.key'
+    gpgkey: 'https://download.postgresql.org/pub/repos/zypp/{{ repo.version }}/suse/sles-$releasever-$basearch/repodata/repomd.xml.key'
     gpgcheck: 1
     gpgautoimport: True
 

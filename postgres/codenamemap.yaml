@@ -29,7 +29,7 @@
   data_dir: {{ data_dir }}
   fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
+    name: 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   prepare_cluster:

@@ -1,5 +1,34 @@
 # Changelog
 
+# [0.44.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.43.0...v0.44.0) (2022-02-07)
+
+
+### Bug Fixes
+
+* **opensuse:** fix repo key parameter ([7bba14a](https://github.com/saltstack-formulas/postgres-formula/commit/7bba14a61cc0dce496ecda075726bf93c4c8812d))
+
+
+### Continuous Integration
+
+* **freebsd:** update with latest pre-salted Vagrant boxes [skip ci] ([2f7d009](https://github.com/saltstack-formulas/postgres-formula/commit/2f7d009bb6fbebde68fdb5057ad7d17d9aaf4fe0))
+* **gemfile:** allow rubygems proxy to be provided as an env var [skip ci] ([137eec7](https://github.com/saltstack-formulas/postgres-formula/commit/137eec779073d865f2be667e1c852e64503e1730))
+* **gemfile+lock:** use `ssf` customised `inspec` repo [skip ci] ([c13fa62](https://github.com/saltstack-formulas/postgres-formula/commit/c13fa62f93ee0a39b0d1e1c4c6a1e343f077ae32))
+* **kitchen+ci:** update with `3004` pre-salted images/boxes [skip ci] ([8947cc4](https://github.com/saltstack-formulas/postgres-formula/commit/8947cc48707ff2a8a05b6deb7c4069200ee3e6af))
+* **kitchen+ci:** update with latest `3003.2` pre-salted images [skip ci] ([33e590e](https://github.com/saltstack-formulas/postgres-formula/commit/33e590eccbd68083c4fd5e765e760e9036744fad))
+* **kitchen+ci:** update with latest CVE pre-salted images [skip ci] ([9248de3](https://github.com/saltstack-formulas/postgres-formula/commit/9248de33b125354dc676895f0b5a7e3ce0a6a27b))
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] ([ebe3841](https://github.com/saltstack-formulas/postgres-formula/commit/ebe3841df8d69fa0036a99f99cfc92287c457f0c))
+* **vagrant:** replace FreeBSD 12.2 with 12.3 [skip ci] ([71556cc](https://github.com/saltstack-formulas/postgres-formula/commit/71556cc1c01d98885c19088550c0f887f8a3273f))
+
+
+### Features
+
+* **debian:** use repository keyring instead of key_id ([b6a28fe](https://github.com/saltstack-formulas/postgres-formula/commit/b6a28fee0d0baee8c21aa66919d35d6e8ecd57f3))
+
+
+### Tests
+
+* **repository:** redhat's family alternatives for repo url ([43b4329](https://github.com/saltstack-formulas/postgres-formula/commit/43b4329a51fa3aeacc96cb2c489b09feb9b1f632))
+
 # [0.43.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.42.0...v0.43.0) (2021-07-20)
 
 

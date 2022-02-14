@@ -18,21 +18,11 @@ when 'redhat', 'fedora', 'suse'
   repo_file = os_name_repo_file[platform.name]
 
 when 'debian'
-  # Inspec does not provide a `codename` matcher, so we add ours
-  finger_codename = {
-    'ubuntu-18.04' => 'bionic',
-    'ubuntu-20.04' => 'focal',
-    'debian-9' => 'stretch',
-    'debian-10' => 'buster',
-    'debian-11' => 'bullseye'
-  }
-  codename = finger_codename[system.platform[:finger]]
-
   repo_keyring = '/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg'
   repo_file = '/etc/apt/sources.list.d/pgdg.list'
-  # rubocop:disable Metrics/LineLength
-  repo_url = "deb [signed-by=#{repo_keyring}] http://apt.postgresql.org/pub/repos/apt #{codename}-pgdg main"
-  # rubocop:enable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
+  repo_url = "deb [signed-by=#{repo_keyring}] http://apt.postgresql.org/pub/repos/apt #{system.platform[:codename]}-pgdg main"
+  # rubocop:enable Layout/LineLength
 end
 
 control 'Postgresql repository keyring' do

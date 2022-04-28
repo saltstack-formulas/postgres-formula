@@ -5,9 +5,9 @@ postgres.port: '5432'
 postgres:
   # UPSTREAM REPO
   # Set True to configure upstream postgresql.org repository for YUM/APT/ZYPP
-  use_upstream_repo: False
+  use_upstream_repo: True
   # Version to install from upstream repository (if upstream_repo: True)
-  version: '10'
+  version: '13'
   # Set True to add a file in /etc/profile.d adding the bin dir in $PATH
   # as packages from upstream put them somewhere like /usr/pgsql-10/bin
   add_profile: False

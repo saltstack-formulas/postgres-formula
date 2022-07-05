@@ -76,6 +76,7 @@
 {{ debian_codename('bionic', '10') }}
 {{ debian_codename('eoan', '11') }}
 {{ debian_codename('focal', '12') }}
+{{ debian_codename('jammy', '14') }}
 
 ## Fedora
 # https://download.postgresql.org/pub/repos/yum/13/fedora/

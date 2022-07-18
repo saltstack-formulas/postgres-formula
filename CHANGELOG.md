@@ -1,5 +1,27 @@
 # Changelog
 
+# [0.45.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.44.0...v0.45.0) (2022-07-18)
+
+
+### Continuous Integration
+
+* update `pre-commit` configuration inc. for pre-commit.ci [skip ci] ([2fefadf](https://github.com/saltstack-formulas/postgres-formula/commit/2fefadf9020cdaaae2225bb93a67cf3759114167))
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] ([03fd3fa](https://github.com/saltstack-formulas/postgres-formula/commit/03fd3faed988962088f847a09d65d36f910617cc))
+* **vagrant:** use `linked_clone` at all times (inc. CI) [skip ci] ([ad865fc](https://github.com/saltstack-formulas/postgres-formula/commit/ad865fc6025296d39ed8e231d42b0e7773ec6f8a))
+* update linters to latest versions [skip ci] ([f45dc9c](https://github.com/saltstack-formulas/postgres-formula/commit/f45dc9c04d0a56b8705f94d0916bcaf43fdce231))
+
+
+### Features
+
+* **codenamemap:** add support for Ubuntu 22.04 ([fdf5f36](https://github.com/saltstack-formulas/postgres-formula/commit/fdf5f36c2d0f8c4d114d3626960c093c695f3d99))
+
+
+### Tests
+
+* **repository:** use `system.platform[:codename]` [skip ci] ([1c70c9c](https://github.com/saltstack-formulas/postgres-formula/commit/1c70c9c01c68b7edf629744fe82b9aa6544e7e46))
+* **system:** add `build_platform_codename` [skip ci] ([1270d0c](https://github.com/saltstack-formulas/postgres-formula/commit/1270d0c962a6560bfeb9de44ac0e3762bf19d642))
+* **system.rb:** add support for `mac_os_x` [skip ci] ([76de88b](https://github.com/saltstack-formulas/postgres-formula/commit/76de88bc7b61e3e5708fd8dae1f7dbc5a9cad4c2))
+
 # [0.44.0](https://github.com/saltstack-formulas/postgres-formula/compare/v0.43.0...v0.44.0) (2022-02-07)
 
 

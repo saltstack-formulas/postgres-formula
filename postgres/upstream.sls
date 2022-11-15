@@ -2,6 +2,7 @@
 {%- from tpldir + "/macros.jinja" import format_kwargs with context -%}
 
 {%- if 'pkg_repo' in postgres -%}
+{% set pg_common_version = salt['pkg.version']('postgresql-common') %}
 
   {%- if postgres.use_upstream_repo == true -%}
 
@@ -24,12 +25,14 @@ postgresql-pkg-deps:
 
 # Add upstream repository for your distro
   {% if grains.os_family == 'Debian' %}
+  {% if salt['pkg.version_cmp'](pg_common_version, '246') <= 0 %}
 postgresql-repo-keyring:
   pkg.installed:
     - sources:
       - pgdg-keyring: {{ postgres.pkg_repo_keyring }}
     - require_in:
       - pkgrepo: postgresql-repo
+  {%- endif %}
   {%- endif %}
 
 postgresql-repo:

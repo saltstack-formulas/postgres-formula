@@ -26,14 +26,14 @@ when 'debian'
 end
 
 control 'Postgresql repository keyring' do
-  title 'should be installed'
+  title 'should not be installed'
 
   only_if('Requirement for Debian family') do
     os.debian?
   end
 
   describe package('pgdg-keyring') do
-    it { should be_installed }
+    it { should_not be_installed }
   end
 
   describe file(repo_keyring) do

@@ -1,9 +1,6 @@
 {%- from salt.file.dirname(tpldir) ~ "/map.jinja" import postgres with context -%}
 
 {%- set includes = [] %}
-{%- if postgres.bake_image %}
-  {%- do includes.append('postgres.server.image') %}
-{%- endif %}
 {%- if postgres.use_upstream_repo == true -%}
   {%- do includes.append('postgres.upstream') %}
 {%- endif %}
@@ -35,7 +32,7 @@ postgresql-server:
     - source: /usr/local/opt/postgres/{{ postgres.service.name }}.plist
     - group: wheel
     - require_in:
-      - service: postgresql-running
+      - postgresql-running
 
 
 # Alternatives system. Make server binaries available in $PATH
@@ -89,7 +86,7 @@ postgresql-cluster-prepared:
       - pkg: postgresql-server
       - file: postgresql-cluster-prepared
     - watch_in:
-      - service: postgresql-running
+      - postgresql-running
 {%- endif %}
 
 postgresql-config-dir:
@@ -148,7 +145,7 @@ postgresql-conf:
       - file: postgresql-conf-comment-port
       {%- endif %}
     - watch_in:
-      - service: postgresql-running
+      - postgresql-running
 
 {%- endif %}
 
@@ -179,7 +176,7 @@ postgresql-pg_hba:
     - require:
       - file: postgresql-config-dir
     - watch_in:
-      - service: postgresql-running
+      - postgresql-running
 
 {%- set pg_ident_path = salt['file.join'](postgres.conf_dir, 'pg_ident.conf') %}
 
@@ -214,9 +211,9 @@ postgresql-pg_ident:
       {%- endif %}
     - watch_in:
       {%- if grains.os not in ('MacOS',) %}
-      - module: postgresql-service-reload
+      - postgresql-service-reload
       {%- else %}
-      - service: postgresql-running
+      - postgresql-running
       {%- endif %}
 
 {%- for name, tblspace in postgres.tablespaces|dictsort() %}
@@ -259,7 +256,18 @@ postgresql-tablespace-dir-{{ name }}-fcontext:
 
 {%- endfor %}
 
-{%- if not postgres.bake_image %}
+{% if postgres.bake_image %}
+postgresql-running:
+  cmd.run:
+    - name: {{ postgres.bake_image_run_cmd }}
+    - runas: {{ postgres.user }}
+    - unless:
+      - ps -p $(head -n 1 {{ postgres.data_dir }}/postmaster.pid) 2>/dev/null
+
+postgresql-service-reload:
+  test.show_notification:
+    - text: Imitating reload while baking an image
+{% else %}
 
 # Workaround for FreeBSD minion undefinitely hanging on service start
 # cf. https://github.com/saltstack/salt/issues/44848

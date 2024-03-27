@@ -20,21 +20,26 @@ local   all             postgres                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{% for acl in acls %}
-  {%- if acl|first() == 'local' %}
+{%- if acls is list -%}
+  {%- set acls = {'_all': acls} %}
+{%- endif %}
+{%- for _, group in acls|dictsort %}
+  {%- for acl in group %}
+    {%- if acl|first() == 'local' %}
 
-    {%- if acl|length() == 3 %}
-      {%- do acl.extend(['', 'md5']) %}
-    {%- elif acl|length() == 4 %}
-      {%- do acl.insert(3, '') %}
+      {%- if acl|length() == 3 %}
+        {%- do acl.extend(['', 'md5']) %}
+      {%- elif acl|length() == 4 %}
+        {%- do acl.insert(3, '') %}
+      {%- endif %}
+
+    {%- else %}
+
+      {%- if acl|length() == 4 %}
+        {%- do acl.append('md5') %}
+      {%- endif %}
+
     {%- endif %}
-
-  {%- else %}
-
-    {%- if acl|length() == 4 %}
-      {%- do acl.append('md5') %}
-    {%- endif %}
-
-  {%- endif %}
 {{ '{0:<7} {1:<15} {2:<15} {3:<23} {4}'.format(*acl) }}
-{% endfor %}
+  {%- endfor %}
+{%- endfor %}

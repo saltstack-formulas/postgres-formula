@@ -79,6 +79,8 @@ postgres:
   bake_image: false
   bake_image_run_cmd: pg_ctl start
 
+  manage_force_reload_modules: False
+
   fromrepo: ''
 
   users: {}

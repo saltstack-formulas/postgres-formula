@@ -20,6 +20,8 @@ include:
 postgres-reload-modules:
   test.succeed_with_changes:
     - reload_modules: True
+    - onchanges:
+      - pkg: postgresql-client-libs
 
 # User states
 

@@ -62,6 +62,7 @@
 {{ debian_codename('buster', '11') }}
 {{ debian_codename('bullseye', '13') }}
 {{ debian_codename('bookworm', '15') }}
+{{ debian_codename('trixie', '17') }}
 
 # `oscodename` grain has long distro name
 # if `lsb-release` package not installed
@@ -70,6 +71,7 @@
 {{ debian_codename('buster', '11', 'Debian GNU/Linux 10 (buster)') }}
 {{ debian_codename('bullseye', '13', 'Debian GNU/Linux 11 (bullseye)') }}
 {{ debian_codename('bookworm', '15', 'Debian GNU/Linux 12 (bookworm)') }}
+{{ debian_codename('trixie', '17', 'Debian GNU/Linux 13 (trixie)') }}
 
 ## Ubuntu
 # http://apt.postgresql.org/pub/repos/apt/dists/

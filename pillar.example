@@ -68,10 +68,11 @@ postgres:
   # databases they can access. Records take one of these forms:
   #
   # acls:
-  #  - ['local', 'DATABASE',  'USER',  'METHOD']
-  #  - ['host', 'DATABASE',  'USER',  'ADDRESS', 'METHOD']
-  #  - ['hostssl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
-  #  - ['hostnossl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
+  #   group:
+  #     - ['local', 'DATABASE',  'USER',  'METHOD']
+  #     - ['host', 'DATABASE',  'USER',  'ADDRESS', 'METHOD']
+  #     - ['hostssl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
+  #     - ['hostnossl', 'DATABASE', 'USER', 'ADDRESS', 'METHOD']
   #
   # The uppercase items must be replaced by actual values.
   # METHOD could be omitted, 'md5' will be appended by default.
@@ -81,10 +82,13 @@ postgres:
   # If ``acls`` item value is empty ('', [], null), then the contents of
   # ``pg_hba.conf`` file will not be touched at all.
   acls:
-    - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
-    - ['local', 'db1', 'localUser']
-    - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
-    - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
+    db1:
+      - ['local', 'db0', 'connuser', 'peer map=users_as_appuser']
+      - ['local', 'db1', 'localUser']
+    db2:
+      - ['host', 'db2', 'remoteUser', '192.168.33.0/24']
+    all:
+      - ['host', 'all', 'all', '127.0.0.1/32', 'md5']
 
   identity_map:
     - ['users_as_appuser', 'jdoe', 'connuser']

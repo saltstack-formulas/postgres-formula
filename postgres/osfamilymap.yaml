@@ -17,7 +17,8 @@ Debian:
   pkg_repo:
     humanname: PostgreSQL Official Repository
     file: /etc/apt/sources.list.d/pgdg.list
-  pkg_repo_keyring: 'https://download.postgresql.org/pub/repos/apt/pool/main/p/pgdg-keyring/pgdg-keyring_2018.2_all.deb'
+    key_url: https://download.postgresql.org/pub/repos/apt/ACCC4CF8.asc
+    name: deb https://apt.postgresql.org/pub/repos/apt {{ grains.get('oscodename') }}-pgdg main
   pkg_repo_keyid: ACCC4CF8
     {% if repo.use_upstream_repo == true %}
   pkg_dev: ''
@@ -60,7 +61,7 @@ RedHat:
     name: pgdg{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
     gpgcheck: 1
-    gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
+    gpgkey: 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
 
   pkgs_deps:

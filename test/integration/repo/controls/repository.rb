@@ -18,30 +18,8 @@ when 'redhat', 'fedora', 'suse'
   repo_file = os_name_repo_file[platform.name]
 
 when 'debian'
-  repo_keyring = '/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg'
   repo_file = '/etc/apt/sources.list.d/pgdg.list'
-  # rubocop:disable Layout/LineLength
-  repo_url = "deb [signed-by=#{repo_keyring}] http://apt.postgresql.org/pub/repos/apt #{system.platform[:codename]}-pgdg main"
-  # rubocop:enable Layout/LineLength
-end
-
-control 'Postgresql repository keyring' do
-  title 'should be installed'
-
-  only_if('Requirement for Debian family') do
-    os.debian?
-  end
-
-  describe package('pgdg-keyring') do
-    it { should be_installed }
-  end
-
-  describe file(repo_keyring) do
-    it { should exist }
-    it { should be_owned_by 'root' }
-    it { should be_grouped_into 'root' }
-    its('mode') { should cmp '0644' }
-  end
+  repo_url = "deb http://apt.postgresql.org/pub/repos/apt #{system.platform[:codename]}-pgdg main"
 end
 
 control 'Postgresql repository' do

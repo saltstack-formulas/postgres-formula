@@ -60,7 +60,7 @@ RedHat:
     name: pgdg{{ release }}
     humanname: PostgreSQL {{ repo.version }} $releasever - $basearch
     gpgcheck: 1
-    gpgkey: 'https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ release }}'
+    gpgkey: 'https://download.postgresql.org/pub/repos/yum/keys/PGDG-RPM-GPG-KEY-RHEL'
     baseurl: 'https://download.postgresql.org/pub/repos/yum/{{ repo.version }}/redhat/rhel-$releasever-$basearch'
 
   pkgs_deps:

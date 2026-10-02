@@ -11,7 +11,13 @@
     codename: optional grain value if `name` does not match the one returned by `oscodename` grain
   #}
 
-{% macro debian_codename(name, version, codename=none) %}
+{% macro debian_codename(name, version, codename=none, archived=false) %}
+
+  {% if archived %}
+    {% set repo_url = 'apt-archive.postgresql.org' %}
+  {% else %}
+    {% set repo_url = 'apt.postgresql.org' %}
+  {% endif %}
 
   {% if repo.use_upstream_repo == true %}
     {% set version = repo.version %}
@@ -29,7 +35,7 @@
   data_dir: {{ data_dir }}
   fromrepo: {{ fromrepo }}
   pkg_repo:
-    name: 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] http://apt.postgresql.org/pub/repos/apt {{ name }}-pgdg main'
+    name: 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] http://{{ repo_url }}/pub/repos/apt {{ name }}-pgdg main'
   pkg: postgresql-{{ version }}
   pkg_client: postgresql-client-{{ version }}
   prepare_cluster:
@@ -57,19 +63,19 @@
 ## Debian GNU/Linux (the second parameter refers to the postgresql package version, not the distro)
 # http://apt.postgresql.org/pub/repos/apt/dists/
 # https://packages.debian.org/search?keywords=postgresql&searchon=names
-{{ debian_codename('jessie', '9.4') }}
-{{ debian_codename('stretch', '9.6') }}
-{{ debian_codename('buster', '11') }}
-{{ debian_codename('bullseye', '13') }}
+{{ debian_codename('jessie', '9.4', archived=true) }}
+{{ debian_codename('stretch', '9.6', archived=true) }}
+{{ debian_codename('buster', '11', archived=true) }}
+{{ debian_codename('bullseye', '13', archived=true) }}
 {{ debian_codename('bookworm', '15') }}
 {{ debian_codename('trixie', '17') }}
 
 # `oscodename` grain has long distro name
 # if `lsb-release` package not installed
-{{ debian_codename('jessie', '9.4', 'Debian GNU/Linux 8 (jessie)') }}
-{{ debian_codename('stretch', '9.6', 'Debian GNU/Linux 9 (stretch)') }}
-{{ debian_codename('buster', '11', 'Debian GNU/Linux 10 (buster)') }}
-{{ debian_codename('bullseye', '13', 'Debian GNU/Linux 11 (bullseye)') }}
+{{ debian_codename('jessie', '9.4', 'Debian GNU/Linux 8 (jessie)', archived=true) }}
+{{ debian_codename('stretch', '9.6', 'Debian GNU/Linux 9 (stretch)', archived=true) }}
+{{ debian_codename('buster', '11', 'Debian GNU/Linux 10 (buster)', archived=true) }}
+{{ debian_codename('bullseye', '13', 'Debian GNU/Linux 11 (bullseye)', archived=true) }}
 {{ debian_codename('bookworm', '15', 'Debian GNU/Linux 12 (bookworm)') }}
 {{ debian_codename('trixie', '17', 'Debian GNU/Linux 13 (trixie)') }}
 
